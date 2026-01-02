@@ -65,7 +65,7 @@ export default function Home() {
       a: "No. Zentux está optimizado para ser ultra ligero y correr en segundo plano consumiendo mínimos recursos.",
     },
     {
-      q: "¿Cómo descargo e इंस्टalo?",
+      q: "¿Cómo descargo e instalo?",
       a: "Pulsa “Descargar Zentux”. Se baja el instalador ZentuxSetup.exe y lo ejecutas como cualquier programa de Windows.",
     },
     {
@@ -91,8 +91,13 @@ export default function Home() {
       <header className="sticky top-0 z-20 backdrop-blur bg-black/40 border-b border-white/10">
         <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-2xl bg-white/10 ring-1 ring-white/10 flex items-center justify-center font-bold">
-              Z
+            <div className="h-9 w-9 overflow-hidden rounded-2xl bg-white/10 ring-1 ring-white/10">
+              {/* Logo */}
+              <img
+                src="/zentux.png"
+                alt="Zentux"
+                className="h-full w-full object-cover"
+              />
             </div>
             <div className="leading-tight">
               <div className="font-semibold">Zentux</div>
@@ -203,10 +208,6 @@ export default function Home() {
                   </a>
                 </div>
               </div>
-
-              <div className="mt-4 text-xs text-zinc-600 text-center">
-                Tip: comparte tu web pública cuando esté en Vercel ✨
-              </div>
             </div>
           </div>
         </div>
@@ -278,9 +279,7 @@ export default function Home() {
       {/* FAQ */}
       <section id="faq" className="mx-auto max-w-6xl px-6 py-16">
         <h2 className="text-3xl font-semibold">FAQ</h2>
-        <p className="mt-2 text-zinc-400">
-          Respuestas rápidas a lo más común.
-        </p>
+        <p className="mt-2 text-zinc-400">Respuestas rápidas a lo más común.</p>
 
         <div className="mt-8 grid gap-6 md:grid-cols-2">
           {faqs.map((f) => (
