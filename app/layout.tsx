@@ -2,35 +2,59 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Zentux",
-  description: "Zentux — Autoclicker gamer. Rendimiento real. Control total.",
+  title: {
+    default: "Zentux",
+    template: "%s | Zentux",
+  },
+  description:
+    "Zentux — Autoclicker gamer para Windows. Rendimiento real, precisión total y cero impacto en FPS.",
   applicationName: "Zentux",
-  metadataBase: new URL("https://zentux-site-2.vercel.app"),
+  keywords: [
+    "Zentux",
+    "autoclicker",
+    "autoclicker gamer",
+    "gaming tool",
+    "windows autoclicker",
+    "no baja FPS",
+    "clicker competitivo",
+  ],
+  metadataBase: new URL("https://zentux-web.vercel.app"),
+
   openGraph: {
     title: "Zentux",
-    description: "Autoclicker gamer. Rendimiento real. Control total.",
-    url: "https://zentux-site-2.vercel.app",
+    description:
+      "Autoclicker gamer para Windows. Rendimiento real. Control total. Sin bajar FPS.",
+    url: "https://zentux-web.vercel.app",
     siteName: "Zentux",
+    locale: "es_ES",
     type: "website",
     images: [
       {
-        url: "/zentux.png",
+        url: "/logo.png",
         width: 512,
         height: 512,
-        alt: "Zentux",
+        alt: "Zentux logo",
       },
     ],
   },
+
   twitter: {
     card: "summary_large_image",
     title: "Zentux",
-    description: "Autoclicker gamer. Rendimiento real. Control total.",
-    images: ["/zentux.png"],
+    description:
+      "Autoclicker gamer para Windows. Rendimiento real y control total.",
+    images: ["/logo.png"],
   },
+
   icons: {
-    icon: "/zentux.png",
-    shortcut: "/zentux.png",
-    apple: "/zentux.png",
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -41,7 +65,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body className="bg-black text-white antialiased">
+        {children}
+      </body>
     </html>
   );
 }
