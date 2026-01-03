@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 const downloadUrl =
-  "https://github.com/CeroCee/zentux-releases1/releases/download/v1.0.10/ZentuxSetup.exe";
+  "https://github.com/CeroCee/zentux-releases1/releases/download/v1.0.12/ZentuxSetup.exe";
 
 export default function Home() {
   return (
