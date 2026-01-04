@@ -1,19 +1,57 @@
-<div className="mt-8 flex flex-wrap gap-4">
-  {/* BOTÓN NORMAL */}
-  <a
-    href={downloadUrl}
-    className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-black hover:bg-white/90 transition"
-  >
-    Descargar Zentux (Setup.exe)
-  </a>
+"use client";
 
-  {/* BOTÓN VIP */}
-  <BuyVipButton />
+import { getAuth } from "firebase/auth";
+import { useState } from "react";
 
-  <a
-    href="#features"
-    className="rounded-full border border-white/10 bg-white/5 px-6 py-3 text-sm font-medium hover:bg-white/10 transition"
-  >
-    Ver características
-  </a>
-</div>
+export default function BuyVipButton() {
+  const [loading, setLoading] = useState(false);
+
+  const handleBuyVip = async () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (!user) {
+      alert("Debes iniciar sesión para comprar Zentux VIP");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const token = await user.getIdToken();
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}/createCheckoutSession`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.error || "Error creando la sesión de pago");
+      }
+
+      window.location.href = data.url;
+    } catch (err: any) {
+      alert(err?.message || "Error inesperado");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleBuyVip}
+      disabled={loading}
+      className="rounded-full bg-purple-600 px-6 py-3 text-sm font-semibold text-white hover:bg-purple-700 transition disabled:opacity-50"
+    >
+      {loading ? "Redirigiendo..." : "Comprar Zentux VIP"}
+    </button>
+  );
+}
