@@ -5,7 +5,7 @@ const APP_NAME = "ZentuxOptimizer Pro";
 const PRICE = "$3.00 USD";
 const BILLING = "Every 15 days";
 const downloadUrl =
-  "https://github.com/CeroCee/zentux-releases1/releases/latest/download/ZentuxSetup.exe";
+  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxOptimizerPro.exe";
 const supportUrl = "https://guns.lol/cerocee";
 
 const features = [
