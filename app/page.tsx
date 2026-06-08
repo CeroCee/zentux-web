@@ -49,7 +49,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-7">
           <a href="#" className="flex min-w-0 items-center gap-3">
             <Image
-              src="/logo.png"
+              src="/zentux-icon.png"
               alt="Zentux logo"
               width={42}
               height={42}

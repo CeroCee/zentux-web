@@ -3,12 +3,12 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "ZentuxOptimizer Pro",
+    default: "Zentux",
     template: "%s | Zentux",
   },
   description:
     "ZentuxOptimizer Pro is a premium Windows optimizer for gamers with cleanup, RAM tools, FPS diagnostics, game boosting, and online license activation.",
-  applicationName: "ZentuxOptimizer Pro",
+  applicationName: "Zentux",
   keywords: [
     "ZentuxOptimizer",
     "Zentux",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   ],
   metadataBase: new URL("https://zentux.gg"),
   openGraph: {
-    title: "ZentuxOptimizer Pro",
+    title: "Zentux",
     description:
       "Premium Windows performance tools for gamers. Cleanup, RAM optimizer, game booster, FPS diagnostics, and license activation.",
     url: "https://zentux.gg",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/logo.png",
+        url: "/zentux-icon.png",
         width: 512,
         height: 512,
         alt: "Zentux logo",
@@ -39,15 +39,18 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "ZentuxOptimizer Pro",
+    title: "Zentux",
     description:
       "Premium Windows performance tools for gamers with online license activation.",
-    images: ["/logo.png"],
+    images: ["/zentux-icon.png"],
   },
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: [
+      { url: "/zentux-icon.png", type: "image/png" },
+      { url: "/favicon.ico" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/zentux-icon.png",
   },
   robots: {
     index: true,
