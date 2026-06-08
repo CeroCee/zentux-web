@@ -76,6 +76,14 @@ export default function Home() {
             <a className="transition hover:text-white" href="#faq">
               FAQ
             </a>
+            <a
+              href={supportUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-full border border-[#20e8f2]/60 px-5 py-2.5 text-sm font-bold text-[#20e8f2] transition hover:bg-[#06171c]"
+            >
+              Get Help
+            </a>
             <BuyProButton compact />
           </nav>
         </div>
