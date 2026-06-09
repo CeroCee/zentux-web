@@ -1,13 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const APP_NAME = "ZentuxOptimizer Pro";
 const checkoutUrl = "https://buy.stripe.com/8x29ALdMMeKmcSs60q1wY01";
 const downloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxOptimizer.exe";
 const supportUrl = "https://guns.lol/cerocee";
+const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
 const tabs = ["Home", "Products", "Reviews", "Status", "FAQ"] as const;
 type Tab = (typeof tabs)[number];
@@ -30,6 +31,19 @@ const reviews = [
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("Home");
+  const [showDiscordBubble, setShowDiscordBubble] = useState(true);
+
+  useEffect(() => {
+    if (showDiscordBubble) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setShowDiscordBubble(true);
+    }, 30000);
+
+    return () => window.clearTimeout(timer);
+  }, [showDiscordBubble]);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05010b] text-white">
@@ -91,6 +105,11 @@ export default function Home() {
         {activeTab === "Status" && <StatusPanel />}
         {activeTab === "FAQ" && <FaqPanel />}
       </div>
+
+      <DiscordBubble
+        visible={showDiscordBubble}
+        onClose={() => setShowDiscordBubble(false)}
+      />
     </main>
   );
 }
@@ -133,6 +152,24 @@ function HomePanel({ setActiveTab }: { setActiveTab: (tab: Tab) => void }) {
           <HeroStat value="$3" label="price" />
           <HeroStat value="24/7" label="support" />
         </div>
+
+        <div className="mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
+          <HomeTrustCard
+            value="6.8k+"
+            title="Happy Customers"
+            text="Trusted by Zentux users who want simple performance tools."
+          />
+          <HomeTrustCard
+            value="~30s"
+            title="License Delivery"
+            text="Automated license email after successful checkout."
+          />
+          <HomeTrustCard
+            value="Secure"
+            title="Payments"
+            text="Stripe checkout with subscription billing and buyer protection."
+          />
+        </div>
       </div>
 
       <div className="relative hidden min-h-[520px] lg:block">
@@ -141,6 +178,79 @@ function HomePanel({ setActiveTab }: { setActiveTab: (tab: Tab) => void }) {
         <div className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white blur-2xl" />
       </div>
     </section>
+  );
+}
+
+function DiscordBubble({
+  visible,
+  onClose,
+}: {
+  visible: boolean;
+  onClose: () => void;
+}) {
+  const [isClosing, setIsClosing] = useState(false);
+
+  useEffect(() => {
+    if (visible) {
+      setIsClosing(false);
+    }
+  }, [visible]);
+
+  if (!visible) {
+    return null;
+  }
+
+  const closeBubble = () => {
+    setIsClosing(true);
+    window.setTimeout(onClose, 260);
+  };
+
+  return (
+    <aside
+      className={`zentux-discord-bubble fixed bottom-5 right-5 z-[60] w-[calc(100vw-2.5rem)] max-w-sm rounded-2xl border border-[#6d5dfc]/45 bg-[#090718]/92 p-4 shadow-[0_0_60px_rgba(109,93,252,0.25)] backdrop-blur-2xl ${
+        isClosing ? "zentux-discord-out" : ""
+      }`}
+    >
+      <button
+        type="button"
+        onClick={closeBubble}
+        className="absolute right-3 top-3 rounded-full px-2 py-1 text-sm font-black text-[#8f84a0] transition hover:bg-white/10 hover:text-white"
+        aria-label="Close Discord invite"
+      >
+        x
+      </button>
+
+      <div className="flex gap-3 pr-7">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#6d5dfc]/50 bg-[#5865f2]/20">
+          <svg
+            viewBox="0 0 24 24"
+            className="h-7 w-7 fill-[#dfe3ff]"
+            aria-hidden="true"
+          >
+            <path d="M19.54 5.23A16.9 16.9 0 0 0 15.36 4c-.18.32-.39.76-.53 1.1a15.7 15.7 0 0 0-4.66 0c-.15-.36-.36-.78-.54-1.1a16.8 16.8 0 0 0-4.18 1.23C2.8 9.12 2.15 12.9 2.54 16.63A16.8 16.8 0 0 0 7.67 19.2c.42-.56.78-1.16 1.1-1.79-.6-.22-1.17-.5-1.71-.83l.42-.33a12.08 12.08 0 0 0 10.04 0l.42.33c-.54.33-1.11.61-1.71.83.32.63.69 1.23 1.1 1.79a16.8 16.8 0 0 0 5.13-2.57c.46-4.32-.78-8.07-2.92-11.4ZM8.68 14.34c-1 0-1.82-.92-1.82-2.04 0-1.13.8-2.04 1.82-2.04 1.01 0 1.84.91 1.82 2.04 0 1.12-.81 2.04-1.82 2.04Zm6.64 0c-1 0-1.82-.92-1.82-2.04 0-1.13.8-2.04 1.82-2.04 1.01 0 1.84.91 1.82 2.04 0 1.12-.8 2.04-1.82 2.04Z" />
+          </svg>
+        </div>
+
+        <div className="min-w-0">
+          <h3 className="text-base font-black text-white">Join our Discord</h3>
+          <p className="mt-1 text-sm leading-5 text-[#a69bb3]">
+            Get support, updates and exclusive deals.
+          </p>
+        </div>
+      </div>
+
+      <a
+        href={discordUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#5865f2] px-5 py-3 text-sm font-black text-white transition hover:bg-[#6d7cff]"
+      >
+        <svg viewBox="0 0 24 24" className="h-5 w-5 fill-white" aria-hidden="true">
+          <path d="M19.54 5.23A16.9 16.9 0 0 0 15.36 4c-.18.32-.39.76-.53 1.1a15.7 15.7 0 0 0-4.66 0c-.15-.36-.36-.78-.54-1.1a16.8 16.8 0 0 0-4.18 1.23C2.8 9.12 2.15 12.9 2.54 16.63A16.8 16.8 0 0 0 7.67 19.2c.42-.56.78-1.16 1.1-1.79-.6-.22-1.17-.5-1.71-.83l.42-.33a12.08 12.08 0 0 0 10.04 0l.42.33c-.54.33-1.11.61-1.71.83.32.63.69 1.23 1.1 1.79a16.8 16.8 0 0 0 5.13-2.57c.46-4.32-.78-8.07-2.92-11.4ZM8.68 14.34c-1 0-1.82-.92-1.82-2.04 0-1.13.8-2.04 1.82-2.04 1.01 0 1.84.91 1.82 2.04 0 1.12-.81 2.04-1.82 2.04Zm6.64 0c-1 0-1.82-.92-1.82-2.04 0-1.13.8-2.04 1.82-2.04 1.01 0 1.84.91 1.82 2.04 0 1.12-.8 2.04-1.82 2.04Z" />
+        </svg>
+        Join Discord
+      </a>
+    </aside>
   );
 }
 
@@ -383,6 +493,26 @@ function HeroStat({ value, label }: { value: string; label: string }) {
         {label}
       </div>
     </div>
+  );
+}
+
+function HomeTrustCard({
+  value,
+  title,
+  text,
+}: {
+  value: string;
+  title: string;
+  text: string;
+}) {
+  return (
+    <article className="rounded-2xl border border-white/10 bg-white/[0.045] p-5 text-center shadow-[0_0_45px_rgba(168,85,247,0.08)] backdrop-blur-xl">
+      <div className="text-3xl font-black bg-gradient-to-r from-[#d85cff] to-[#8b76ff] bg-clip-text text-transparent">
+        {value}
+      </div>
+      <h3 className="mt-3 text-lg font-black text-white">{title}</h3>
+      <p className="mt-2 text-xs font-semibold leading-5 text-[#a69bb3]">{text}</p>
+    </article>
   );
 }
 
