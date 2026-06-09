@@ -88,6 +88,10 @@ body {
   animation: zentuxDiscordOut 240ms ease-in both;
 }
 
+.zentux-legal-modal {
+  animation: zentuxLegalModalIn 220ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
 @keyframes zentuxSnowFall {
   from {
     transform: translate3d(0, -50%, 0);
@@ -143,6 +147,18 @@ body {
   }
 }
 
+@keyframes zentuxLegalModalIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .zentux-snow-slow,
   .zentux-snow-medium,
@@ -152,7 +168,8 @@ body {
     transform: translate3d(0, -25%, 0);
   }
 
-  .zentux-discord-bubble {
+  .zentux-discord-bubble,
+  .zentux-legal-modal {
     transform: none;
   }
 }

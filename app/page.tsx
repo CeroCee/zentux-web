@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
 const APP_NAME = "ZentuxOptimizer Pro";
@@ -12,6 +13,7 @@ const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
 const tabs = ["Home", "Products", "Reviews", "Status", "FAQ"] as const;
 type Tab = (typeof tabs)[number];
+type LegalPanel = "privacy" | "terms";
 
 const featureCards = [
   ["Cleaner", "Safe temporary file cleanup and storage diagnostics."],
@@ -32,6 +34,7 @@ const reviews = [
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("Home");
   const [showDiscordBubble, setShowDiscordBubble] = useState(true);
+  const [legalPanel, setLegalPanel] = useState<LegalPanel | null>(null);
 
   useEffect(() => {
     if (showDiscordBubble) {
@@ -99,7 +102,12 @@ export default function Home() {
       </header>
 
       <div className="relative z-10 mx-auto min-h-screen max-w-7xl px-5 pb-12 pt-28 sm:px-7 lg:pt-32">
-        {activeTab === "Home" && <HomePanel setActiveTab={setActiveTab} />}
+        {activeTab === "Home" && (
+          <HomePanel
+            setActiveTab={setActiveTab}
+            onOpenLegal={setLegalPanel}
+          />
+        )}
         {activeTab === "Products" && <ProductsPanel />}
         {activeTab === "Reviews" && <ReviewsPanel />}
         {activeTab === "Status" && <StatusPanel />}
@@ -110,74 +118,379 @@ export default function Home() {
         visible={showDiscordBubble}
         onClose={() => setShowDiscordBubble(false)}
       />
+      <LegalModal
+        activePanel={legalPanel}
+        onClose={() => setLegalPanel(null)}
+      />
     </main>
   );
 }
 
-function HomePanel({ setActiveTab }: { setActiveTab: (tab: Tab) => void }) {
+function HomePanel({
+  setActiveTab,
+  onOpenLegal,
+}: {
+  setActiveTab: (tab: Tab) => void;
+  onOpenLegal: (panel: LegalPanel) => void;
+}) {
   return (
-    <section className="grid min-h-[calc(100vh-9rem)] gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-      <div>
-        <h1 className="max-w-3xl text-6xl font-black leading-[0.92] tracking-tight text-white sm:text-7xl lg:text-8xl">
-          Zentux
-          <span className="block bg-gradient-to-r from-[#d85cff] to-[#7c6bff] bg-clip-text text-transparent">
-            Optimizer.
-          </span>
-        </h1>
-        <p className="mt-7 max-w-xl text-lg font-semibold leading-8 text-[#a69bb3]">
-          Premium Windows performance tools built for cleaner storage, gaming
-          preparation, RAM control, and license-protected Pro access.
-        </p>
+    <div className="space-y-14">
+      <section className="grid min-h-[calc(100vh-9rem)] gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+        <div>
+          <h1 className="max-w-3xl text-6xl font-black leading-[0.92] tracking-tight text-white sm:text-7xl lg:text-8xl">
+            Zentux
+            <span className="block bg-gradient-to-r from-[#d85cff] to-[#7c6bff] bg-clip-text text-transparent">
+              Optimizer.
+            </span>
+          </h1>
+          <p className="mt-7 max-w-xl text-lg font-semibold leading-8 text-[#a69bb3]">
+            Premium Windows performance tools built for cleaner storage, gaming
+            preparation, RAM control, and license-protected Pro access.
+          </p>
 
-        <div className="mt-9 flex flex-wrap gap-4">
+          <div className="mt-9 flex flex-wrap gap-4">
+            <button
+              onClick={() => setActiveTab("Products")}
+              className="rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-8 py-4 text-sm font-black text-white shadow-[0_0_45px_rgba(168,85,247,0.35)] transition hover:scale-[1.02]"
+            >
+              Browse Products
+            </button>
+            <a
+              href={supportUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-xl border border-white/15 bg-black/25 px-8 py-4 text-sm font-black text-white transition hover:border-[#a855f7]"
+            >
+              Join Support
+            </a>
+          </div>
+
+          <div className="mt-12 grid max-w-xl grid-cols-2 gap-3 border-y border-white/10 py-6 sm:grid-cols-4">
+            <HeroStat value="6,800+" label="products sold" />
+            <HeroStat value="5.0" label="rating" />
+            <HeroStat value="$3" label="price" />
+            <HeroStat value="24/7" label="support" />
+          </div>
+
+          <div className="mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
+            <HomeTrustCard
+              value="6.8k+"
+              title="Happy Customers"
+              text="Trusted by Zentux users who want simple performance tools."
+            />
+            <HomeTrustCard
+              value="~30s"
+              title="License Delivery"
+              text="Automated license email after successful checkout."
+            />
+            <HomeTrustCard
+              value="Secure"
+              title="Payments"
+              text="Stripe checkout with subscription billing and buyer protection."
+            />
+          </div>
+        </div>
+
+        <div className="relative hidden min-h-[520px] lg:block">
+          <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#a855f7]/25 shadow-[0_0_120px_rgba(168,85,247,0.18)]" />
+          <div className="absolute left-1/2 top-1/2 h-60 w-60 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#a855f7]/25" />
+          <div className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white blur-2xl" />
+        </div>
+      </section>
+
+      <LegalFooter setActiveTab={setActiveTab} onOpenLegal={onOpenLegal} />
+    </div>
+  );
+}
+
+function LegalFooter({
+  setActiveTab,
+  onOpenLegal,
+}: {
+  setActiveTab: (tab: Tab) => void;
+  onOpenLegal: (panel: LegalPanel) => void;
+}) {
+  return (
+    <footer className="rounded-[2rem] border border-white/10 bg-black/55 px-6 py-10 shadow-[0_0_80px_rgba(168,85,247,0.08)] backdrop-blur-2xl sm:px-10">
+      <div className="grid gap-10 lg:grid-cols-[1.1fr_0.8fr_0.8fr_0.8fr_1.25fr]">
+        <div>
           <button
-            onClick={() => setActiveTab("Products")}
-            className="rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-8 py-4 text-sm font-black text-white shadow-[0_0_45px_rgba(168,85,247,0.35)] transition hover:scale-[1.02]"
+            type="button"
+            onClick={() => setActiveTab("Home")}
+            className="flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-3 py-2 transition hover:border-[#a855f7]/60"
           >
-            Browse Products
+            <Image
+              src="/zentux-icon.png"
+              alt="Zentux logo"
+              width={44}
+              height={44}
+              className="rounded-full"
+            />
+            <div className="text-left">
+              <div className="text-lg font-black leading-none">Zentux</div>
+              <div className="mt-1 text-xs font-black uppercase tracking-[0.18em] text-[#b989ff]">
+                Optimizer Pro
+              </div>
+            </div>
           </button>
-          <a
-            href={supportUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-xl border border-white/15 bg-black/25 px-8 py-4 text-sm font-black text-white transition hover:border-[#a855f7]"
-          >
-            Join Support
+          <p className="mt-5 max-w-sm text-sm font-semibold leading-6 text-[#91879f]">
+            Premium Windows performance tools for cleanup, game preparation,
+            RAM review, and license-protected access.
+          </p>
+        </div>
+
+        <FooterColumn title="Navigation">
+          <button onClick={() => setActiveTab("Home")}>Home</button>
+          <button onClick={() => setActiveTab("Products")}>Products</button>
+          <button onClick={() => setActiveTab("Reviews")}>Reviews</button>
+          <button onClick={() => setActiveTab("Status")}>Status</button>
+          <button onClick={() => setActiveTab("FAQ")}>FAQ</button>
+        </FooterColumn>
+
+        <FooterColumn title="Support">
+          <a href={supportUrl} target="_blank" rel="noreferrer">
+            Get Help
           </a>
-        </div>
+          <a href={discordUrl} target="_blank" rel="noreferrer">
+            Discord
+          </a>
+          <button onClick={() => onOpenLegal("privacy")}>
+            Privacy Policy
+          </button>
+          <button onClick={() => onOpenLegal("terms")}>
+            Terms of Service
+          </button>
+        </FooterColumn>
 
-        <div className="mt-12 grid max-w-xl grid-cols-2 gap-3 border-y border-white/10 py-6 sm:grid-cols-4">
-          <HeroStat value="6,800+" label="products sold" />
-          <HeroStat value="5.0" label="rating" />
-          <HeroStat value="$3" label="price" />
-          <HeroStat value="24/7" label="support" />
-        </div>
+        <FooterColumn title="Product">
+          <a href={checkoutUrl} target="_blank" rel="noreferrer">
+            Buy License
+          </a>
+          <a href={downloadUrl}>Download App</a>
+          <button onClick={() => setActiveTab("Status")}>Status</button>
+          <button onClick={() => setActiveTab("Products")}>Features</button>
+        </FooterColumn>
 
-        <div className="mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
-          <HomeTrustCard
-            value="6.8k+"
-            title="Happy Customers"
-            text="Trusted by Zentux users who want simple performance tools."
-          />
-          <HomeTrustCard
-            value="~30s"
-            title="License Delivery"
-            text="Automated license email after successful checkout."
-          />
-          <HomeTrustCard
-            value="Secure"
-            title="Payments"
-            text="Stripe checkout with subscription billing and buyer protection."
-          />
+        <div>
+          <h3 className="text-sm font-black uppercase tracking-[0.2em] text-white">
+            Payments
+          </h3>
+          <p className="mt-4 text-sm font-semibold leading-6 text-[#91879f]">
+            Secure subscription checkout is handled by Stripe. Card details are
+            processed by Stripe and are not stored by Zentux.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {["Stripe", "Visa", "Mastercard", "Apple Pay"].map((item) => (
+              <span
+                key={item}
+                className="rounded-md border border-white/10 bg-white/90 px-3 py-1.5 text-xs font-black text-black"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="relative hidden min-h-[520px] lg:block">
-        <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#a855f7]/25 shadow-[0_0_120px_rgba(168,85,247,0.18)]" />
-        <div className="absolute left-1/2 top-1/2 h-60 w-60 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#a855f7]/25" />
-        <div className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white blur-2xl" />
+      <div className="mt-10 border-t border-white/10 pt-7 text-center text-sm font-semibold leading-7 text-[#8b8198]">
+        <p>Zentux (c) 2026. All rights reserved.</p>
+        <p className="mx-auto mt-3 max-w-5xl">
+          ZentuxOptimizer Pro is an independent Windows optimization tool.
+          Zentux is not affiliated with Microsoft, Roblox, Intel, AMD, NVIDIA,
+          or any other third-party brand. All trademarks belong to their
+          respective owners.
+        </p>
+      </div>
+    </footer>
+  );
+}
+
+function FooterColumn({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <div>
+      <h3 className="text-sm font-black uppercase tracking-[0.2em] text-white">
+        {title}
+      </h3>
+      <div className="mt-4 flex flex-col items-start gap-3 text-sm font-bold text-[#d8d1e2]">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function LegalModal({
+  activePanel,
+  onClose,
+}: {
+  activePanel: LegalPanel | null;
+  onClose: () => void;
+}) {
+  if (!activePanel) {
+    return null;
+  }
+
+  const isPrivacy = activePanel === "privacy";
+
+  return (
+    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/75 px-4 py-6 backdrop-blur-sm">
+      <section className="zentux-legal-modal max-h-[88vh] w-full max-w-3xl overflow-hidden rounded-[1.75rem] border border-[#a855f7]/35 bg-[#080512] shadow-[0_0_90px_rgba(168,85,247,0.22)]">
+        <div className="flex items-start justify-between gap-4 border-b border-white/10 px-6 py-5 sm:px-8">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#c76cff]">
+              Zentux Legal
+            </p>
+            <h2 className="mt-2 text-3xl font-black text-white">
+              {isPrivacy ? "Privacy Policy" : "Terms of Service"}
+            </h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-black text-white transition hover:bg-white hover:text-black"
+          >
+            Close
+          </button>
+        </div>
+
+        <div className="max-h-[65vh] overflow-y-auto px-6 py-6 sm:px-8">
+          {isPrivacy ? <PrivacyPolicyText /> : <TermsOfServiceText />}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function LegalSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="mb-6 rounded-2xl border border-white/10 bg-white/[0.035] p-5">
+      <h3 className="text-lg font-black text-white">{title}</h3>
+      <div className="mt-3 space-y-3 text-sm font-semibold leading-7 text-[#b9afc6]">
+        {children}
       </div>
     </section>
+  );
+}
+
+function TermsOfServiceText() {
+  return (
+    <>
+      <LegalSection title="1. Access and subscription">
+        <p>
+          ZentuxOptimizer Pro requires an active license subscription. If a
+          license is expired, invalid, refunded, canceled, or cannot be verified
+          by the license server, Pro features may be locked until the license is
+          active again.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="2. License key use">
+        <p>
+          Each license key is connected to the subscription created through
+          Stripe. You are responsible for keeping your license private. Sharing,
+          reselling, leaking, or abusing license keys can lead to access being
+          restricted.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="3. Performance tools">
+        <p>
+          ZentuxOptimizer Pro provides cleanup, game preparation, RAM review,
+          startup review, diagnostics, and related tools. Results can vary by
+          device, game, drivers, Windows version, and background apps. Zentux
+          does not guarantee a specific FPS increase.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="4. Payments, renewals, and cancellation">
+        <p>
+          Payments and recurring billing are processed by Stripe. Subscription
+          pricing, renewal timing, taxes, and payment method details are shown
+          during checkout. You can contact support for help with cancellation or
+          billing questions.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="5. Acceptable use">
+        <p>
+          You agree not to use ZentuxOptimizer Pro to damage systems, bypass
+          security, attack services, or violate third-party terms. You are
+          responsible for how you use the app on your own PC.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="6. Support">
+        <p>
+          Support is available through the official help links on this website.
+          Response times can vary, but the goal is to help users activate,
+          install, and understand the app safely.
+        </p>
+      </LegalSection>
+    </>
+  );
+}
+
+function PrivacyPolicyText() {
+  return (
+    <>
+      <LegalSection title="1. Information collected">
+        <p>
+          Zentux may process the email used at checkout, license key status,
+          subscription state, expiration date, and validation requests needed to
+          unlock the app. The app may also send basic technical validation data
+          so the server can confirm whether a license is active.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="2. Payments">
+        <p>
+          Payment information is handled by Stripe. Zentux does not store your
+          full card number, bank details, or payment credentials.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="3. License emails">
+        <p>
+          License delivery emails may be sent through Resend or another email
+          provider. These emails include the license information needed to use
+          Zentux apps.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="4. How information is used">
+        <p>
+          Information is used to validate subscriptions, deliver licenses,
+          provide support, protect against abuse, improve reliability, and keep
+          the app locked when a subscription is not active.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="5. Service providers">
+        <p>
+          Zentux may use third-party services such as Stripe for payments,
+          Render for server hosting, Resend for email delivery, GitHub for
+          downloads, and Discord or support pages for customer help.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="6. Contact">
+        <p>
+          For privacy, license, or support questions, use the official help
+          links on this website.
+        </p>
+      </LegalSection>
+    </>
   );
 }
 
