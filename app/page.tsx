@@ -8,8 +8,10 @@ const BRAND_NAME = "Zentux";
 const OPTIMIZER_NAME = "ZentuxOptimizer Pro";
 const AUTOCLICKER_NAME = "Zentux Autoclicker";
 const checkoutUrl = "https://buy.stripe.com/8x29ALdMMeKmcSs60q1wY01";
-const downloadUrl =
+const optimizerDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxOptimizer.exe";
+const autoclickerDownloadUrl =
+  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxAutoclicker.exe";
 const supportUrl = "https://guns.lol/cerocee";
 const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
@@ -30,8 +32,11 @@ const products = [
     image: "/producto.png",
     badge: "Popular",
     description: "Windows performance optimizer",
-    price: "$3.00",
+    price: "Included",
     status: "- In Stock",
+    downloadUrl: optimizerDownloadUrl,
+    details:
+      "ZentuxOptimizer Pro helps prepare Windows for gaming with cleaner tools, RAM review, startup control, game preparation, diagnostics, and license-protected Pro access.",
   },
   {
     name: AUTOCLICKER_NAME,
@@ -39,7 +44,10 @@ const products = [
     badge: "New",
     description: "Gaming autoclicker with Hold and Toggle",
     price: "Included",
-    status: "- Active",
+    status: "- In Stock",
+    downloadUrl: autoclickerDownloadUrl,
+    details:
+      "Zentux Autoclicker is built for fast click workflows with Hold mode, Toggle mode, configurable hotkeys, mouse button support, and a compact gamer interface.",
   },
 ];
 
@@ -56,6 +64,9 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("Home");
   const [showDiscordBubble, setShowDiscordBubble] = useState(true);
   const [legalPanel, setLegalPanel] = useState<LegalPanel | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<
+    (typeof products)[number] | null
+  >(null);
 
   useEffect(() => {
     if (showDiscordBubble) {
@@ -129,7 +140,9 @@ export default function Home() {
             onOpenLegal={setLegalPanel}
           />
         )}
-        {activeTab === "Products" && <ProductsPanel />}
+        {activeTab === "Products" && (
+          <ProductsPanel onSelectProduct={setSelectedProduct} />
+        )}
         {activeTab === "Reviews" && <ReviewsPanel />}
         {activeTab === "Status" && <StatusPanel />}
         {activeTab === "FAQ" && <FaqPanel />}
@@ -142,6 +155,10 @@ export default function Home() {
       <LegalModal
         activePanel={legalPanel}
         onClose={() => setLegalPanel(null)}
+      />
+      <ProductDetailsModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
       />
     </main>
   );
@@ -288,7 +305,7 @@ function LegalFooter({
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
             Buy License
           </a>
-          <a href={downloadUrl}>Download App</a>
+          <button onClick={() => setActiveTab("Products")}>Downloads</button>
           <button onClick={() => setActiveTab("Status")}>Status</button>
           <button onClick={() => setActiveTab("Products")}>Features</button>
         </FooterColumn>
@@ -590,7 +607,11 @@ function DiscordBubble({
   );
 }
 
-function ProductsPanel() {
+function ProductsPanel({
+  onSelectProduct,
+}: {
+  onSelectProduct: (product: (typeof products)[number]) => void;
+}) {
   return (
     <section className="mx-auto max-w-6xl py-10">
       <PanelTitle
@@ -615,17 +636,23 @@ function ProductsPanel() {
             <SmallStat value="Online" label="license" />
             <SmallStat value="Multi" label="products" />
           </div>
-          <a
-            href={downloadUrl}
+          <button
+            type="button"
+            onClick={() => onSelectProduct(products[0])}
             className="mt-7 inline-flex rounded-full border border-white/15 px-6 py-3 text-sm font-black transition hover:border-[#a855f7] hover:text-[#d6b4ff]"
           >
-            Download App
-          </a>
+            View Package
+          </button>
         </div>
 
         <div className="grid gap-7 md:grid-cols-2">
           {products.map((product, index) => (
-            <ProductCard key={product.name} product={product} priority={index === 0} />
+            <ProductCard
+              key={product.name}
+              product={product}
+              priority={index === 0}
+              onSelect={() => onSelectProduct(product)}
+            />
           ))}
         </div>
       </div>
@@ -635,16 +662,15 @@ function ProductsPanel() {
 
 function ProductCard({
   product,
+  onSelect,
   priority = false,
 }: {
   product: (typeof products)[number];
+  onSelect: () => void;
   priority?: boolean;
 }) {
   return (
-    <a
-      href={checkoutUrl}
-      target="_blank"
-      rel="noreferrer"
+    <article
       className="group mx-auto w-full max-w-[430px] overflow-hidden rounded-[28px] border border-white/12 bg-[#0a070d]/95 text-white no-underline transition hover:-translate-y-1 hover:border-[#c51f35]/80 hover:shadow-[0_0_60px_rgba(197,31,53,0.28)]"
     >
       <div className="relative h-[330px] overflow-hidden border-b border-white/10 bg-[#070305]">
@@ -661,9 +687,13 @@ function ProductCard({
         <span className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-wide text-black">
           {product.badge}
         </span>
-        <span className="absolute inset-x-5 bottom-5 mx-auto hidden w-fit rounded-full bg-white px-5 py-2 text-xs font-black uppercase tracking-wide text-black group-hover:block">
+        <button
+          type="button"
+          onClick={onSelect}
+          className="absolute inset-x-5 bottom-5 mx-auto w-fit rounded-full bg-white px-5 py-2 text-xs font-black uppercase tracking-wide text-black transition hover:scale-105"
+        >
           View Details
-        </span>
+        </button>
       </div>
 
       <div className="p-6">
@@ -678,7 +708,126 @@ function ProductCard({
           </span>
         </div>
       </div>
-    </a>
+    </article>
+  );
+}
+
+function ProductDetailsModal({
+  product,
+  onClose,
+}: {
+  product: (typeof products)[number] | null;
+  onClose: () => void;
+}) {
+  if (!product) {
+    return null;
+  }
+
+  return (
+    <div className="fixed inset-0 z-[85] flex items-center justify-center bg-black/78 px-4 py-6 backdrop-blur-sm">
+      <section className="zentux-legal-modal grid max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-[2rem] border border-[#a855f7]/35 bg-[#080512] shadow-[0_0_100px_rgba(168,85,247,0.26)] lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="relative min-h-[360px] border-b border-white/10 bg-black lg:border-b-0 lg:border-r">
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            quality={100}
+            sizes="(min-width: 1024px) 420px, 100vw"
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/12 to-transparent" />
+          <span className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-wide text-black">
+            {product.badge}
+          </span>
+          <span className="absolute bottom-5 left-5 rounded-full border border-white/20 bg-black/55 px-4 py-1.5 text-xs font-black uppercase tracking-wide text-white backdrop-blur-xl">
+            {product.status}
+          </span>
+        </div>
+
+        <div className="max-h-[90vh] overflow-y-auto p-6 sm:p-8">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.24em] text-[#c76cff]">
+                Zentux Package
+              </p>
+              <h2 className="mt-3 text-4xl font-black leading-tight text-white">
+                {product.name}
+              </h2>
+              <p className="mt-3 text-lg font-semibold text-[#bfb5c9]">
+                {product.description}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="shrink-0 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-black text-white transition hover:bg-white hover:text-black"
+            >
+              Close
+            </button>
+          </div>
+
+          <div className="mt-7 rounded-2xl border border-[#a855f7]/30 bg-[#160821]/70 p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-[#b989ff]">
+                  Complete license
+                </p>
+                <h3 className="mt-2 text-2xl font-black text-white">
+                  One license unlocks every supported Zentux product.
+                </h3>
+              </div>
+              <span className="rounded-full bg-white px-4 py-1.5 text-xs font-black uppercase tracking-wide text-black">
+                Included
+              </span>
+            </div>
+            <p className="mt-4 text-sm font-semibold leading-7 text-[#c9c2d0]">
+              Your active subscription works as a full Zentux package. The same
+              license can validate supported apps like ZentuxOptimizer Pro and
+              Zentux Autoclicker, as long as the subscription is active.
+            </p>
+          </div>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <DetailPoint title="Status" text="In stock and available." />
+            <DetailPoint title="Delivery" text="License arrives by email after checkout." />
+            <DetailPoint title="Validation" text="Online license check protects Pro access." />
+            <DetailPoint title="Support" text="Help available through Discord and support links." />
+          </div>
+
+          <p className="mt-6 text-sm font-semibold leading-7 text-[#b9afc6]">
+            {product.details}
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a
+              href={checkoutUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-7 py-4 text-sm font-black text-white shadow-[0_0_45px_rgba(168,85,247,0.28)] transition hover:scale-[1.02]"
+            >
+              Buy Complete Package
+            </a>
+            <a
+              href={product.downloadUrl}
+              className="rounded-xl border border-white/15 bg-white/[0.04] px-7 py-4 text-sm font-black text-white transition hover:border-[#20e8f2] hover:text-[#20e8f2]"
+            >
+              Download This App
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function DetailPoint({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+      <h3 className="text-sm font-black text-white">{title}</h3>
+      <p className="mt-2 text-xs font-semibold leading-5 text-[#a69bb3]">
+        {text}
+      </p>
+    </div>
   );
 }
 
