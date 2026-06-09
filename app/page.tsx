@@ -4,7 +4,9 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
-const APP_NAME = "ZentuxOptimizer Pro";
+const BRAND_NAME = "Zentux";
+const OPTIMIZER_NAME = "ZentuxOptimizer Pro";
+const AUTOCLICKER_NAME = "Zentux Autoclicker";
 const checkoutUrl = "https://buy.stripe.com/8x29ALdMMeKmcSs60q1wY01";
 const downloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxOptimizer.exe";
@@ -16,10 +18,29 @@ type Tab = (typeof tabs)[number];
 type LegalPanel = "privacy" | "terms";
 
 const featureCards = [
-  ["Cleaner", "Safe temporary file cleanup and storage diagnostics."],
-  ["Game Booster", "Game detection, priority control, and overlay checks."],
-  ["RAM Tools", "Review heavy apps and reduce background pressure."],
-  ["License System", "Pro tools unlock only with an active online license."],
+  ["Gaming Tools", "Utilities designed to improve the way your PC feels while playing."],
+  ["Optimizer", "Cleanup, RAM review, diagnostics, and game preparation tools."],
+  ["Autoclicker", "A compact click assistant with hotkeys, hold, toggle, and mouse movement tools."],
+  ["License System", "One active Zentux license can unlock supported Zentux products."],
+];
+
+const products = [
+  {
+    name: OPTIMIZER_NAME,
+    image: "/producto.png",
+    badge: "Popular",
+    description: "Windows performance optimizer",
+    price: "$3.00",
+    status: "- In Stock",
+  },
+  {
+    name: AUTOCLICKER_NAME,
+    image: "/zentux-autoclicker.png",
+    badge: "New",
+    description: "Gaming autoclicker with Hold and Toggle",
+    price: "Included",
+    status: "- Active",
+  },
 ];
 
 const reviews = [
@@ -67,9 +88,9 @@ export default function Home() {
               priority
             />
             <div className="hidden text-left sm:block">
-              <div className="text-sm font-black leading-none">Zentux</div>
+              <div className="text-sm font-black leading-none">{BRAND_NAME}</div>
               <div className="mt-1 text-[11px] font-bold text-[#b989ff]">
-                Optimizer Pro
+                Gaming Tools
               </div>
             </div>
           </button>
@@ -140,12 +161,13 @@ function HomePanel({
           <h1 className="max-w-3xl text-6xl font-black leading-[0.92] tracking-tight text-white sm:text-7xl lg:text-8xl">
             Zentux
             <span className="block bg-gradient-to-r from-[#d85cff] to-[#7c6bff] bg-clip-text text-transparent">
-              Optimizer.
+              Products.
             </span>
           </h1>
           <p className="mt-7 max-w-xl text-lg font-semibold leading-8 text-[#a69bb3]">
-            Premium Windows performance tools built for cleaner storage, gaming
-            preparation, RAM control, and license-protected Pro access.
+            A premium gaming brand building Windows tools for performance,
+            faster workflows, smoother gameplay, and license-protected Pro
+            access across Zentux apps.
           </p>
 
           <div className="mt-9 flex flex-wrap gap-4">
@@ -176,12 +198,12 @@ function HomePanel({
             <HomeTrustCard
               value="6.8k+"
               title="Happy Customers"
-              text="Trusted by Zentux users who want simple performance tools."
+              text="Trusted by users who want clean, premium gaming utilities."
             />
             <HomeTrustCard
               value="~30s"
               title="License Delivery"
-              text="Automated license email after successful checkout."
+              text="Automated license email for supported Zentux products."
             />
             <HomeTrustCard
               value="Secure"
@@ -227,15 +249,15 @@ function LegalFooter({
               className="rounded-full"
             />
             <div className="text-left">
-              <div className="text-lg font-black leading-none">Zentux</div>
+              <div className="text-lg font-black leading-none">{BRAND_NAME}</div>
               <div className="mt-1 text-xs font-black uppercase tracking-[0.18em] text-[#b989ff]">
-                Optimizer Pro
+                Gaming Tools
               </div>
             </div>
           </button>
           <p className="mt-5 max-w-sm text-sm font-semibold leading-6 text-[#91879f]">
-            Premium Windows performance tools for cleanup, game preparation,
-            RAM review, and license-protected access.
+            Premium Windows tools for gaming, optimization, click workflows,
+            cleanup, and license-protected product access.
           </p>
         </div>
 
@@ -262,7 +284,7 @@ function LegalFooter({
           </button>
         </FooterColumn>
 
-        <FooterColumn title="Product">
+        <FooterColumn title="Products">
           <a href={checkoutUrl} target="_blank" rel="noreferrer">
             Buy License
           </a>
@@ -295,10 +317,10 @@ function LegalFooter({
       <div className="mt-10 border-t border-white/10 pt-7 text-center text-sm font-semibold leading-7 text-[#8b8198]">
         <p>Zentux (c) 2026. All rights reserved.</p>
         <p className="mx-auto mt-3 max-w-5xl">
-          ZentuxOptimizer Pro is an independent Windows optimization tool.
-          Zentux is not affiliated with Microsoft, Roblox, Intel, AMD, NVIDIA,
-          or any other third-party brand. All trademarks belong to their
-          respective owners.
+          Zentux is an independent brand that creates Windows tools for gaming
+          and performance workflows. Zentux is not affiliated with Microsoft,
+          Roblox, Intel, AMD, NVIDIA, or any other third-party brand. All
+          trademarks belong to their respective owners.
         </p>
       </div>
     </footer>
@@ -388,10 +410,10 @@ function TermsOfServiceText() {
     <>
       <LegalSection title="1. Access and subscription">
         <p>
-          ZentuxOptimizer Pro requires an active license subscription. If a
+          Zentux products require an active license subscription. If a
           license is expired, invalid, refunded, canceled, or cannot be verified
-          by the license server, Pro features may be locked until the license is
-          active again.
+          by the license server, Pro features in supported Zentux apps may be
+          locked until the license is active again.
         </p>
       </LegalSection>
 
@@ -406,10 +428,11 @@ function TermsOfServiceText() {
 
       <LegalSection title="3. Performance tools">
         <p>
-          ZentuxOptimizer Pro provides cleanup, game preparation, RAM review,
-          startup review, diagnostics, and related tools. Results can vary by
-          device, game, drivers, Windows version, and background apps. Zentux
-          does not guarantee a specific FPS increase.
+          Zentux apps can provide optimization, cleanup, game preparation,
+          autoclicker controls, hotkeys, diagnostics, and related tools. Results
+          can vary by device, game, drivers, Windows version, and background
+          apps. Zentux does not guarantee a specific FPS increase or game
+          outcome.
         </p>
       </LegalSection>
 
@@ -424,7 +447,7 @@ function TermsOfServiceText() {
 
       <LegalSection title="5. Acceptable use">
         <p>
-          You agree not to use ZentuxOptimizer Pro to damage systems, bypass
+          You agree not to use Zentux products to damage systems, bypass
           security, attack services, or violate third-party terms. You are
           responsible for how you use the app on your own PC.
         </p>
@@ -572,24 +595,25 @@ function ProductsPanel() {
     <section className="mx-auto max-w-6xl py-10">
       <PanelTitle
         label="Products"
-        title="ZentuxOptimizer Pro"
-        text="One premium product, one subscription, full access to the optimizer."
+        title="Zentux Products"
+        text="Premium gaming and performance tools under one Zentux brand."
       />
 
       <div className="mt-10 grid gap-7 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div className="rounded-[30px] border border-white/10 bg-black/38 p-7 backdrop-blur-xl">
           <p className="text-xs font-black uppercase tracking-[0.28em] text-[#a69bb3]">
-            Premium access
+            Zentux access
           </p>
           <h3 className="mt-4 text-4xl font-black">6,800+ products sold</h3>
           <p className="mt-4 max-w-md leading-8 text-[#c9c2d0]">
-            Subscribe through Stripe, receive your license by email, paste it in
-            the app, and unlock the full Pro optimizer.
+            Subscribe through Stripe, receive your license by email, paste it
+            inside a supported Zentux app, and unlock the tools included with
+            your active license.
           </p>
           <div className="mt-7 grid grid-cols-3 gap-3">
             <SmallStat value="Instant" label="delivery" />
             <SmallStat value="Online" label="license" />
-            <SmallStat value="Pro" label="access" />
+            <SmallStat value="Multi" label="products" />
           </div>
           <a
             href={downloadUrl}
@@ -599,44 +623,62 @@ function ProductsPanel() {
           </a>
         </div>
 
-        <a
-          href={checkoutUrl}
-          className="group mx-auto w-full max-w-[430px] overflow-hidden rounded-[28px] border border-white/12 bg-[#0a070d]/95 text-white no-underline transition hover:-translate-y-1 hover:border-[#c51f35]/80 hover:shadow-[0_0_60px_rgba(197,31,53,0.28)] lg:mx-0"
-        >
-          <div className="relative h-[390px] overflow-hidden border-b border-white/10 bg-[#070305]">
-            <Image
-              src="/producto.png"
-              alt={APP_NAME}
-              fill
-              priority
-              quality={100}
-              sizes="430px"
-              className="object-contain p-2 transition duration-500 group-hover:scale-[1.025]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#09050a]/88 via-transparent to-black/5" />
-            <span className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-wide text-black">
-              Popular
-            </span>
-            <span className="absolute inset-x-5 bottom-5 mx-auto hidden w-fit rounded-full bg-white px-5 py-2 text-xs font-black uppercase tracking-wide text-black group-hover:block">
-              View Details
-            </span>
-          </div>
-
-          <div className="p-6">
-            <h3 className="text-2xl font-black">{APP_NAME}</h3>
-            <p className="mt-2 text-sm leading-6 text-[#bcaab3]">
-              Windows performance optimizer
-            </p>
-            <div className="mt-8 flex items-center justify-between gap-3">
-              <span className="text-xl font-black">$3.00</span>
-              <span className="rounded-full border border-white/20 bg-white/[0.05] px-4 py-1 text-[10px] font-black uppercase tracking-wide">
-                - In Stock
-              </span>
-            </div>
-          </div>
-        </a>
+        <div className="grid gap-7 md:grid-cols-2">
+          {products.map((product, index) => (
+            <ProductCard key={product.name} product={product} priority={index === 0} />
+          ))}
+        </div>
       </div>
     </section>
+  );
+}
+
+function ProductCard({
+  product,
+  priority = false,
+}: {
+  product: (typeof products)[number];
+  priority?: boolean;
+}) {
+  return (
+    <a
+      href={checkoutUrl}
+      target="_blank"
+      rel="noreferrer"
+      className="group mx-auto w-full max-w-[430px] overflow-hidden rounded-[28px] border border-white/12 bg-[#0a070d]/95 text-white no-underline transition hover:-translate-y-1 hover:border-[#c51f35]/80 hover:shadow-[0_0_60px_rgba(197,31,53,0.28)]"
+    >
+      <div className="relative h-[330px] overflow-hidden border-b border-white/10 bg-[#070305]">
+        <Image
+          src={product.image}
+          alt={product.name}
+          fill
+          priority={priority}
+          quality={100}
+          sizes="(min-width: 1024px) 430px, (min-width: 768px) 50vw, 100vw"
+          className="object-cover object-center transition duration-500 group-hover:scale-[1.035]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#09050a]/88 via-transparent to-black/5" />
+        <span className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-wide text-black">
+          {product.badge}
+        </span>
+        <span className="absolute inset-x-5 bottom-5 mx-auto hidden w-fit rounded-full bg-white px-5 py-2 text-xs font-black uppercase tracking-wide text-black group-hover:block">
+          View Details
+        </span>
+      </div>
+
+      <div className="p-6">
+        <h3 className="text-2xl font-black">{product.name}</h3>
+        <p className="mt-2 text-sm leading-6 text-[#bcaab3]">
+          {product.description}
+        </p>
+        <div className="mt-8 flex items-center justify-between gap-3">
+          <span className="text-xl font-black">{product.price}</span>
+          <span className="rounded-full border border-white/20 bg-white/[0.05] px-4 py-1 text-[10px] font-black uppercase tracking-wide">
+            {product.status}
+          </span>
+        </div>
+      </div>
+    </a>
   );
 }
 
@@ -707,11 +749,12 @@ function StatusPanel() {
       <PanelTitle
         label="Status"
         title="Product Status"
-        text="Current availability for ZentuxOptimizer Pro and its online services."
+        text="Current availability for Zentux products and online services."
       />
 
       <div className="mt-10 space-y-3 rounded-[28px] border border-white/10 bg-black/38 p-5 backdrop-blur-xl">
-        <StatusRow name="ZentuxOptimizer Pro" price="$3.00 / 15 days" status="Available" />
+        <StatusRow name={OPTIMIZER_NAME} price="$3.00 / 15 days" status="Available" />
+        <StatusRow name={AUTOCLICKER_NAME} price="Included" status="Available" />
         <StatusRow name="License Validation" price="Included" status="Online" />
         <StatusRow name="Email License Delivery" price="Included" status="Online" />
         <StatusRow name="Support Page" price="Included" status="Online" />
@@ -731,16 +774,16 @@ function FaqPanel() {
 
       <div className="mt-10 grid gap-4 lg:grid-cols-2">
         <FaqItem
-          q="Is ZentuxOptimizer free?"
-          a="No. ZentuxOptimizer Pro requires an active subscription and valid license key."
+          q="Is Zentux free?"
+          a="No. Zentux products require an active subscription and valid license key."
         />
         <FaqItem
           q="How do I receive my license?"
           a="After checkout, the license key is sent to the email used during payment."
         />
         <FaqItem
-          q="Will this always increase FPS?"
-          a="No optimizer can guarantee FPS gains in every game. Zentux helps remove common bottlenecks and prepare Windows for gaming."
+          q="Will Zentux always increase FPS?"
+          a="No tool can guarantee FPS gains in every game. Zentux focuses on useful gaming and performance utilities that improve the experience where possible."
         />
         <FaqItem
           q="Where can I get help?"
