@@ -52,30 +52,6 @@ const productCards = [
     status: "In stock",
     image: "/producto.png",
   },
-  {
-    title: "Game Booster Toolkit",
-    tag: "Included",
-    price: "Pro",
-    detail: "Priority, diagnostics, and overlay checks",
-    status: "Active",
-    image: "/producto.png",
-  },
-  {
-    title: "Deep Cleaner Suite",
-    tag: "Included",
-    price: "Pro",
-    detail: "Space analysis and selective cleanup",
-    status: "Active",
-    image: "/producto.png",
-  },
-  {
-    title: "RAM Control Panel",
-    tag: "Included",
-    price: "Pro",
-    detail: "Background app review and memory tools",
-    status: "Active",
-    image: "/producto.png",
-  },
 ];
 
 const reviewCards = [
@@ -264,22 +240,23 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="flex justify-center lg:justify-start">
               {productCards.map((product) => (
                 <a
                   key={product.title}
                   href={checkoutUrl}
-                  className="group overflow-hidden rounded-3xl border border-[#37202b] bg-[#0b080c]/88 text-white no-underline transition hover:-translate-y-1 hover:border-[#c51f35]/80 hover:shadow-[0_0_50px_rgba(197,31,53,0.22)]"
+                  className="group w-full max-w-[390px] overflow-hidden rounded-3xl border border-[#37202b] bg-[#0b080c]/88 text-white no-underline transition hover:-translate-y-1 hover:border-[#c51f35]/80 hover:shadow-[0_0_50px_rgba(197,31,53,0.22)]"
                 >
-                  <div className="relative h-60 overflow-hidden border-b border-[#251722] bg-[#070305]">
+                  <div className="relative h-[330px] overflow-hidden border-b border-[#251722] bg-[#070305]">
                     <Image
                       src={product.image}
                       alt={product.title}
                       fill
-                      sizes="(min-width: 1024px) 280px, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover transition duration-500 group-hover:scale-105"
+                      quality={100}
+                      sizes="390px"
+                      className="object-contain p-3 transition duration-500 group-hover:scale-[1.03]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#09050a] via-transparent to-black/10" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#09050a]/80 via-transparent to-black/5" />
                     <div className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-wide text-black">
                       {product.tag}
                     </div>
