@@ -139,9 +139,6 @@ function HomePanel({ setActiveTab }: { setActiveTab: (tab: Tab) => void }) {
         <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#a855f7]/25 shadow-[0_0_120px_rgba(168,85,247,0.18)]" />
         <div className="absolute left-1/2 top-1/2 h-60 w-60 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#a855f7]/25" />
         <div className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white blur-2xl" />
-        <div className="absolute left-1/2 top-1/2 text-8xl text-white drop-shadow-[0_0_60px_rgba(168,85,247,0.9)]">
-          *
-        </div>
       </div>
     </section>
   );
