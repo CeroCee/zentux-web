@@ -4,6 +4,7 @@ import BuyProButton from "@/components/BuyProButton";
 const APP_NAME = "ZentuxOptimizer Pro";
 const PRICE = "$3.00 USD";
 const BILLING = "Every 15 days";
+const checkoutUrl = "https://buy.stripe.com/8x29ALdMMeKmcSs60q1wY01";
 const downloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxOptimizer.exe";
 const supportUrl = "https://guns.lol/cerocee";
@@ -49,6 +50,7 @@ const productCards = [
     price: "$3.00",
     detail: "Windows performance optimizer",
     status: "In stock",
+    image: "/producto.png",
   },
   {
     title: "Game Booster Toolkit",
@@ -56,6 +58,7 @@ const productCards = [
     price: "Pro",
     detail: "Priority, diagnostics, and overlay checks",
     status: "Active",
+    image: "/producto.png",
   },
   {
     title: "Deep Cleaner Suite",
@@ -63,6 +66,7 @@ const productCards = [
     price: "Pro",
     detail: "Space analysis and selective cleanup",
     status: "Active",
+    image: "/producto.png",
   },
   {
     title: "RAM Control Panel",
@@ -70,6 +74,7 @@ const productCards = [
     price: "Pro",
     detail: "Background app review and memory tools",
     status: "Active",
+    image: "/producto.png",
   },
 ];
 
@@ -260,24 +265,28 @@ export default function Home() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              {productCards.map((product, index) => (
-                <article
+              {productCards.map((product) => (
+                <a
                   key={product.title}
-                  className="group overflow-hidden rounded-3xl border border-[#37202b] bg-[#0b080c]/88 transition hover:border-[#20e8f2]/70"
+                  href={checkoutUrl}
+                  className="group overflow-hidden rounded-3xl border border-[#37202b] bg-[#0b080c]/88 text-white no-underline transition hover:-translate-y-1 hover:border-[#c51f35]/80 hover:shadow-[0_0_50px_rgba(197,31,53,0.22)]"
                 >
-                  <div className="relative h-40 border-b border-[#251722] bg-[#0a0a0d]">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_18%,rgba(255,255,255,0.35),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.10),transparent_36%),linear-gradient(180deg,#141217,#070507)]" />
+                  <div className="relative h-60 overflow-hidden border-b border-[#251722] bg-[#070305]">
+                    <Image
+                      src={product.image}
+                      alt={product.title}
+                      fill
+                      sizes="(min-width: 1024px) 280px, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#09050a] via-transparent to-black/10" />
                     <div className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-wide text-black">
                       {product.tag}
                     </div>
-                    <div className="absolute bottom-5 left-5 right-5">
-                      <div className="text-xs font-black uppercase tracking-[0.25em] text-[#8f8289]">
-                        Zentux
-                      </div>
-                      <div className="mt-2 h-1.5 w-20 rounded-full bg-gradient-to-r from-[#c51f35] to-[#20e8f2]" />
-                    </div>
-                    <div className="absolute right-5 top-5 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-xl font-black text-[#20e8f2]">
-                      {index + 1}
+                    <div className="absolute inset-x-5 bottom-5 flex justify-center opacity-0 transition group-hover:opacity-100">
+                      <span className="rounded-full bg-white px-5 py-2 text-xs font-black uppercase tracking-wide text-black shadow-[0_0_30px_rgba(255,255,255,0.28)]">
+                        View Details
+                      </span>
                     </div>
                   </div>
 
@@ -293,7 +302,7 @@ export default function Home() {
                       </span>
                     </div>
                   </div>
-                </article>
+                </a>
               ))}
             </div>
           </div>
