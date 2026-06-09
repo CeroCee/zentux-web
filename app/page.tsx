@@ -7,11 +7,14 @@ import { useEffect, useState } from "react";
 const BRAND_NAME = "Zentux";
 const OPTIMIZER_NAME = "ZentuxOptimizer Pro";
 const AUTOCLICKER_NAME = "Zentux Autoclicker";
+const MACRO_NAME = "Zentux Macro";
 const checkoutUrl = "https://buy.stripe.com/8x29ALdMMeKmcSs60q1wY01";
 const optimizerDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxOptimizer.exe";
 const autoclickerDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxAutoclicker.exe";
+const macroDownloadUrl =
+  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxMacro.exe";
 const supportUrl = "https://guns.lol/cerocee";
 const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
@@ -48,6 +51,17 @@ const products = [
     downloadUrl: autoclickerDownloadUrl,
     details:
       "Zentux Autoclicker is built for fast click workflows with Hold mode, Toggle mode, configurable hotkeys, mouse button support, and a compact gamer interface.",
+  },
+  {
+    name: MACRO_NAME,
+    image: "/zentux-macro.png",
+    badge: "Included",
+    description: "Advanced macro recorder and repeater",
+    price: "Included",
+    status: "- In Stock",
+    downloadUrl: macroDownloadUrl,
+    details:
+      "Zentux Macro records your mouse and keyboard actions, then repeats them with a cleaner interface and more control than basic macro tools. It is designed for users who want a more advanced TinyTask-style workflow inside the Zentux package.",
   },
 ];
 
@@ -782,8 +796,9 @@ function ProductDetailsModal({
             </div>
             <p className="mt-4 text-sm font-semibold leading-7 text-[#c9c2d0]">
               Your active subscription works as a full Zentux package. The same
-              license can validate supported apps like ZentuxOptimizer Pro and
-              Zentux Autoclicker, as long as the subscription is active.
+              license can validate supported apps like ZentuxOptimizer Pro,
+              Zentux Autoclicker, and Zentux Macro, as long as the
+              subscription is active.
             </p>
           </div>
 
@@ -902,8 +917,9 @@ function StatusPanel() {
       />
 
       <div className="mt-10 space-y-3 rounded-[28px] border border-white/10 bg-black/38 p-5 backdrop-blur-xl">
-        <StatusRow name={OPTIMIZER_NAME} price="$3.00 / 15 days" status="Available" />
+        <StatusRow name={OPTIMIZER_NAME} price="Included" status="Available" />
         <StatusRow name={AUTOCLICKER_NAME} price="Included" status="Available" />
+        <StatusRow name={MACRO_NAME} price="Included" status="Available" />
         <StatusRow name="License Validation" price="Included" status="Online" />
         <StatusRow name="Email License Delivery" price="Included" status="Online" />
         <StatusRow name="Support Page" price="Included" status="Online" />
