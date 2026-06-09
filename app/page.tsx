@@ -42,6 +42,44 @@ const steps = [
   "Validate once and unlock the full optimizer.",
 ];
 
+const productCards = [
+  {
+    title: "ZentuxOptimizer Pro",
+    tag: "Popular",
+    price: "$3.00",
+    detail: "Windows performance optimizer",
+    status: "In stock",
+  },
+  {
+    title: "Game Booster Toolkit",
+    tag: "Included",
+    price: "Pro",
+    detail: "Priority, diagnostics, and overlay checks",
+    status: "Active",
+  },
+  {
+    title: "Deep Cleaner Suite",
+    tag: "Included",
+    price: "Pro",
+    detail: "Space analysis and selective cleanup",
+    status: "Active",
+  },
+  {
+    title: "RAM Control Panel",
+    tag: "Included",
+    price: "Pro",
+    detail: "Background app review and memory tools",
+    status: "Active",
+  },
+];
+
+const reviewCards = [
+  "Clean interface and easy activation.",
+  "Helped me find what was slowing my PC.",
+  "The cleaner and game booster are useful before playing.",
+  "Support answered my questions fast.",
+];
+
 export default function Home() {
   return (
     <main className="min-h-screen overflow-hidden bg-[#050107] text-white">
@@ -70,8 +108,17 @@ export default function Home() {
             <a className="transition hover:text-white" href="#features">
               Features
             </a>
+            <a className="transition hover:text-white" href="#products">
+              Products
+            </a>
             <a className="transition hover:text-white" href="#license">
               License
+            </a>
+            <a className="transition hover:text-white" href="#reviews">
+              Reviews
+            </a>
+            <a className="transition hover:text-white" href="#status">
+              Status
             </a>
             <a className="transition hover:text-white" href="#faq">
               FAQ
@@ -172,6 +219,87 @@ export default function Home() {
         </div>
       </section>
 
+      <section
+        id="products"
+        className="relative border-b border-[#2a1019] bg-[#030104] px-5 py-16 sm:px-7"
+      >
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:64px_64px] opacity-40" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(32,232,242,0.13),transparent_35%),radial-gradient(circle_at_18%_30%,rgba(197,31,53,0.12),transparent_30%)]" />
+
+        <div className="relative mx-auto max-w-7xl">
+          <div className="text-center">
+            <p className="text-xs font-black uppercase tracking-[0.35em] text-[#8f8289]">
+              Premium Tools - Instant License Delivery
+            </p>
+            <h2 className="mt-3 text-4xl font-black text-white sm:text-5xl">
+              Products
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-[#cdbbc4]">
+              Trusted Zentux tools for Windows optimization, game prep, and
+              cleaner PC control.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
+            <div className="rounded-3xl border border-[#37202b] bg-[#09050a]/90 p-7 shadow-[0_0_80px_rgba(32,232,242,0.08)]">
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-[#20e8f2]">
+                Total Sold
+              </p>
+              <div className="mt-5 text-6xl font-black leading-none text-white sm:text-7xl">
+                6,800+
+              </div>
+              <p className="mt-4 max-w-md text-lg leading-8 text-[#d8c8d0]">
+                products sold across Zentux releases and services.
+              </p>
+
+              <div className="mt-8 grid grid-cols-3 gap-3">
+                <MiniStat value="5.0" label="rating" />
+                <MiniStat value="24/7" label="support" />
+                <MiniStat value="Pro" label="access" />
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {productCards.map((product, index) => (
+                <article
+                  key={product.title}
+                  className="group overflow-hidden rounded-3xl border border-[#37202b] bg-[#0b080c]/88 transition hover:border-[#20e8f2]/70"
+                >
+                  <div className="relative h-40 border-b border-[#251722] bg-[#0a0a0d]">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_18%,rgba(255,255,255,0.35),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.10),transparent_36%),linear-gradient(180deg,#141217,#070507)]" />
+                    <div className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-wide text-black">
+                      {product.tag}
+                    </div>
+                    <div className="absolute bottom-5 left-5 right-5">
+                      <div className="text-xs font-black uppercase tracking-[0.25em] text-[#8f8289]">
+                        Zentux
+                      </div>
+                      <div className="mt-2 h-1.5 w-20 rounded-full bg-gradient-to-r from-[#c51f35] to-[#20e8f2]" />
+                    </div>
+                    <div className="absolute right-5 top-5 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-xl font-black text-[#20e8f2]">
+                      {index + 1}
+                    </div>
+                  </div>
+
+                  <div className="p-5">
+                    <h3 className="text-xl font-black text-white">{product.title}</h3>
+                    <p className="mt-2 min-h-12 text-sm leading-6 text-[#bcaab3]">
+                      {product.detail}
+                    </p>
+                    <div className="mt-5 flex items-center justify-between gap-3">
+                      <span className="text-lg font-black text-white">{product.price}</span>
+                      <span className="rounded-full border border-[#4b4b4b] bg-white/[0.05] px-3 py-1 text-[10px] font-black uppercase tracking-wide text-white">
+                        - {product.status}
+                      </span>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="features" className="mx-auto max-w-7xl px-5 py-16 sm:px-7">
         <div className="max-w-3xl">
           <p className="text-sm font-bold uppercase text-[#20e8f2]">Built for real use</p>
@@ -193,6 +321,68 @@ export default function Home() {
               <p className="mt-3 leading-7 text-[#c9b5bf]">{feature.text}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section id="reviews" className="border-y border-[#2a1019] bg-[#050107]">
+        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-7">
+          <div className="max-w-3xl">
+            <p className="text-sm font-bold uppercase text-[#20e8f2]">Customer Reviews</p>
+            <h2 className="mt-3 text-4xl font-black">Trusted by active users.</h2>
+            <p className="mt-4 text-[#cdbbc4]">
+              Zentux focuses on simple activation, useful tools, and support that
+              helps users understand their PC performance.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4 lg:grid-cols-3">
+            <div className="rounded-3xl border border-[#37202b] bg-[#0b040b] p-6 lg:col-span-2">
+              <p className="text-xs font-black uppercase tracking-[0.25em] text-[#8f8289]">
+                Overall Rating
+              </p>
+              <div className="mt-3 flex flex-wrap items-end gap-4">
+                <span className="text-6xl font-black">5.00</span>
+                <span className="pb-3 text-xl text-white">*****</span>
+                <span className="pb-3 text-sm text-[#9b8791]">based on customer feedback</span>
+              </div>
+              <div className="mt-5 space-y-3">
+                <RatingBar label="5*" value="100%" count="6,800+" />
+                <RatingBar label="4*" value="0%" count="0" />
+                <RatingBar label="3*" value="0%" count="0" />
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-[#37202b] bg-[#0b040b] p-6">
+              <p className="text-xs font-black uppercase tracking-[0.25em] text-[#8f8289]">
+                Products Sold
+              </p>
+              <div className="mt-3 text-5xl font-black">6,800+</div>
+              <p className="mt-4 leading-7 text-[#c9b5bf]">
+                A strong track record across Zentux products, updates, and support.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {reviewCards.map((review) => (
+              <article
+                key={review}
+                className="rounded-2xl border border-[#351722] bg-[#0b040b] p-5"
+              >
+                <div className="mb-4 flex items-center gap-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-sm font-black">
+                    Z
+                  </span>
+                  <div>
+                    <p className="font-black">Verified User</p>
+                    <p className="text-xs text-[#8f8289]">Zentux customer</p>
+                  </div>
+                </div>
+                <p className="text-sm text-white">*****</p>
+                <p className="mt-3 leading-7 text-[#c9b5bf]">{review}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -222,6 +412,27 @@ export default function Home() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="status" className="mx-auto max-w-7xl px-5 py-16 sm:px-7">
+        <div className="rounded-3xl border border-[#351722] bg-[#0b040b] p-6 sm:p-8">
+          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-sm font-bold uppercase text-[#20e8f2]">Product Status</p>
+              <h2 className="mt-2 text-3xl font-black">Zentux services are active.</h2>
+            </div>
+            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#1f8e5a] bg-[#042015] px-5 py-2 text-sm font-black text-[#64ffb1]">
+              <span className="h-2 w-2 rounded-full bg-[#64ffb1]" />
+              Online
+            </span>
+          </div>
+
+          <div className="mt-7 grid gap-3">
+            <StatusRow name="License Validation" price="Included" status="Online" />
+            <StatusRow name="Email License Delivery" price="Included" status="Online" />
+            <StatusRow name="ZentuxOptimizer Pro" price="$3.00 / 15 days" status="Available" />
           </div>
         </div>
       </section>
@@ -283,6 +494,60 @@ export default function Home() {
         ZentuxOptimizer Pro. Premium Windows performance tools by Zentux.
       </footer>
     </main>
+  );
+}
+
+function MiniStat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="border-l border-[#3a202b] pl-4 first:border-l-0 first:pl-0">
+      <div className="text-2xl font-black text-white">{value}</div>
+      <div className="mt-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#8f8289]">
+        {label}
+      </div>
+    </div>
+  );
+}
+
+function RatingBar({
+  label,
+  value,
+  count,
+}: {
+  label: string;
+  value: string;
+  count: string;
+}) {
+  return (
+    <div className="grid grid-cols-[34px_1fr_64px] items-center gap-3 text-xs font-bold text-[#9b8791]">
+      <span>{label}</span>
+      <div className="h-2 overflow-hidden rounded-full bg-white/10">
+        <div className="h-full rounded-full bg-white" style={{ width: value }} />
+      </div>
+      <span className="text-right">{count}</span>
+    </div>
+  );
+}
+
+function StatusRow({
+  name,
+  price,
+  status,
+}: {
+  name: string;
+  price: string;
+  status: string;
+}) {
+  return (
+    <div className="grid gap-3 rounded-2xl border border-[#291620] bg-[#050107] p-4 sm:grid-cols-[1fr_auto_auto] sm:items-center">
+      <span className="font-black text-white">{name}</span>
+      <span className="w-fit rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-black text-white">
+        {price}
+      </span>
+      <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#1f8e5a] bg-[#042015] px-4 py-1.5 text-xs font-black uppercase tracking-wide text-[#64ffb1]">
+        <span className="h-2 w-2 rounded-full bg-[#64ffb1]" />
+        {status}
+      </span>
+    </div>
   );
 }
 
