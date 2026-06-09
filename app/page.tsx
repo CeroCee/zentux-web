@@ -1,473 +1,364 @@
 import Image from "next/image";
-import BuyProButton from "@/components/BuyProButton";
+import type { ReactNode } from "react";
 
 const APP_NAME = "ZentuxOptimizer Pro";
-const PRICE = "$3.00 USD";
-const BILLING = "Every 15 days";
 const checkoutUrl = "https://buy.stripe.com/8x29ALdMMeKmcSs60q1wY01";
 const downloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxOptimizer.exe";
 const supportUrl = "https://guns.lol/cerocee";
 
-const features = [
+const navItems = [
+  { label: "Home", href: "#home" },
+  { label: "Products", href: "#products" },
+  { label: "Reviews", href: "#reviews" },
+  { label: "Status", href: "#status" },
+  { label: "FAQ", href: "#faq" },
+];
+
+const featureCards = [
+  {
+    title: "Cleaner",
+    text: "Safe temporary file cleanup, storage diagnostics, and selective deletion tools.",
+  },
   {
     title: "Game Booster",
-    text: "Detects active games, raises game priority, and helps reduce background pressure while you play.",
+    text: "Game detection, priority control, overlay checks, and gaming preparation tools.",
   },
   {
-    title: "RAM Optimizer",
-    text: "Finds heavy background apps and gives you control over what to close before launching a match.",
+    title: "RAM Tools",
+    text: "Review heavy background apps and reduce memory pressure before launching a game.",
   },
   {
-    title: "Deep Cleaner",
-    text: "Shows what is taking the most space and lets you remove specific files, folders, and safe cleanup items.",
-  },
-  {
-    title: "FPS Toolkit",
-    text: "Checks overlays, power mode, game priority, and system load so you can understand why FPS may not change.",
-  },
-  {
-    title: "License Protection",
-    text: "Online license validation with no free mode. Pro tools unlock only for active subscribers.",
-  },
-  {
-    title: "Support Access",
-    text: "Get help through the Zentux support page, including optional PC performance assistance through Discord.",
+    title: "License System",
+    text: "No free mode. Pro features unlock only with an active online license.",
   },
 ];
 
-const steps = [
-  "Subscribe through the secure Stripe checkout.",
-  "Receive your license key by email.",
-  "Open ZentuxOptimizer Pro and paste the license.",
-  "Validate once and unlock the full optimizer.",
-];
-
-const productCards = [
-  {
-    title: "ZentuxOptimizer Pro",
-    tag: "Popular",
-    price: "$3.00",
-    detail: "Windows performance optimizer",
-    status: "In stock",
-    image: "/producto.png",
-  },
-];
-
-const reviewCards = [
+const reviews = [
   "Clean interface and easy activation.",
   "Helped me find what was slowing my PC.",
   "The cleaner and game booster are useful before playing.",
   "Support answered my questions fast.",
+  "The license email arrived quickly.",
+  "Simple tools, but very useful before gaming.",
 ];
 
 export default function Home() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#050107] text-white">
-      <header className="sticky top-0 z-50 border-b border-[#33131d] bg-[#050107]/88 backdrop-blur-xl">
+    <main className="min-h-screen overflow-hidden bg-[#030305] text-white">
+      <SiteBackground />
+
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.06] bg-black/55 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-7">
-          <a href="#" className="flex min-w-0 items-center gap-3">
+          <a href="#home" className="flex min-w-0 items-center gap-3">
             <Image
               src="/zentux-icon.png"
               alt="Zentux logo"
               width={42}
               height={42}
-              className="rounded-full border border-[#602536] bg-[#120711]"
+              className="rounded-full border border-white/10 bg-[#120711]"
               priority
             />
             <div className="min-w-0">
               <div className="text-base font-black leading-none text-white sm:text-lg">
                 Zentux
               </div>
-              <div className="mt-1 text-xs font-medium text-[#20e8f2]">
-                Doll-Core Optimizer
+              <div className="mt-1 text-xs font-semibold text-[#20e8f2]">
+                Performance Tools
               </div>
             </div>
           </a>
 
-          <nav className="hidden items-center gap-5 text-sm text-[#d7c2cc] md:flex">
-            <a className="transition hover:text-white" href="#features">
-              Features
-            </a>
-            <a className="transition hover:text-white" href="#products">
-              Products
-            </a>
-            <a className="transition hover:text-white" href="#license">
-              License
-            </a>
-            <a className="transition hover:text-white" href="#reviews">
-              Reviews
-            </a>
-            <a className="transition hover:text-white" href="#status">
-              Status
-            </a>
-            <a className="transition hover:text-white" href="#faq">
-              FAQ
-            </a>
+          <nav className="hidden items-center rounded-full border border-white/10 bg-white/[0.04] p-1 text-sm font-bold text-[#bfb8be] md:flex">
+            {navItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="rounded-full px-4 py-2 transition hover:bg-white hover:text-black"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="hidden items-center gap-3 md:flex">
             <a
               href={supportUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center rounded-full border border-[#20e8f2]/60 px-5 py-2.5 text-sm font-bold text-[#20e8f2] transition hover:bg-[#06171c]"
+              className="rounded-full border border-[#20e8f2]/55 px-5 py-2.5 text-sm font-black text-[#20e8f2] transition hover:bg-[#20e8f2] hover:text-black"
             >
               Get Help
             </a>
-            <BuyProButton compact />
-          </nav>
+            <a
+              href={checkoutUrl}
+              className="rounded-full bg-[#c51f35] px-5 py-2.5 text-sm font-black text-white shadow-[0_0_30px_rgba(197,31,53,0.28)] transition hover:bg-[#f22d49]"
+            >
+              Buy Pro
+            </a>
+          </div>
         </div>
       </header>
 
-      <section className="relative border-b border-[#2a1019]">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(32,232,242,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(197,31,53,0.08)_1px,transparent_1px)] bg-[size:54px_54px] opacity-35" />
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#20e8f2] to-transparent" />
-
-        <div className="relative mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-7 lg:grid-cols-[1fr_0.92fr] lg:items-center lg:py-24">
+      <section id="home" className="relative min-h-screen px-5 pt-28 sm:px-7">
+        <div className="mx-auto grid max-w-7xl gap-12 py-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:py-24">
           <div>
-            <div className="flex flex-wrap gap-2 text-xs font-bold uppercase text-[#20e8f2]">
-              <span className="rounded-full border border-[#1d7984] bg-[#06171c] px-4 py-2">
-                Windows Performance
-              </span>
-              <span className="rounded-full border border-[#5b1c2a] bg-[#19070d] px-4 py-2 text-[#ff6b7b]">
-                No Free Mode
-              </span>
-              <span className="rounded-full border border-[#37233f] bg-[#100713] px-4 py-2 text-[#dfc9ff]">
-                Online License
-              </span>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-[#20e8f2]">
+              Windows optimizer
             </div>
 
-            <h1 className="mt-7 max-w-3xl text-5xl font-black leading-[0.98] text-white sm:text-6xl lg:text-7xl">
-              {APP_NAME}
+            <h1 className="mt-7 max-w-3xl text-5xl font-black leading-[0.95] text-white sm:text-7xl">
+              Zentux
+              <span className="block text-[#20e8f2]">Optimizer Pro.</span>
             </h1>
 
-            <p className="mt-6 max-w-2xl text-xl leading-8 text-[#e5d9df]">
-              A premium Windows optimizer built for players who want a cleaner
-              system, faster setup, and better control before gaming.
+            <p className="mt-6 max-w-xl text-lg leading-8 text-[#c9c2c7]">
+              Premium Windows performance control for cleaner storage, game prep,
+              RAM review, and license-protected Pro tools.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <BuyProButton />
+            <div className="mt-8 flex flex-wrap gap-4">
+              <a
+                href={checkoutUrl}
+                className="rounded-full bg-white px-7 py-3.5 text-sm font-black text-black shadow-[0_0_45px_rgba(255,255,255,0.22)] transition hover:bg-[#20e8f2]"
+              >
+                Buy ZentuxOptimizer Pro
+              </a>
               <a
                 href={downloadUrl}
-                className="inline-flex items-center justify-center rounded-full border border-[#3c1a25] bg-[#120711] px-7 py-3.5 text-sm font-bold text-white transition hover:border-[#20e8f2] hover:text-[#20e8f2]"
+                className="rounded-full border border-white/15 bg-white/[0.04] px-7 py-3.5 text-sm font-black text-white transition hover:border-[#20e8f2] hover:text-[#20e8f2]"
               >
                 Download App
               </a>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-4 text-sm text-[#bba5af]">
-              <span>{PRICE}</span>
-              <span className="text-[#6f5260]">|</span>
-              <span>{BILLING}</span>
-              <span className="text-[#6f5260]">|</span>
-              <span>License sent by email</span>
+            <div className="mt-10 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-4">
+              <HeroStat value="6,800+" label="sold" />
+              <HeroStat value="5.0" label="rating" />
+              <HeroStat value="$3" label="price" />
+              <HeroStat value="24/7" label="support" />
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-[#421824] bg-[#0b040b] p-4 shadow-[0_0_80px_rgba(197,31,53,0.12)]">
-            <div className="rounded-[22px] border border-[#263844] bg-[#071018] p-5">
-              <div className="mb-5 flex items-center justify-between border-b border-[#24313c] pb-4">
-                <div>
-                  <p className="text-xs font-bold uppercase text-[#20e8f2]">
-                    Live System Panel
-                  </p>
-                  <h2 className="mt-1 text-2xl font-black">Performance Overview</h2>
+          <div className="relative">
+            <div className="absolute -inset-10 rounded-full bg-[#c51f35]/20 blur-3xl" />
+            <div className="relative rounded-[32px] border border-white/10 bg-white/[0.045] p-5 shadow-[0_0_90px_rgba(32,232,242,0.08)] backdrop-blur-xl">
+              <div className="rounded-[26px] border border-[#3b1722] bg-[#08050a] p-6">
+                <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-5">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.24em] text-[#20e8f2]">
+                      Live panel
+                    </p>
+                    <h2 className="mt-2 text-2xl font-black">Performance Overview</h2>
+                  </div>
+                  <span className="rounded-full border border-[#c51f35]/60 bg-[#c51f35]/15 px-4 py-2 text-xs font-black text-[#ff6f80]">
+                    Pro
+                  </span>
                 </div>
-                <span className="rounded-full bg-[#c51f35] px-3 py-1 text-xs font-bold">
-                  Pro
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <Metric label="CPU" value="18%" width="18%" />
+                  <Metric label="RAM" value="64%" width="64%" />
+                  <Metric label="Disk" value="71%" width="71%" danger />
+                  <Metric label="GPU" value="32%" width="32%" />
+                </div>
+
+                <div className="mt-5 rounded-2xl border border-white/10 bg-black/35 p-5">
+                  <p className="font-black">Optimization Ready</p>
+                  <p className="mt-2 text-sm leading-6 text-[#bfb8be]">
+                    Cleaner, Game Booster, Deep Cleaner, FPS checks, and RAM tools
+                    unlock after license validation.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <SectionShell id="products" label="Products" title="One license. Full optimizer access.">
+        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
+          <div className="rounded-[28px] border border-white/10 bg-[#0a0a0d]/82 p-7">
+            <p className="text-xs font-black uppercase tracking-[0.28em] text-[#8f8b91]">
+              Premium product
+            </p>
+            <h3 className="mt-4 text-4xl font-black">6,800+ products sold</h3>
+            <p className="mt-4 max-w-md leading-8 text-[#c9c2c7]">
+              ZentuxOptimizer Pro is built as a premium app, not a free demo.
+              Users subscribe, receive a license key by email, and unlock Pro
+              features inside the app.
+            </p>
+            <div className="mt-8 grid grid-cols-3 gap-3">
+              <SmallStat value="Instant" label="delivery" />
+              <SmallStat value="Online" label="license" />
+              <SmallStat value="Pro" label="access" />
+            </div>
+          </div>
+
+          <a
+            href={checkoutUrl}
+            className="group mx-auto w-full max-w-[430px] overflow-hidden rounded-[28px] border border-[#37202b] bg-[#0b080c]/92 text-white no-underline transition hover:-translate-y-1 hover:border-[#c51f35]/80 hover:shadow-[0_0_55px_rgba(197,31,53,0.24)] lg:mx-0"
+          >
+            <div className="relative h-[390px] overflow-hidden border-b border-[#251722] bg-[#070305]">
+              <Image
+                src="/producto.png"
+                alt={APP_NAME}
+                fill
+                priority
+                quality={100}
+                sizes="430px"
+                className="object-contain p-2 transition duration-500 group-hover:scale-[1.025]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#09050a]/85 via-transparent to-black/5" />
+              <div className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-wide text-black">
+                Popular
+              </div>
+              <div className="absolute inset-x-5 bottom-5 flex justify-center opacity-0 transition group-hover:opacity-100">
+                <span className="rounded-full bg-white px-5 py-2 text-xs font-black uppercase tracking-wide text-black">
+                  View Details
                 </span>
               </div>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Metric label="CPU" value="18%" color="#20e8f2" width="18%" />
-                <Metric label="RAM" value="64%" color="#20e8f2" width="64%" />
-                <Metric label="Disk" value="71%" color="#c51f35" width="71%" />
-                <Metric label="GPU" value="32%" color="#8efcff" width="32%" />
-              </div>
-
-              <div className="mt-4 rounded-2xl border border-[#263844] bg-[#040811] p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-black text-white">Optimization Ready</p>
-                    <p className="mt-1 text-xs text-[#9db6bf]">
-                      Cleaner, RAM tools, game priority, and overlay checks.
-                    </p>
-                  </div>
-                  <div className="h-12 w-12 rounded-full border border-[#20e8f2] bg-[#07181f] shadow-[0_0_30px_rgba(32,232,242,0.25)]" />
-                </div>
-              </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <section
-        id="products"
-        className="relative border-b border-[#2a1019] bg-[#030104] px-5 py-16 sm:px-7"
-      >
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:64px_64px] opacity-40" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(32,232,242,0.13),transparent_35%),radial-gradient(circle_at_18%_30%,rgba(197,31,53,0.12),transparent_30%)]" />
-
-        <div className="relative mx-auto max-w-7xl">
-          <div className="text-center">
-            <p className="text-xs font-black uppercase tracking-[0.35em] text-[#8f8289]">
-              Premium Tools - Instant License Delivery
-            </p>
-            <h2 className="mt-3 text-4xl font-black text-white sm:text-5xl">
-              Products
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-[#cdbbc4]">
-              Trusted Zentux tools for Windows optimization, game prep, and
-              cleaner PC control.
-            </p>
-          </div>
-
-          <div className="mt-10 grid gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
-            <div className="rounded-3xl border border-[#37202b] bg-[#09050a]/90 p-7 shadow-[0_0_80px_rgba(32,232,242,0.08)]">
-              <p className="text-xs font-black uppercase tracking-[0.28em] text-[#20e8f2]">
-                Total Sold
+            <div className="p-6">
+              <h3 className="text-2xl font-black">{APP_NAME}</h3>
+              <p className="mt-2 text-sm leading-6 text-[#bcaab3]">
+                Windows performance optimizer
               </p>
-              <div className="mt-5 text-6xl font-black leading-none text-white sm:text-7xl">
-                6,800+
-              </div>
-              <p className="mt-4 max-w-md text-lg leading-8 text-[#d8c8d0]">
-                products sold across Zentux releases and services.
-              </p>
-
-              <div className="mt-8 grid grid-cols-3 gap-3">
-                <MiniStat value="5.0" label="rating" />
-                <MiniStat value="24/7" label="support" />
-                <MiniStat value="Pro" label="access" />
+              <div className="mt-8 flex items-center justify-between gap-3">
+                <span className="text-xl font-black">$3.00</span>
+                <span className="rounded-full border border-white/20 bg-white/[0.05] px-4 py-1 text-[10px] font-black uppercase tracking-wide">
+                  - In Stock
+                </span>
               </div>
             </div>
-
-            <div className="flex justify-center lg:justify-start">
-              {productCards.map((product) => (
-                <a
-                  key={product.title}
-                  href={checkoutUrl}
-                  className="group w-full max-w-[390px] overflow-hidden rounded-3xl border border-[#37202b] bg-[#0b080c]/88 text-white no-underline transition hover:-translate-y-1 hover:border-[#c51f35]/80 hover:shadow-[0_0_50px_rgba(197,31,53,0.22)]"
-                >
-                  <div className="relative h-[330px] overflow-hidden border-b border-[#251722] bg-[#070305]">
-                    <Image
-                      src={product.image}
-                      alt={product.title}
-                      fill
-                      quality={100}
-                      sizes="390px"
-                      className="object-contain p-3 transition duration-500 group-hover:scale-[1.03]"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#09050a]/80 via-transparent to-black/5" />
-                    <div className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-wide text-black">
-                      {product.tag}
-                    </div>
-                    <div className="absolute inset-x-5 bottom-5 flex justify-center opacity-0 transition group-hover:opacity-100">
-                      <span className="rounded-full bg-white px-5 py-2 text-xs font-black uppercase tracking-wide text-black shadow-[0_0_30px_rgba(255,255,255,0.28)]">
-                        View Details
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-5">
-                    <h3 className="text-xl font-black text-white">{product.title}</h3>
-                    <p className="mt-2 min-h-12 text-sm leading-6 text-[#bcaab3]">
-                      {product.detail}
-                    </p>
-                    <div className="mt-5 flex items-center justify-between gap-3">
-                      <span className="text-lg font-black text-white">{product.price}</span>
-                      <span className="rounded-full border border-[#4b4b4b] bg-white/[0.05] px-3 py-1 text-[10px] font-black uppercase tracking-wide text-white">
-                        - {product.status}
-                      </span>
-                    </div>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </div>
+          </a>
         </div>
-      </section>
+      </SectionShell>
 
-      <section id="features" className="mx-auto max-w-7xl px-5 py-16 sm:px-7">
-        <div className="max-w-3xl">
-          <p className="text-sm font-bold uppercase text-[#20e8f2]">Built for real use</p>
-          <h2 className="mt-3 text-4xl font-black">Everything your setup needs before you play.</h2>
-          <p className="mt-4 text-[#cdbbc4]">
-            ZentuxOptimizer Pro does not promise magic FPS. It gives players a
-            practical control center for cleanup, diagnostics, and gaming preparation.
-          </p>
-        </div>
-
-        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {features.map((feature) => (
+      <SectionShell id="features" label="Features" title="Separated tools, clearer control.">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {featureCards.map((feature) => (
             <article
               key={feature.title}
-              className="rounded-2xl border border-[#351722] bg-[#0b040b] p-6 transition hover:border-[#20e8f2]/70"
+              className="rounded-[24px] border border-white/10 bg-[#08080b]/86 p-6 transition hover:border-[#20e8f2]/60"
             >
-              <div className="mb-5 h-1 w-14 rounded-full bg-[#c51f35]" />
+              <div className="mb-5 h-10 w-10 rounded-2xl border border-[#20e8f2]/45 bg-[#20e8f2]/10" />
               <h3 className="text-xl font-black">{feature.title}</h3>
-              <p className="mt-3 leading-7 text-[#c9b5bf]">{feature.text}</p>
+              <p className="mt-3 text-sm leading-7 text-[#c9c2c7]">{feature.text}</p>
             </article>
           ))}
         </div>
-      </section>
+      </SectionShell>
 
-      <section id="reviews" className="border-y border-[#2a1019] bg-[#050107]">
-        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-7">
-          <div className="max-w-3xl">
-            <p className="text-sm font-bold uppercase text-[#20e8f2]">Customer Reviews</p>
-            <h2 className="mt-3 text-4xl font-black">Trusted by active users.</h2>
-            <p className="mt-4 text-[#cdbbc4]">
-              Zentux focuses on simple activation, useful tools, and support that
-              helps users understand their PC performance.
+      <SectionShell id="reviews" label="Reviews" title="Customer feedback.">
+        <div className="grid gap-5 lg:grid-cols-3">
+          <div className="rounded-[28px] border border-white/10 bg-[#08080b]/86 p-7 lg:col-span-2">
+            <p className="text-xs font-black uppercase tracking-[0.28em] text-[#8f8b91]">
+              Overall rating
+            </p>
+            <div className="mt-4 flex flex-wrap items-end gap-4">
+              <span className="text-6xl font-black">5.00</span>
+              <span className="pb-3 text-lg">*****</span>
+              <span className="pb-3 text-sm text-[#8f8b91]">verified customers</span>
+            </div>
+            <div className="mt-6 space-y-3">
+              <RatingBar label="5*" value="100%" count="6,800+" />
+              <RatingBar label="4*" value="0%" count="0" />
+              <RatingBar label="3*" value="0%" count="0" />
+            </div>
+          </div>
+
+          <div className="rounded-[28px] border border-white/10 bg-[#08080b]/86 p-7">
+            <p className="text-xs font-black uppercase tracking-[0.28em] text-[#8f8b91]">
+              Total products sold
+            </p>
+            <div className="mt-4 text-5xl font-black">6,800+</div>
+            <p className="mt-4 leading-7 text-[#c9c2c7]">
+              Built around premium tools, activation, and direct support.
             </p>
           </div>
+        </div>
 
-          <div className="mt-10 grid gap-4 lg:grid-cols-3">
-            <div className="rounded-3xl border border-[#37202b] bg-[#0b040b] p-6 lg:col-span-2">
-              <p className="text-xs font-black uppercase tracking-[0.25em] text-[#8f8289]">
-                Overall Rating
-              </p>
-              <div className="mt-3 flex flex-wrap items-end gap-4">
-                <span className="text-6xl font-black">5.00</span>
-                <span className="pb-3 text-xl text-white">*****</span>
-                <span className="pb-3 text-sm text-[#9b8791]">based on customer feedback</span>
-              </div>
-              <div className="mt-5 space-y-3">
-                <RatingBar label="5*" value="100%" count="6,800+" />
-                <RatingBar label="4*" value="0%" count="0" />
-                <RatingBar label="3*" value="0%" count="0" />
-              </div>
-            </div>
-
-            <div className="rounded-3xl border border-[#37202b] bg-[#0b040b] p-6">
-              <p className="text-xs font-black uppercase tracking-[0.25em] text-[#8f8289]">
-                Products Sold
-              </p>
-              <div className="mt-3 text-5xl font-black">6,800+</div>
-              <p className="mt-4 leading-7 text-[#c9b5bf]">
-                A strong track record across Zentux products, updates, and support.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {reviewCards.map((review) => (
-              <article
-                key={review}
-                className="rounded-2xl border border-[#351722] bg-[#0b040b] p-5"
-              >
-                <div className="mb-4 flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-sm font-black">
-                    Z
-                  </span>
-                  <div>
-                    <p className="font-black">Verified User</p>
-                    <p className="text-xs text-[#8f8289]">Zentux customer</p>
-                  </div>
+        <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {reviews.map((review) => (
+            <article
+              key={review}
+              className="rounded-[22px] border border-white/10 bg-[#08080b]/86 p-5"
+            >
+              <div className="mb-4 flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-sm font-black">
+                  Z
+                </span>
+                <div>
+                  <p className="font-black">Verified User</p>
+                  <p className="text-xs text-[#8f8b91]">Zentux customer</p>
                 </div>
-                <p className="text-sm text-white">*****</p>
-                <p className="mt-3 leading-7 text-[#c9b5bf]">{review}</p>
-              </article>
-            ))}
-          </div>
+              </div>
+              <p className="text-sm">*****</p>
+              <p className="mt-3 text-sm leading-7 text-[#c9c2c7]">{review}</p>
+            </article>
+          ))}
         </div>
-      </section>
+      </SectionShell>
 
-      <section id="license" className="border-y border-[#2a1019] bg-[#09030a]">
-        <div className="mx-auto grid max-w-7xl gap-8 px-5 py-16 sm:px-7 lg:grid-cols-[0.9fr_1fr] lg:items-start">
-          <div>
-            <p className="text-sm font-bold uppercase text-[#ff5d70]">Simple activation</p>
-            <h2 className="mt-3 text-4xl font-black">Subscribe, receive your key, unlock Pro.</h2>
-            <p className="mt-4 leading-7 text-[#cdbbc4]">
-              Every active subscriber receives a license by email. The app validates
-              the license online and unlocks the optimizer only while the subscription
-              remains active.
-            </p>
-          </div>
-
-          <div className="rounded-3xl border border-[#421824] bg-[#050107] p-5">
-            <div className="grid gap-3">
-              {steps.map((step, index) => (
-                <div
-                  key={step}
-                  className="flex gap-4 rounded-2xl border border-[#291620] bg-[#0d060d] p-4"
-                >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#c51f35] text-sm font-black">
-                    {index + 1}
-                  </span>
-                  <p className="pt-1 text-[#eadfe5]">{step}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+      <SectionShell id="status" label="Status" title="Product status.">
+        <div className="space-y-3 rounded-[28px] border border-white/10 bg-[#08080b]/86 p-5">
+          <StatusRow name="ZentuxOptimizer Pro" price="$3.00 / 15 days" status="Available" />
+          <StatusRow name="License Validation" price="Included" status="Online" />
+          <StatusRow name="Email License Delivery" price="Included" status="Online" />
+          <StatusRow name="Support Page" price="Included" status="Online" />
         </div>
-      </section>
+      </SectionShell>
 
-      <section id="status" className="mx-auto max-w-7xl px-5 py-16 sm:px-7">
-        <div className="rounded-3xl border border-[#351722] bg-[#0b040b] p-6 sm:p-8">
-          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-sm font-bold uppercase text-[#20e8f2]">Product Status</p>
-              <h2 className="mt-2 text-3xl font-black">Zentux services are active.</h2>
-            </div>
-            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#1f8e5a] bg-[#042015] px-5 py-2 text-sm font-black text-[#64ffb1]">
-              <span className="h-2 w-2 rounded-full bg-[#64ffb1]" />
-              Online
-            </span>
-          </div>
-
-          <div className="mt-7 grid gap-3">
-            <StatusRow name="License Validation" price="Included" status="Online" />
-            <StatusRow name="Email License Delivery" price="Included" status="Online" />
-            <StatusRow name="ZentuxOptimizer Pro" price="$3.00 / 15 days" status="Available" />
-          </div>
+      <SectionShell id="faq" label="FAQ" title="Before you buy.">
+        <div className="grid gap-4 lg:grid-cols-2">
+          <FaqItem
+            q="Is ZentuxOptimizer free?"
+            a="No. ZentuxOptimizer Pro requires an active subscription and valid license key."
+          />
+          <FaqItem
+            q="How do I receive my license?"
+            a="After checkout, the license key is sent to the email used during payment."
+          />
+          <FaqItem
+            q="Will this always increase FPS?"
+            a="No optimizer can guarantee FPS gains in every game. Zentux helps remove common bottlenecks and prepare Windows for gaming."
+          />
+          <FaqItem
+            q="Where can I get help?"
+            a="Use the Get Help button to contact Zentux support for app questions or optional PC performance help."
+          />
         </div>
-      </section>
+      </SectionShell>
 
-      <section id="faq" className="mx-auto max-w-7xl px-5 py-16 sm:px-7">
-        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
-            <p className="text-sm font-bold uppercase text-[#20e8f2]">FAQ</p>
-            <h2 className="mt-3 text-4xl font-black">Clear answers before buying.</h2>
-          </div>
-
-          <div className="grid gap-4">
-            <FaqItem
-              q="Will this always increase FPS?"
-              a="No optimizer can guarantee higher FPS in every game. ZentuxOptimizer helps remove common bottlenecks like background load, overlays, startup clutter, and heavy temporary files."
-            />
-            <FaqItem
-              q="Can I use it without a subscription?"
-              a="No. ZentuxOptimizer Pro is subscription-only. The main tools unlock after a valid license is activated."
-            />
-            <FaqItem
-              q="How do I get my license?"
-              a="After subscribing through Stripe, your license is sent to the email used at checkout."
-            />
-            <FaqItem
-              q="Where can I get help?"
-              a="Use the support link to contact Zentux. We can help with app questions and offer optional PC performance support through Discord."
-            />
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-7">
-        <div className="rounded-3xl border border-[#421824] bg-[#0b040b] p-7 sm:p-10">
+      <section className="px-5 pb-20 sm:px-7">
+        <div className="mx-auto max-w-7xl rounded-[32px] border border-[#3b1722] bg-[#10060d] p-7 sm:p-10">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h2 className="text-3xl font-black">Ready to unlock ZentuxOptimizer Pro?</h2>
-              <p className="mt-3 max-w-2xl text-[#cdbbc4]">
-                Get the optimizer, activate your license, and prepare your Windows setup
-                before gaming.
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-[#20e8f2]">
+                Unlock Pro
+              </p>
+              <h2 className="mt-3 text-3xl font-black">
+                Ready to use ZentuxOptimizer Pro?
+              </h2>
+              <p className="mt-3 max-w-2xl text-[#c9c2c7]">
+                Subscribe, receive your license, download the app, and activate it
+                from the Account screen.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <BuyProButton />
+              <a
+                href={checkoutUrl}
+                className="rounded-full bg-[#c51f35] px-7 py-3.5 text-sm font-black text-white transition hover:bg-[#f22d49]"
+              >
+                Buy Pro
+              </a>
               <a
                 href={supportUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center rounded-full border border-[#20e8f2]/50 px-7 py-3.5 text-sm font-bold text-[#20e8f2] transition hover:bg-[#06171c]"
+                className="rounded-full border border-[#20e8f2]/55 px-7 py-3.5 text-sm font-black text-[#20e8f2] transition hover:bg-[#20e8f2] hover:text-black"
               >
                 Get Help
               </a>
@@ -476,19 +367,96 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="border-t border-[#2a1019] px-5 py-8 text-center text-sm text-[#9b8791] sm:px-7">
+      <footer className="border-t border-white/[0.06] px-5 py-8 text-center text-sm text-[#8f8b91] sm:px-7">
         ZentuxOptimizer Pro. Premium Windows performance tools by Zentux.
       </footer>
     </main>
   );
 }
 
-function MiniStat({ value, label }: { value: string; label: string }) {
+function SiteBackground() {
   return (
-    <div className="border-l border-[#3a202b] pl-4 first:border-l-0 first:pl-0">
-      <div className="text-2xl font-black text-white">{value}</div>
-      <div className="mt-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#8f8289]">
+    <div className="pointer-events-none fixed inset-0 -z-10">
+      <div className="absolute inset-0 bg-[#030305]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:64px_64px] opacity-35" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(32,232,242,0.12),transparent_28%),radial-gradient(circle_at_18%_38%,rgba(197,31,53,0.12),transparent_30%),linear-gradient(90deg,rgba(0,0,0,0.1),rgba(255,255,255,0.035),rgba(0,0,0,0.15))]" />
+      <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(circle,rgba(255,255,255,0.55)_1px,transparent_1px)] [background-size:96px_96px]" />
+    </div>
+  );
+}
+
+function SectionShell({
+  id,
+  label,
+  title,
+  children,
+}: {
+  id: string;
+  label: string;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section id={id} className="relative border-t border-white/[0.06] px-5 py-20 sm:px-7">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-10 max-w-3xl">
+          <p className="text-xs font-black uppercase tracking-[0.3em] text-[#8f8b91]">
+            {label}
+          </p>
+          <h2 className="mt-3 text-4xl font-black leading-tight text-white sm:text-5xl">
+            {title}
+          </h2>
+        </div>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+function HeroStat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.045] p-4">
+      <div className="text-2xl font-black">{value}</div>
+      <div className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-[#8f8b91]">
         {label}
+      </div>
+    </div>
+  );
+}
+
+function SmallStat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+      <div className="text-lg font-black text-white">{value}</div>
+      <div className="mt-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#8f8b91]">
+        {label}
+      </div>
+    </div>
+  );
+}
+
+function Metric({
+  label,
+  value,
+  width,
+  danger = false,
+}: {
+  label: string;
+  value: string;
+  width: string;
+  danger?: boolean;
+}) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-black/35 p-4">
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-bold text-[#c9c2c7]">{label}</span>
+        <span className="text-xl font-black">{value}</span>
+      </div>
+      <div className="mt-4 h-2 rounded-full bg-white/10">
+        <div
+          className="h-2 rounded-full"
+          style={{ width, backgroundColor: danger ? "#c51f35" : "#20e8f2" }}
+        />
       </div>
     </div>
   );
@@ -524,7 +492,7 @@ function StatusRow({
   status: string;
 }) {
   return (
-    <div className="grid gap-3 rounded-2xl border border-[#291620] bg-[#050107] p-4 sm:grid-cols-[1fr_auto_auto] sm:items-center">
+    <div className="grid gap-3 rounded-2xl border border-white/10 bg-black/35 p-4 sm:grid-cols-[1fr_auto_auto] sm:items-center">
       <span className="font-black text-white">{name}</span>
       <span className="w-fit rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-black text-white">
         {price}
@@ -537,35 +505,11 @@ function StatusRow({
   );
 }
 
-function Metric({
-  label,
-  value,
-  color,
-  width,
-}: {
-  label: string;
-  value: string;
-  color: string;
-  width: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-[#263844] bg-[#050a12] p-4">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-bold text-[#b9d3db]">{label}</span>
-        <span className="text-xl font-black">{value}</span>
-      </div>
-      <div className="mt-4 h-2 rounded-full bg-[#1b2838]">
-        <div className="h-2 rounded-full" style={{ width, backgroundColor: color }} />
-      </div>
-    </div>
-  );
-}
-
 function FaqItem({ q, a }: { q: string; a: string }) {
   return (
-    <article className="rounded-2xl border border-[#351722] bg-[#0b040b] p-6">
+    <article className="rounded-[24px] border border-white/10 bg-[#08080b]/86 p-6">
       <h3 className="text-lg font-black text-white">{q}</h3>
-      <p className="mt-3 leading-7 text-[#c9b5bf]">{a}</p>
+      <p className="mt-3 leading-7 text-[#c9c2c7]">{a}</p>
     </article>
   );
 }
