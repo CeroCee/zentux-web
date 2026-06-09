@@ -23,10 +23,11 @@ type Tab = (typeof tabs)[number];
 type LegalPanel = "privacy" | "terms";
 
 const featureCards = [
-  ["Gaming Tools", "Utilities designed to improve the way your PC feels while playing."],
-  ["Optimizer", "Cleanup, RAM review, diagnostics, and game preparation tools."],
-  ["Autoclicker", "A compact click assistant with hotkeys, hold, toggle, and mouse movement tools."],
-  ["License System", "One active Zentux license can unlock supported Zentux products."],
+  ["🎮 Gaming Tools", "Utilities designed to improve how your PC and workflow feel while playing."],
+  ["⚡ Optimizer", "Cleanup, RAM review, diagnostics, and game preparation tools."],
+  ["🖱️ Autoclicker", "A compact click assistant with hotkeys, hold, toggle, and mouse movement tools."],
+  ["🎬 Macro", "Record and replay actions with a cleaner, more advanced macro workflow."],
+  ["🔐 License System", "One active Zentux license can unlock supported Zentux products."],
 ];
 
 const products = [
@@ -66,12 +67,12 @@ const products = [
 ];
 
 const reviews = [
-  "Clean interface and easy activation.",
-  "Helped me find what was slowing my PC.",
-  "The cleaner and game booster are useful before playing.",
-  "Support answered my questions fast.",
-  "The license email arrived quickly.",
-  "Simple tools, but very useful before gaming.",
+  "Clean interface and easy activation for the full Zentux package.",
+  "I like that one license works across the supported Zentux apps.",
+  "The optimizer tools are useful before playing.",
+  "The autoclicker feels simple and fast to set up.",
+  "The license email arrived quickly after checkout.",
+  "Excited for Macro because recording and repeating actions saves time.",
 ];
 
 export default function Home() {
@@ -626,6 +627,17 @@ function ProductsPanel({
 }: {
   onSelectProduct: (product: (typeof products)[number]) => void;
 }) {
+  const [packageIndex, setPackageIndex] = useState(0);
+  const selectedPackage = products[packageIndex];
+  const previousPackage = () =>
+    setPackageIndex((current) =>
+      current === 0 ? products.length - 1 : current - 1,
+    );
+  const nextPackage = () =>
+    setPackageIndex((current) =>
+      current === products.length - 1 ? 0 : current + 1,
+    );
+
   return (
     <section className="mx-auto max-w-6xl py-10">
       <PanelTitle
@@ -650,13 +662,45 @@ function ProductsPanel({
             <SmallStat value="Online" label="license" />
             <SmallStat value="Multi" label="products" />
           </div>
-          <button
-            type="button"
-            onClick={() => onSelectProduct(products[0])}
-            className="mt-7 inline-flex rounded-full border border-white/15 px-6 py-3 text-sm font-black transition hover:border-[#a855f7] hover:text-[#d6b4ff]"
-          >
-            View Package
-          </button>
+          <div className="mt-7 rounded-[24px] border border-white/10 bg-white/[0.035] p-4">
+            <div className="flex items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={previousPackage}
+                aria-label="Previous package"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-black/30 text-2xl font-black text-white transition hover:border-[#c75cff] hover:bg-[#c75cff]/20"
+              >
+                ‹
+              </button>
+              <div className="min-w-0 text-center">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#b989ff]">
+                  Package preview
+                </p>
+                <h4 className="mt-1 truncate text-xl font-black text-white">
+                  {selectedPackage.name}
+                </h4>
+                <p className="mt-1 text-xs font-semibold text-[#a69bb3]">
+                  {selectedPackage.price} • {selectedPackage.status}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={nextPackage}
+                aria-label="Next package"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-black/30 text-2xl font-black text-white transition hover:border-[#c75cff] hover:bg-[#c75cff]/20"
+              >
+                ›
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => onSelectProduct(selectedPackage)}
+              className="mt-4 inline-flex w-full justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-black transition hover:border-[#a855f7] hover:text-[#d6b4ff]"
+            >
+              View Package
+            </button>
+          </div>
         </div>
 
         <div className="grid gap-7 md:grid-cols-2">
@@ -806,7 +850,7 @@ function ProductDetailsModal({
             <DetailPoint title="Status" text="In stock and available." />
             <DetailPoint title="Delivery" text="License arrives by email after checkout." />
             <DetailPoint title="Validation" text="Online license check protects Pro access." />
-            <DetailPoint title="Support" text="Help available through Discord and support links." />
+            <DetailPoint title="Downloads" text="App downloads are temporarily unavailable while the builds are finished." />
           </div>
 
           <p className="mt-6 text-sm font-semibold leading-7 text-[#b9afc6]">
@@ -822,13 +866,18 @@ function ProductDetailsModal({
             >
               Buy Complete Package
             </a>
-            <a
-              href={product.downloadUrl}
-              className="rounded-xl border border-white/15 bg-white/[0.04] px-7 py-4 text-sm font-black text-white transition hover:border-[#20e8f2] hover:text-[#20e8f2]"
+            <button
+              type="button"
+              disabled
+              title="Downloads will be enabled when the app builds are ready."
+              className="cursor-not-allowed rounded-xl border border-white/10 bg-white/[0.035] px-7 py-4 text-sm font-black text-[#8f849a] opacity-80"
             >
-              Download This App
-            </a>
+              Download Unavailable
+            </button>
           </div>
+          <p className="mt-3 text-xs font-bold text-[#8f849a]">
+            Downloads will be enabled inside this details window when each app is ready.
+          </p>
         </div>
       </section>
     </div>
@@ -862,7 +911,9 @@ function ReviewsPanel() {
           </p>
           <div className="mt-4 flex flex-wrap items-end gap-4">
             <span className="text-6xl font-black">5.00</span>
-            <span className="pb-3 text-lg">*****</span>
+            <span className="pb-2 text-3xl font-black text-[#ffd36b] drop-shadow-[0_0_18px_rgba(255,211,107,0.45)]">
+              ★★★★★
+            </span>
             <span className="pb-3 text-sm text-[#a69bb3]">verified customers</span>
           </div>
           <div className="mt-6 space-y-3">
@@ -898,7 +949,9 @@ function ReviewsPanel() {
                 <p className="text-xs text-[#a69bb3]">Zentux customer</p>
               </div>
             </div>
-            <p className="text-sm">*****</p>
+            <p className="text-2xl font-black text-[#ffd36b] drop-shadow-[0_0_14px_rgba(255,211,107,0.35)]">
+              ★★★★★
+            </p>
             <p className="mt-3 text-sm leading-7 text-[#c9c2d0]">{review}</p>
           </article>
         ))}
@@ -939,20 +992,28 @@ function FaqPanel() {
 
       <div className="mt-10 grid gap-4 lg:grid-cols-2">
         <FaqItem
-          q="Is Zentux free?"
-          a="No. Zentux products require an active subscription and valid license key."
+          q="💳 Is Zentux free?"
+          a="No. Zentux is subscription based. One active license unlocks supported Zentux products included in the package."
         />
         <FaqItem
-          q="How do I receive my license?"
-          a="After checkout, the license key is sent to the email used during payment."
+          q="📩 How do I receive my license?"
+          a="After checkout, the license key is sent to the email used during payment. Paste it inside a supported Zentux app to validate access."
         />
         <FaqItem
-          q="Will Zentux always increase FPS?"
+          q="📦 What is included?"
+          a="The package includes supported Zentux products like ZentuxOptimizer Pro, Zentux Autoclicker, and Zentux Macro when those builds are available."
+        />
+        <FaqItem
+          q="⬇️ Can I download the apps now?"
+          a="Downloads are temporarily unavailable while the apps are being finished. They will be enabled from each product's View Details window."
+        />
+        <FaqItem
+          q="🎮 Will Zentux always increase FPS?"
           a="No tool can guarantee FPS gains in every game. Zentux focuses on useful gaming and performance utilities that improve the experience where possible."
         />
         <FaqItem
-          q="Where can I get help?"
-          a="Use the Get Help button to contact Zentux support for app questions or optional PC performance help."
+          q="💬 Where can I get help?"
+          a="Use the Get Help or Discord buttons to contact Zentux support for app questions, setup help, or optional PC performance help."
         />
       </div>
 
