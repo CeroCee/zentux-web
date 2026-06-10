@@ -22,6 +22,301 @@ const tabs = ["Home", "Products", "Reviews", "Status", "FAQ"] as const;
 type Tab = (typeof tabs)[number];
 type LegalPanel = "privacy" | "terms";
 
+const languages = [
+  { code: "es", label: "Español", flag: "🇪🇸" },
+  { code: "en", label: "English", flag: "🇺🇸" },
+  { code: "de", label: "Deutsch", flag: "🇩🇪" },
+  { code: "fr", label: "Français", flag: "🇫🇷" },
+  { code: "it", label: "Italiano", flag: "🇮🇹" },
+  { code: "pt", label: "Português", flag: "🇵🇹" },
+] as const;
+
+type LanguageCode = (typeof languages)[number]["code"];
+
+const tabLabels: Record<LanguageCode, Record<Tab, string>> = {
+  es: { Home: "Home", Products: "Productos", Reviews: "Reviews", Status: "Estado", FAQ: "FAQ" },
+  en: { Home: "Home", Products: "Products", Reviews: "Reviews", Status: "Status", FAQ: "FAQ" },
+  de: { Home: "Home", Products: "Produkte", Reviews: "Bewertungen", Status: "Status", FAQ: "FAQ" },
+  fr: { Home: "Accueil", Products: "Produits", Reviews: "Avis", Status: "Statut", FAQ: "FAQ" },
+  it: { Home: "Home", Products: "Prodotti", Reviews: "Recensioni", Status: "Stato", FAQ: "FAQ" },
+  pt: { Home: "Home", Products: "Produtos", Reviews: "Reviews", Status: "Status", FAQ: "FAQ" },
+};
+
+const copy = {
+  es: {
+    getHelp: "Get Help",
+    homeTitleA: "Zentux",
+    homeTitleB: "Products.",
+    homeText:
+      "Zentux es una marca premium de herramientas para mejorar tu experiencia en juegos: rendimiento, automatizacion, macros, soporte y acceso Pro protegido por licencia.",
+    browseProducts: "Ver productos",
+    joinSupport: "Soporte",
+    productsSold: "productos vendidos",
+    rating: "rating",
+    price: "precio",
+    support: "soporte",
+    productsTitle: "Productos",
+    productsText: "[HERRAMIENTAS PREMIUM - ENTREGA DE LICENCIA INSTANTANEA]",
+    searchProducts: "Buscar productos",
+    searchPlaceholder: "Buscar productos...",
+    category: "Categoria",
+    allProducts: "Todos",
+    performance: "Performance",
+    automation: "Automatizacion",
+    sort: "Ordenar",
+    popular: "Popular",
+    name: "Nombre",
+    zentuxAccess: "Zentux Access",
+    accessText: "Una licencia activa desbloquea todos los productos Zentux compatibles.",
+    showing: "Mostrando",
+    buyPackage: "Comprar paquete completo",
+    available: "Disponible",
+    startingFrom: "Acceso",
+    status: "Estado",
+    options: "Opciones",
+    viewDetails: "Ver detalles",
+    packageLabel: "Paquete Zentux",
+    close: "Cerrar",
+    completeLicense: "Licencia completa",
+    oneLicense: "Una licencia desbloquea todos los productos Zentux compatibles.",
+    included: "Incluido",
+    modalLicenseText:
+      "Tu suscripcion activa funciona como un paquete completo de Zentux. La misma licencia puede validar ZentuxOptimizer Pro, Zentux Autoclicker y Zentux Macro mientras la suscripcion siga activa.",
+    delivery: "Entrega",
+    validation: "Validacion",
+    downloads: "Descargas",
+    inStockText: "En stock y disponible.",
+    licenseEmailText: "La licencia llega por email despues del pago.",
+    validationText: "La validacion online protege el acceso Pro.",
+    downloadUnavailable: "Descarga no disponible",
+    downloadUnavailableText:
+      "Las descargas se activaran dentro de esta ventana cuando cada app este lista.",
+    reviewsTitle: "Customer Reviews",
+    reviewsText: "Opiniones reales de compradores Zentux despues de activar sus productos.",
+    overallRating: "Overall rating",
+    buyers: "Compradores",
+    soldTitle: "Productos vendidos",
+    soldText: "Una marca creada alrededor de herramientas premium, activacion online y soporte directo.",
+    customer: "Cliente Zentux",
+  },
+  en: {
+    getHelp: "Get Help",
+    homeTitleA: "Zentux",
+    homeTitleB: "Products.",
+    homeText:
+      "Zentux is a premium gaming brand building tools for performance, automation, macros, support, and license-protected Pro access.",
+    browseProducts: "Browse Products",
+    joinSupport: "Join Support",
+    productsSold: "products sold",
+    rating: "rating",
+    price: "price",
+    support: "support",
+    productsTitle: "Products",
+    productsText: "[PREMIUM TOOLS - INSTANT LICENSE DELIVERY]",
+    searchProducts: "Search products",
+    searchPlaceholder: "Search products...",
+    category: "Category",
+    allProducts: "All Products",
+    performance: "Performance",
+    automation: "Automation",
+    sort: "Sort",
+    popular: "Popular",
+    name: "Name",
+    zentuxAccess: "Zentux Access",
+    accessText: "One active license unlocks every supported Zentux product.",
+    showing: "Showing",
+    buyPackage: "Buy Complete Package",
+    available: "Available",
+    startingFrom: "Access",
+    status: "Status",
+    options: "Options",
+    viewDetails: "View Details",
+    packageLabel: "Zentux Package",
+    close: "Close",
+    completeLicense: "Complete license",
+    oneLicense: "One license unlocks every supported Zentux product.",
+    included: "Included",
+    modalLicenseText:
+      "Your active subscription works as a full Zentux package. The same license can validate supported apps like ZentuxOptimizer Pro, Zentux Autoclicker, and Zentux Macro, as long as the subscription is active.",
+    delivery: "Delivery",
+    validation: "Validation",
+    downloads: "Downloads",
+    inStockText: "In stock and available.",
+    licenseEmailText: "License arrives by email after checkout.",
+    validationText: "Online license check protects Pro access.",
+    downloadUnavailable: "Download Unavailable",
+    downloadUnavailableText:
+      "Downloads will be enabled inside this details window when each app is ready.",
+    reviewsTitle: "Customer Reviews",
+    reviewsText: "Real feedback from Zentux buyers after activation and support.",
+    overallRating: "Overall rating",
+    buyers: "Buyers",
+    soldTitle: "Products sold",
+    soldText: "Built around premium tools, online activation, and direct support.",
+    customer: "Zentux customer",
+  },
+  de: {
+    getHelp: "Get Help",
+    homeTitleA: "Zentux",
+    homeTitleB: "Products.",
+    homeText:
+      "Zentux is a premium gaming brand building tools for performance, automation, macros, support, and license-protected Pro access.",
+    browseProducts: "Browse Products",
+    joinSupport: "Join Support",
+    productsSold: "products sold",
+    rating: "rating",
+    price: "price",
+    support: "support",
+    productsTitle: "Products",
+    productsText: "[PREMIUM TOOLS - INSTANT LICENSE DELIVERY]",
+    searchProducts: "Search products",
+    searchPlaceholder: "Search products...",
+    category: "Category",
+    allProducts: "All Products",
+    performance: "Performance",
+    automation: "Automation",
+    sort: "Sort",
+    popular: "Popular",
+    name: "Name",
+    zentuxAccess: "Zentux Access",
+    accessText: "One active license unlocks every supported Zentux product.",
+    showing: "Showing",
+    buyPackage: "Buy Complete Package",
+    available: "Available",
+    startingFrom: "Access",
+    status: "Status",
+    options: "Options",
+    reviewsTitle: "Customer Reviews",
+    reviewsText: "Real feedback from Zentux buyers after activation and support.",
+    overallRating: "Overall rating",
+    buyers: "Buyers",
+    soldTitle: "Products sold",
+    soldText: "Built around premium tools, online activation, and direct support.",
+    customer: "Zentux customer",
+  },
+  fr: {
+    getHelp: "Get Help",
+    homeTitleA: "Zentux",
+    homeTitleB: "Products.",
+    homeText:
+      "Zentux is a premium gaming brand building tools for performance, automation, macros, support, and license-protected Pro access.",
+    browseProducts: "Browse Products",
+    joinSupport: "Join Support",
+    productsSold: "products sold",
+    rating: "rating",
+    price: "price",
+    support: "support",
+    productsTitle: "Products",
+    productsText: "[PREMIUM TOOLS - INSTANT LICENSE DELIVERY]",
+    searchProducts: "Search products",
+    searchPlaceholder: "Search products...",
+    category: "Category",
+    allProducts: "All Products",
+    performance: "Performance",
+    automation: "Automation",
+    sort: "Sort",
+    popular: "Popular",
+    name: "Name",
+    zentuxAccess: "Zentux Access",
+    accessText: "One active license unlocks every supported Zentux product.",
+    showing: "Showing",
+    buyPackage: "Buy Complete Package",
+    available: "Available",
+    startingFrom: "Access",
+    status: "Status",
+    options: "Options",
+    reviewsTitle: "Customer Reviews",
+    reviewsText: "Real feedback from Zentux buyers after activation and support.",
+    overallRating: "Overall rating",
+    buyers: "Buyers",
+    soldTitle: "Products sold",
+    soldText: "Built around premium tools, online activation, and direct support.",
+    customer: "Zentux customer",
+  },
+  it: {
+    getHelp: "Get Help",
+    homeTitleA: "Zentux",
+    homeTitleB: "Products.",
+    homeText:
+      "Zentux is a premium gaming brand building tools for performance, automation, macros, support, and license-protected Pro access.",
+    browseProducts: "Browse Products",
+    joinSupport: "Join Support",
+    productsSold: "products sold",
+    rating: "rating",
+    price: "price",
+    support: "support",
+    productsTitle: "Products",
+    productsText: "[PREMIUM TOOLS - INSTANT LICENSE DELIVERY]",
+    searchProducts: "Search products",
+    searchPlaceholder: "Search products...",
+    category: "Category",
+    allProducts: "All Products",
+    performance: "Performance",
+    automation: "Automation",
+    sort: "Sort",
+    popular: "Popular",
+    name: "Name",
+    zentuxAccess: "Zentux Access",
+    accessText: "One active license unlocks every supported Zentux product.",
+    showing: "Showing",
+    buyPackage: "Buy Complete Package",
+    available: "Available",
+    startingFrom: "Access",
+    status: "Status",
+    options: "Options",
+    reviewsTitle: "Customer Reviews",
+    reviewsText: "Real feedback from Zentux buyers after activation and support.",
+    overallRating: "Overall rating",
+    buyers: "Buyers",
+    soldTitle: "Products sold",
+    soldText: "Built around premium tools, online activation, and direct support.",
+    customer: "Zentux customer",
+  },
+  pt: {
+    getHelp: "Get Help",
+    homeTitleA: "Zentux",
+    homeTitleB: "Products.",
+    homeText:
+      "Zentux is a premium gaming brand building tools for performance, automation, macros, support, and license-protected Pro access.",
+    browseProducts: "Browse Products",
+    joinSupport: "Join Support",
+    productsSold: "products sold",
+    rating: "rating",
+    price: "price",
+    support: "support",
+    productsTitle: "Products",
+    productsText: "[PREMIUM TOOLS - INSTANT LICENSE DELIVERY]",
+    searchProducts: "Search products",
+    searchPlaceholder: "Search products...",
+    category: "Category",
+    allProducts: "All Products",
+    performance: "Performance",
+    automation: "Automation",
+    sort: "Sort",
+    popular: "Popular",
+    name: "Name",
+    zentuxAccess: "Zentux Access",
+    accessText: "One active license unlocks every supported Zentux product.",
+    showing: "Showing",
+    buyPackage: "Buy Complete Package",
+    available: "Available",
+    startingFrom: "Access",
+    status: "Status",
+    options: "Options",
+    reviewsTitle: "Customer Reviews",
+    reviewsText: "Real feedback from Zentux buyers after activation and support.",
+    overallRating: "Overall rating",
+    buyers: "Buyers",
+    soldTitle: "Products sold",
+    soldText: "Built around premium tools, online activation, and direct support.",
+    customer: "Zentux customer",
+  },
+} satisfies Record<LanguageCode, Record<string, string>>;
+
+function t(language: LanguageCode) {
+  return copy[language] ?? copy.en;
+}
+
 const featureCards = [
   ["🎮 Gaming Tools", "Utilities designed to improve how your PC and workflow feel while playing."],
   ["⚡ Optimizer", "Cleanup, RAM review, diagnostics, and game preparation tools."],
@@ -36,6 +331,7 @@ const products = [
     image: "/producto.png",
     badge: "Popular",
     description: "Windows performance optimizer",
+    category: "Performance",
     price: "Included",
     status: "- In Stock",
     downloadUrl: optimizerDownloadUrl,
@@ -47,6 +343,7 @@ const products = [
     image: "/zentux-autoclicker.png",
     badge: "New",
     description: "Gaming autoclicker with Hold and Toggle",
+    category: "Automation",
     price: "Included",
     status: "- In Stock",
     downloadUrl: autoclickerDownloadUrl,
@@ -58,6 +355,7 @@ const products = [
     image: "/zentux-macro.png",
     badge: "Included",
     description: "Advanced macro recorder and repeater",
+    category: "Automation",
     price: "Included",
     status: "- In Stock",
     downloadUrl: macroDownloadUrl,
@@ -77,6 +375,8 @@ const reviews = [
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("Home");
+  const [language, setLanguage] = useState<LanguageCode>("es");
+  const labels = t(language);
   const [showDiscordBubble, setShowDiscordBubble] = useState(true);
   const [legalPanel, setLegalPanel] = useState<LegalPanel | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<
@@ -132,33 +432,37 @@ export default function Home() {
                     : "hover:bg-white/10 hover:text-white"
                 }`}
               >
-                {tab}
+                {tabLabels[language][tab]}
               </button>
             ))}
           </nav>
 
-          <a
-            href={supportUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="hidden rounded-full border border-[#a855f7]/55 bg-black/35 px-5 py-2.5 text-sm font-black text-[#d6b4ff] backdrop-blur-xl transition hover:bg-[#a855f7] hover:text-white md:inline-flex"
-          >
-            Get Help
-          </a>
+          <div className="flex items-center gap-3">
+            <LanguageMenu language={language} setLanguage={setLanguage} />
+            <a
+              href={supportUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="hidden rounded-full border border-[#a855f7]/55 bg-black/35 px-5 py-2.5 text-sm font-black text-[#d6b4ff] backdrop-blur-xl transition hover:bg-[#a855f7] hover:text-white md:inline-flex"
+            >
+              {labels.getHelp}
+            </a>
+          </div>
         </div>
       </header>
 
       <div className="relative z-10 mx-auto min-h-screen max-w-7xl px-5 pb-12 pt-28 sm:px-7 lg:pt-32">
         {activeTab === "Home" && (
           <HomePanel
+            labels={labels}
             setActiveTab={setActiveTab}
             onOpenLegal={setLegalPanel}
           />
         )}
         {activeTab === "Products" && (
-          <ProductsPanel onSelectProduct={setSelectedProduct} />
+          <ProductsPanel labels={labels} onSelectProduct={setSelectedProduct} />
         )}
-        {activeTab === "Reviews" && <ReviewsPanel />}
+        {activeTab === "Reviews" && <ReviewsPanel labels={labels} />}
         {activeTab === "Status" && <StatusPanel />}
         {activeTab === "FAQ" && <FaqPanel />}
       </div>
@@ -173,16 +477,84 @@ export default function Home() {
       />
       <ProductDetailsModal
         product={selectedProduct}
+        labels={labels}
         onClose={() => setSelectedProduct(null)}
       />
     </main>
   );
 }
 
+function LanguageMenu({
+  language,
+  setLanguage,
+}: {
+  language: LanguageCode;
+  setLanguage: (language: LanguageCode) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const selected = languages.find((item) => item.code === language) ?? languages[0];
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-black/45 text-lg shadow-[0_0_35px_rgba(168,85,247,0.12)] backdrop-blur-xl transition hover:border-[#a855f7]/60"
+        aria-label="Change language"
+      >
+        {selected.flag}
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-14 z-[90] w-56 overflow-hidden rounded-2xl border border-white/10 bg-[#101017]/95 p-2 shadow-[0_20px_80px_rgba(0,0,0,0.55)] backdrop-blur-2xl">
+          <div className="mb-2 flex items-center justify-between px-2 py-1">
+            <span className="text-xs font-black uppercase tracking-[0.2em] text-[#9c91aa]">
+              Idioma
+            </span>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-sm font-black text-white transition hover:bg-white/20"
+              aria-label="Close language menu"
+            >
+              X
+            </button>
+          </div>
+          <div className="max-h-72 overflow-y-auto pr-1">
+            {languages.map((item) => (
+              <button
+                key={item.code}
+                type="button"
+                onClick={() => {
+                  setLanguage(item.code);
+                  setOpen(false);
+                }}
+                className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm font-bold transition ${
+                  language === item.code
+                    ? "bg-white/10 text-white"
+                    : "text-[#d8d2df] hover:bg-white/[0.06] hover:text-white"
+                }`}
+              >
+                <span className="flex items-center gap-3">
+                  <span>{item.flag}</span>
+                  {item.label}
+                </span>
+                {language === item.code && <span>✓</span>}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function HomePanel({
+  labels,
   setActiveTab,
   onOpenLegal,
 }: {
+  labels: Record<string, string>;
   setActiveTab: (tab: Tab) => void;
   onOpenLegal: (panel: LegalPanel) => void;
 }) {
@@ -191,15 +563,13 @@ function HomePanel({
       <section className="grid min-h-[calc(100vh-9rem)] gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div>
           <h1 className="max-w-3xl text-6xl font-black leading-[0.92] tracking-tight text-white sm:text-7xl lg:text-8xl">
-            Zentux
+            {labels.homeTitleA}
             <span className="block bg-gradient-to-r from-[#d85cff] to-[#7c6bff] bg-clip-text text-transparent">
-              Products.
+              {labels.homeTitleB}
             </span>
           </h1>
           <p className="mt-7 max-w-xl text-lg font-semibold leading-8 text-[#a69bb3]">
-            A premium gaming brand building Windows tools for performance,
-            faster workflows, smoother gameplay, and license-protected Pro
-            access across Zentux apps.
+            {labels.homeText}
           </p>
 
           <div className="mt-9 flex flex-wrap gap-4">
@@ -207,7 +577,7 @@ function HomePanel({
               onClick={() => setActiveTab("Products")}
               className="rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-8 py-4 text-sm font-black text-white shadow-[0_0_45px_rgba(168,85,247,0.35)] transition hover:scale-[1.02]"
             >
-              Browse Products
+              {labels.browseProducts}
             </button>
             <a
               href={supportUrl}
@@ -215,15 +585,15 @@ function HomePanel({
               rel="noreferrer"
               className="rounded-xl border border-white/15 bg-black/25 px-8 py-4 text-sm font-black text-white transition hover:border-[#a855f7]"
             >
-              Join Support
+              {labels.joinSupport}
             </a>
           </div>
 
           <div className="mt-12 grid max-w-xl grid-cols-2 gap-3 border-y border-white/10 py-6 sm:grid-cols-4">
-            <HeroStat value="6,800+" label="products sold" />
-            <HeroStat value="5.0" label="rating" />
-            <HeroStat value="$3" label="price" />
-            <HeroStat value="24/7" label="support" />
+            <HeroStat value="6,800+" label={labels.productsSold} />
+            <HeroStat value="4.68" label={labels.rating} />
+            <HeroStat value="$3" label={labels.price} />
+            <HeroStat value="24/7" label={labels.support} />
           </div>
 
           <div className="mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
@@ -623,6 +993,167 @@ function DiscordBubble({
 }
 
 function ProductsPanel({
+  labels,
+  onSelectProduct,
+}: {
+  labels: Record<string, string>;
+  onSelectProduct: (product: (typeof products)[number]) => void;
+}) {
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState<"All" | "Performance" | "Automation">("All");
+  const [sort, setSort] = useState("Popular");
+  const visibleProducts = products
+    .filter((product) => category === "All" || product.category === category)
+    .filter((product) =>
+      `${product.name} ${product.description}`
+        .toLowerCase()
+        .includes(query.trim().toLowerCase()),
+    )
+    .sort((a, b) => {
+      if (sort === "Name") {
+        return a.name.localeCompare(b.name);
+      }
+
+      return products.indexOf(a) - products.indexOf(b);
+    });
+
+  return (
+    <section className="py-10">
+      <PanelTitle
+        label={labels.productsTitle}
+        title={labels.productsTitle}
+        text={labels.productsText}
+      />
+
+      <div className="mt-10 grid gap-8 lg:grid-cols-[280px_1fr]">
+        <aside className="space-y-4">
+          <div className="rounded-[24px] border border-white/10 bg-black/45 p-5 backdrop-blur-xl">
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#a69bb3]">
+              {labels.searchProducts}
+            </p>
+            <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3">
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder={labels.searchPlaceholder}
+                className="w-full bg-transparent text-sm font-bold text-white outline-none placeholder:text-[#756b80]"
+              />
+            </div>
+          </div>
+
+          <div className="rounded-[24px] border border-white/10 bg-black/45 p-5 backdrop-blur-xl">
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#a69bb3]">
+              {labels.category}
+            </p>
+            <div className="mt-4 space-y-2">
+              <CategoryButton
+                active={category === "All"}
+                label={labels.allProducts}
+                count={products.length}
+                onClick={() => setCategory("All")}
+              />
+              <CategoryButton
+                active={category === "Performance"}
+                label={labels.performance}
+                count={products.filter((product) => product.category === "Performance").length}
+                onClick={() => setCategory("Performance")}
+              />
+              <CategoryButton
+                active={category === "Automation"}
+                label={labels.automation}
+                count={products.filter((product) => product.category === "Automation").length}
+                onClick={() => setCategory("Automation")}
+              />
+            </div>
+          </div>
+
+          <div className="rounded-[24px] border border-white/10 bg-black/45 p-5 backdrop-blur-xl">
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#a69bb3]">
+              {labels.sort}
+            </p>
+            <select
+              value={sort}
+              onChange={(event) => setSort(event.target.value)}
+              className="mt-4 w-full rounded-xl border border-white/10 bg-[#121018] px-4 py-3 text-sm font-black text-white outline-none"
+            >
+              <option>Popular</option>
+              <option>Name</option>
+            </select>
+          </div>
+
+          <div className="rounded-[24px] border border-[#a855f7]/20 bg-[#13071f]/70 p-5 backdrop-blur-xl">
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#b989ff]">
+              {labels.zentuxAccess}
+            </p>
+            <h3 className="mt-3 text-2xl font-black">6,800+ sold</h3>
+            <p className="mt-3 text-sm font-semibold leading-6 text-[#bfb5c9]">
+              {labels.accessText}
+            </p>
+          </div>
+        </aside>
+
+        <div>
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm font-bold text-[#a69bb3]">
+              {labels.showing} {visibleProducts.length} / {products.length}
+            </p>
+            <a
+              href={checkoutUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full bg-white px-5 py-2 text-xs font-black text-black transition hover:scale-[1.03]"
+            >
+              {labels.buyPackage}
+            </a>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {visibleProducts.map((product, index) => (
+              <ProductCard
+                key={product.name}
+                product={product}
+                labels={labels}
+                priority={index === 0}
+                onSelect={() => onSelectProduct(product)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CategoryButton({
+  active,
+  label,
+  count,
+  onClick,
+}: {
+  active: boolean;
+  label: string;
+  count: number;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-black transition ${
+        active
+          ? "border-white/25 bg-white/15 text-white"
+          : "border-white/10 bg-white/[0.035] text-[#bfb8c8] hover:bg-white/10 hover:text-white"
+      }`}
+    >
+      {label}
+      <span className="rounded-full bg-white/15 px-2 py-0.5 text-[10px]">
+        {count}
+      </span>
+    </button>
+  );
+}
+
+function ProductsPanelLegacy({
   onSelectProduct,
 }: {
   onSelectProduct: (product: (typeof products)[number]) => void;
@@ -720,18 +1251,20 @@ function ProductsPanel({
 
 function ProductCard({
   product,
+  labels = copy.en,
   onSelect,
   priority = false,
 }: {
   product: (typeof products)[number];
+  labels?: Record<string, string>;
   onSelect: () => void;
   priority?: boolean;
 }) {
   return (
     <article
-      className="group mx-auto w-full max-w-[430px] overflow-hidden rounded-[28px] border border-white/12 bg-[#0a070d]/95 text-white no-underline transition hover:-translate-y-1 hover:border-[#c51f35]/80 hover:shadow-[0_0_60px_rgba(197,31,53,0.28)]"
+      className="group mx-auto w-full max-w-[430px] overflow-hidden rounded-[28px] border border-white/12 bg-[#0a070d]/95 text-white no-underline transition hover:-translate-y-1 hover:border-[#c75cff]/80 hover:shadow-[0_0_60px_rgba(168,85,247,0.24)]"
     >
-      <div className="relative h-[330px] overflow-hidden border-b border-white/10 bg-[#070305]">
+      <div className="relative h-[360px] overflow-hidden border-b border-white/10 bg-[#070305]">
         <Image
           src={product.image}
           alt={product.name}
@@ -745,12 +1278,15 @@ function ProductCard({
         <span className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-wide text-black">
           {product.badge}
         </span>
+        <span className="absolute right-5 top-5 rounded-full border border-white/20 bg-black/55 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-white backdrop-blur-xl">
+          {product.category}
+        </span>
         <button
           type="button"
           onClick={onSelect}
           className="absolute inset-x-5 bottom-5 mx-auto w-fit rounded-full bg-white px-5 py-2 text-xs font-black uppercase tracking-wide text-black transition hover:scale-105"
         >
-          View Details
+          {labels.viewDetails ?? copy.en.viewDetails}
         </button>
       </div>
 
@@ -759,10 +1295,24 @@ function ProductCard({
         <p className="mt-2 text-sm leading-6 text-[#bcaab3]">
           {product.description}
         </p>
-        <div className="mt-8 flex items-center justify-between gap-3">
+        <div className="mt-6 space-y-3 border-t border-white/10 pt-4 text-xs font-black uppercase tracking-wide text-[#9f93aa]">
+          <div className="flex justify-between gap-3">
+            <span>{labels.status}</span>
+            <span className="text-[#59ffb7]">{product.status}</span>
+          </div>
+          <div className="flex justify-between gap-3">
+            <span>{labels.category}</span>
+            <span className="text-white">{product.category}</span>
+          </div>
+          <div className="flex justify-between gap-3">
+            <span>{labels.options}</span>
+            <span className="text-white">Complete package</span>
+          </div>
+        </div>
+        <div className="mt-6 flex items-center justify-between gap-3">
           <span className="text-xl font-black">{product.price}</span>
           <span className="rounded-full border border-white/20 bg-white/[0.05] px-4 py-1 text-[10px] font-black uppercase tracking-wide">
-            {product.status}
+            {labels.available}
           </span>
         </div>
       </div>
@@ -772,9 +1322,11 @@ function ProductCard({
 
 function ProductDetailsModal({
   product,
+  labels,
   onClose,
 }: {
   product: (typeof products)[number] | null;
+  labels: Record<string, string>;
   onClose: () => void;
 }) {
   if (!product) {
@@ -806,7 +1358,7 @@ function ProductDetailsModal({
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.24em] text-[#c76cff]">
-                Zentux Package
+                {labels.packageLabel ?? copy.en.packageLabel}
               </p>
               <h2 className="mt-3 text-4xl font-black leading-tight text-white">
                 {product.name}
@@ -820,7 +1372,7 @@ function ProductDetailsModal({
               onClick={onClose}
               className="shrink-0 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-black text-white transition hover:bg-white hover:text-black"
             >
-              Close
+              {labels.close ?? copy.en.close}
             </button>
           </div>
 
@@ -828,29 +1380,38 @@ function ProductDetailsModal({
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.22em] text-[#b989ff]">
-                  Complete license
+                  {labels.completeLicense ?? copy.en.completeLicense}
                 </p>
                 <h3 className="mt-2 text-2xl font-black text-white">
-                  One license unlocks every supported Zentux product.
+                  {labels.oneLicense ?? copy.en.oneLicense}
                 </h3>
               </div>
               <span className="rounded-full bg-white px-4 py-1.5 text-xs font-black uppercase tracking-wide text-black">
-                Included
+                {labels.included ?? copy.en.included}
               </span>
             </div>
             <p className="mt-4 text-sm font-semibold leading-7 text-[#c9c2d0]">
-              Your active subscription works as a full Zentux package. The same
-              license can validate supported apps like ZentuxOptimizer Pro,
-              Zentux Autoclicker, and Zentux Macro, as long as the
-              subscription is active.
+              {labels.modalLicenseText ?? copy.en.modalLicenseText}
             </p>
           </div>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <DetailPoint title="Status" text="In stock and available." />
-            <DetailPoint title="Delivery" text="License arrives by email after checkout." />
-            <DetailPoint title="Validation" text="Online license check protects Pro access." />
-            <DetailPoint title="Downloads" text="App downloads are temporarily unavailable while the builds are finished." />
+            <DetailPoint
+              title={labels.status ?? copy.en.status}
+              text={labels.inStockText ?? copy.en.inStockText}
+            />
+            <DetailPoint
+              title={labels.delivery ?? copy.en.delivery}
+              text={labels.licenseEmailText ?? copy.en.licenseEmailText}
+            />
+            <DetailPoint
+              title={labels.validation ?? copy.en.validation}
+              text={labels.validationText ?? copy.en.validationText}
+            />
+            <DetailPoint
+              title={labels.downloads ?? copy.en.downloads}
+              text={labels.downloadUnavailableText ?? copy.en.downloadUnavailableText}
+            />
           </div>
 
           <p className="mt-6 text-sm font-semibold leading-7 text-[#b9afc6]">
@@ -864,7 +1425,7 @@ function ProductDetailsModal({
               rel="noreferrer"
               className="rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-7 py-4 text-sm font-black text-white shadow-[0_0_45px_rgba(168,85,247,0.28)] transition hover:scale-[1.02]"
             >
-              Buy Complete Package
+              {labels.buyPackage ?? copy.en.buyPackage}
             </a>
             <button
               type="button"
@@ -872,11 +1433,11 @@ function ProductDetailsModal({
               title="Downloads will be enabled when the app builds are ready."
               className="cursor-not-allowed rounded-xl border border-white/10 bg-white/[0.035] px-7 py-4 text-sm font-black text-[#8f849a] opacity-80"
             >
-              Download Unavailable
+              {labels.downloadUnavailable ?? copy.en.downloadUnavailable}
             </button>
           </div>
           <p className="mt-3 text-xs font-bold text-[#8f849a]">
-            Downloads will be enabled inside this details window when each app is ready.
+            {labels.downloadUnavailableText ?? copy.en.downloadUnavailableText}
           </p>
         </div>
       </section>
@@ -895,41 +1456,54 @@ function DetailPoint({ title, text }: { title: string; text: string }) {
   );
 }
 
-function ReviewsPanel() {
+function ReviewsPanel({ labels }: { labels: Record<string, string> }) {
+  const ratingRows = [
+    { label: "5 star", value: "78%", count: "5,304" },
+    { label: "4 star", value: "15%", count: "1,020" },
+    { label: "3 star", value: "5%", count: "340" },
+    { label: "2 star", value: "1.5%", count: "102" },
+    { label: "1 star", value: "0.5%", count: "34" },
+  ];
+
   return (
     <section className="py-10">
       <PanelTitle
         label="Reviews"
-        title="Customer Reviews"
-        text="Real feedback from Zentux users after activation and support."
+        title={labels.reviewsTitle}
+        text={labels.reviewsText}
       />
 
       <div className="mt-10 grid gap-5 lg:grid-cols-3">
         <div className="rounded-[28px] border border-white/10 bg-black/38 p-7 backdrop-blur-xl lg:col-span-2">
           <p className="text-xs font-black uppercase tracking-[0.28em] text-[#a69bb3]">
-            Overall rating
+            {labels.overallRating}
           </p>
           <div className="mt-4 flex flex-wrap items-end gap-4">
-            <span className="text-6xl font-black">5.00</span>
+            <span className="text-6xl font-black">4.68</span>
             <span className="pb-2 text-3xl font-black text-[#ffd36b] drop-shadow-[0_0_18px_rgba(255,211,107,0.45)]">
-              ★★★★★
+              {"★★★★★"}
             </span>
-            <span className="pb-3 text-sm text-[#a69bb3]">verified customers</span>
+            <span className="pb-3 text-sm text-[#a69bb3]">{labels.buyers}</span>
           </div>
           <div className="mt-6 space-y-3">
-            <RatingBar label="5*" value="100%" count="6,800+" />
-            <RatingBar label="4*" value="0%" count="0" />
-            <RatingBar label="3*" value="0%" count="0" />
+            {ratingRows.map((row) => (
+              <RatingBar
+                key={row.label}
+                label={row.label}
+                value={row.value}
+                count={row.count}
+              />
+            ))}
           </div>
         </div>
 
         <div className="rounded-[28px] border border-white/10 bg-black/38 p-7 backdrop-blur-xl">
           <p className="text-xs font-black uppercase tracking-[0.28em] text-[#a69bb3]">
-            Products sold
+            {labels.soldTitle}
           </p>
           <div className="mt-4 text-5xl font-black">6,800+</div>
           <p className="mt-4 leading-7 text-[#c9c2d0]">
-            Built around premium tools, activation, and direct support.
+            {labels.soldText}
           </p>
         </div>
       </div>
@@ -945,12 +1519,12 @@ function ReviewsPanel() {
                 Z
               </span>
               <div>
-                <p className="font-black">Verified User</p>
-                <p className="text-xs text-[#a69bb3]">Zentux customer</p>
+                <p className="font-black">{labels.buyers}</p>
+                <p className="text-xs text-[#a69bb3]">{labels.customer}</p>
               </div>
             </div>
             <p className="text-2xl font-black text-[#ffd36b] drop-shadow-[0_0_14px_rgba(255,211,107,0.35)]">
-              ★★★★★
+              {"★★★★★"}
             </p>
             <p className="mt-3 text-sm leading-7 text-[#c9c2d0]">{review}</p>
           </article>
@@ -1149,7 +1723,10 @@ function RatingBar({
     <div className="grid grid-cols-[34px_1fr_64px] items-center gap-3 text-xs font-bold text-[#a69bb3]">
       <span>{label}</span>
       <div className="h-2 overflow-hidden rounded-full bg-white/10">
-        <div className="h-full rounded-full bg-white" style={{ width: value }} />
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-[#ffd36b] via-[#ff6bd5] to-[#8b76ff] shadow-[0_0_16px_rgba(255,211,107,0.32)]"
+          style={{ width: value }}
+        />
       </div>
       <span className="text-right">{count}</span>
     </div>
