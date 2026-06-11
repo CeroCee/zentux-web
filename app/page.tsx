@@ -374,14 +374,22 @@ const reviews = [
 ];
 
 function getSharedAppUsageCount() {
-  const timeBlock = Math.floor(Date.now() / 300000);
-  let hash = timeBlock ^ 0x5f3759df;
+  const timeBlock = Math.floor(Date.now() / 4000);
+  const dailyActivity =
+    135 + ((Math.sin((timeBlock / 21600) * Math.PI * 2) + 1) / 2) * 120;
+  const naturalVariation =
+    Math.sin((timeBlock / 225) * Math.PI * 2) * 18 +
+    Math.sin((timeBlock / 37) * Math.PI * 2) * 5;
 
-  hash = Math.imul(hash ^ (hash >>> 16), 0x45d9f3b);
+  let hash = timeBlock ^ 0x5f3759df;
   hash = Math.imul(hash ^ (hash >>> 16), 0x45d9f3b);
   hash ^= hash >>> 16;
+  const smallChange = (Math.abs(hash) % 3) - 1;
 
-  return 96 + (Math.abs(hash) % 602);
+  return Math.min(
+    697,
+    Math.max(96, Math.round(dailyActivity + naturalVariation + smallChange)),
+  );
 }
 
 export default function Home() {
@@ -412,7 +420,7 @@ export default function Home() {
 
     const timer = window.setInterval(() => {
       setOnlineCount(getSharedAppUsageCount());
-    }, 30000);
+    }, 1000);
 
     return () => window.clearInterval(timer);
   }, []);
