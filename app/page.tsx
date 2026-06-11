@@ -373,18 +373,38 @@ const reviews = [
   "Excited for Macro because recording and repeating actions saves time.",
 ];
 
+function usageHash(value: number) {
+  let hash = value ^ 0x5f3759df;
+  hash = Math.imul(hash ^ (hash >>> 16), 0x45d9f3b);
+  hash ^= hash >>> 16;
+  return Math.abs(hash);
+}
+
+function isUsageUpdateBlock(timeBlock: number) {
+  return timeBlock % 75 === 0 || usageHash(timeBlock) % 100 < 4;
+}
+
+function getLatestUsageUpdateBlock() {
+  const currentBlock = Math.floor(Date.now() / 4000);
+
+  for (let offset = 0; offset <= 75; offset += 1) {
+    const candidate = currentBlock - offset;
+    if (isUsageUpdateBlock(candidate)) {
+      return candidate;
+    }
+  }
+
+  return currentBlock;
+}
+
 function getSharedAppUsageCount() {
-  const timeBlock = Math.floor(Date.now() / 4000);
+  const timeBlock = getLatestUsageUpdateBlock();
   const dailyActivity =
     135 + ((Math.sin((timeBlock / 21600) * Math.PI * 2) + 1) / 2) * 120;
   const naturalVariation =
-    Math.sin((timeBlock / 225) * Math.PI * 2) * 18 +
-    Math.sin((timeBlock / 37) * Math.PI * 2) * 5;
-
-  let hash = timeBlock ^ 0x5f3759df;
-  hash = Math.imul(hash ^ (hash >>> 16), 0x45d9f3b);
-  hash ^= hash >>> 16;
-  const smallChange = (Math.abs(hash) % 3) - 1;
+    Math.sin((timeBlock / 5400) * Math.PI * 2) * 18 +
+    Math.sin((timeBlock / 1800) * Math.PI * 2) * 5;
+  const smallChange = (usageHash(timeBlock + 17) % 3) - 1;
 
   return Math.min(
     697,
