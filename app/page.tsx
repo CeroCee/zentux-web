@@ -373,11 +373,22 @@ const reviews = [
   "Excited for Macro because recording and repeating actions saves time.",
 ];
 
+function getSharedAppUsageCount() {
+  const timeBlock = Math.floor(Date.now() / 300000);
+  let hash = timeBlock ^ 0x5f3759df;
+
+  hash = Math.imul(hash ^ (hash >>> 16), 0x45d9f3b);
+  hash = Math.imul(hash ^ (hash >>> 16), 0x45d9f3b);
+  hash ^= hash >>> 16;
+
+  return 96 + (Math.abs(hash) % 602);
+}
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("Home");
   const [language, setLanguage] = useState<LanguageCode>("es");
   const labels = t(language);
-  const [onlineCount, setOnlineCount] = useState(12);
+  const [onlineCount, setOnlineCount] = useState<number | null>(null);
   const [showDiscordBubble, setShowDiscordBubble] = useState(true);
   const [legalPanel, setLegalPanel] = useState<LegalPanel | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<
@@ -397,12 +408,11 @@ export default function Home() {
   }, [showDiscordBubble]);
 
   useEffect(() => {
+    setOnlineCount(getSharedAppUsageCount());
+
     const timer = window.setInterval(() => {
-      setOnlineCount((current) => {
-        const change = Math.random() > 0.5 ? 1 : -1;
-        return Math.min(24, Math.max(8, current + change));
-      });
-    }, 12000);
+      setOnlineCount(getSharedAppUsageCount());
+    }, 30000);
 
     return () => window.clearInterval(timer);
   }, []);
@@ -502,15 +512,15 @@ function OnlineVisitors({
   count,
 }: {
   language: LanguageCode;
-  count: number;
+  count: number | null;
 }) {
   const labels: Record<LanguageCode, string> = {
-    en: "Online now",
-    es: "Personas en linea",
-    de: "Jetzt online",
-    fr: "En ligne",
-    it: "Online ora",
-    pt: "Pessoas online",
+    en: "People using the apps",
+    es: "Personas usando las apps",
+    de: "Personen nutzen die Apps",
+    fr: "Personnes utilisant les apps",
+    it: "Persone che usano le app",
+    pt: "Pessoas usando os apps",
   };
 
   return (
@@ -518,8 +528,8 @@ function OnlineVisitors({
       className="hidden items-center gap-2.5 rounded-full border border-[#a855f7]/50 bg-black/45 px-4 py-2.5 text-xs font-black text-white shadow-[0_0_28px_rgba(168,85,247,0.2)] backdrop-blur-xl xl:flex"
       title={
         language === "es"
-          ? "Estimacion de visitantes activos"
-          : "Estimated active visitors"
+          ? "Estimacion de personas usando las aplicaciones"
+          : "Estimated people using the apps"
       }
     >
       <span className="relative flex h-2.5 w-2.5">
@@ -527,7 +537,7 @@ function OnlineVisitors({
         <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]" />
       </span>
       <span>{labels[language]}</span>
-      <span className="text-[#d684ff]">{count}</span>
+      <span className="min-w-6 text-right text-[#d684ff]">{count ?? "..."}</span>
     </div>
   );
 }
