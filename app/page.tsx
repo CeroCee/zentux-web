@@ -38,12 +38,12 @@ const languages = [
 type LanguageCode = (typeof languages)[number]["code"];
 
 const tabLabels: Record<LanguageCode, Record<Tab, string>> = {
-  es: { Home: "Home", Products: "Productos", Reviews: "Reviews", Status: "Estado", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  en: { Home: "Home", Products: "Products", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  de: { Home: "Home", Products: "Produkte", Reviews: "Bewertungen", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  fr: { Home: "Accueil", Products: "Produits", Reviews: "Avis", Status: "Statut", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  it: { Home: "Home", Products: "Prodotti", Reviews: "Recensioni", Status: "Stato", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  pt: { Home: "Home", Products: "Produtos", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  es: { Home: "Home", Products: "Productos", Reviews: "Video Reviews", Status: "Estado", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  en: { Home: "Home", Products: "Products", Reviews: "Video Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  de: { Home: "Home", Products: "Produkte", Reviews: "Video Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  fr: { Home: "Accueil", Products: "Produits", Reviews: "Video Reviews", Status: "Statut", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  it: { Home: "Home", Products: "Prodotti", Reviews: "Video Reviews", Status: "Stato", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  pt: { Home: "Home", Products: "Produtos", Reviews: "Video Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
 };
 
 const copy = {
@@ -380,13 +380,47 @@ const products = [
   },
 ];
 
-const reviews = [
-  "Clean interface and easy activation for the full Zentux package.",
-  "I like that one license works across the supported Zentux apps.",
-  "The optimizer tools are useful before playing.",
-  "The autoclicker feels simple and fast to set up.",
-  "The license email arrived quickly after checkout.",
-  "Excited for Macro because recording and repeating actions saves time.",
+const creatorVideos = [
+  {
+    creator: "Zhowtime13",
+    platform: "TikTok",
+    description: "Zentux review and gameplay test",
+    embedUrl: "https://www.tiktok.com/embed/v2/7584919414978432276",
+    videoUrl: "https://www.tiktok.com/@zhowt1m3/video/7584919414978432276",
+    creatorUrl: "https://www.tiktok.com/@zhowt1m3",
+  },
+  {
+    creator: "Darkxz_FVM",
+    platform: "TikTok",
+    description: "Zentux Cursor setup and gameplay review",
+    embedUrl: "https://www.tiktok.com/embed/v2/7594255665476979976",
+    videoUrl: "https://www.tiktok.com/@darkxz_fvm/video/7594255665476979976",
+    creatorUrl: "https://www.tiktok.com/@darkxz_fvm",
+  },
+  {
+    creator: "rdangel0880",
+    platform: "TikTok",
+    description: "Zentux creator showcase and community test",
+    embedUrl: "https://www.tiktok.com/embed/v2/7557904027854392587",
+    videoUrl: "https://www.tiktok.com/@rdangel0880/video/7557904027854392587",
+    creatorUrl: "https://www.tiktok.com/@rdangel0880",
+  },
+  {
+    creator: "Zhowtime13",
+    platform: "TikTok",
+    description: "Zentux Cursor and Autoclicker combo test",
+    embedUrl: "https://www.tiktok.com/embed/v2/7602112098117700884",
+    videoUrl: "https://www.tiktok.com/@zhowt1m3/video/7602112098117700884",
+    creatorUrl: "https://www.tiktok.com/@zhowt1m3",
+  },
+  {
+    creator: "1mspeedx",
+    platform: "TikTok",
+    description: "Zentux Autoclicker gameplay review",
+    embedUrl: "https://www.tiktok.com/embed/v2/7557722639482080524",
+    videoUrl: "https://www.tiktok.com/@1mspeedx/video/7557722639482080524",
+    creatorUrl: "https://www.tiktok.com/@1mspeedx",
+  },
 ];
 
 function usageHash(value: number) {
@@ -529,7 +563,7 @@ export default function Home() {
         {activeTab === "Products" && (
           <ProductsPanel labels={labels} onSelectProduct={setSelectedProduct} />
         )}
-        {activeTab === "Reviews" && <ReviewsPanel labels={labels} />}
+        {activeTab === "Reviews" && <ReviewsPanel />}
         {activeTab === "Status" && <StatusPanel />}
         {activeTab === "FAQ" && <FaqPanel />}
         {activeTab === "Meet The Team" && <TeamShowcase />}
@@ -1585,84 +1619,106 @@ function DetailPoint({ title, text }: { title: string; text: string }) {
   );
 }
 
-function ReviewsPanel({ labels }: { labels: Record<string, string> }) {
-  const ratingRows = [
-    { label: "5 star", value: "78%", count: "5,304" },
-    { label: "4 star", value: "15%", count: "1,020" },
-    { label: "3 star", value: "5%", count: "340" },
-    { label: "2 star", value: "1.5%", count: "102" },
-    { label: "1 star", value: "0.5%", count: "34" },
-  ];
-
+function ReviewsPanel() {
   return (
     <section className="py-10">
       <PanelTitle
-        label="Reviews"
-        title={labels.reviewsTitle}
-        text={labels.reviewsText}
+        label="Video Reviews"
+        title="Creator Reviews"
+        text="Watch real videos from creators using Zentux."
       />
 
-      <div className="mt-10 grid gap-5 lg:grid-cols-3">
-        <div className="rounded-[28px] border border-white/10 bg-black/38 p-7 backdrop-blur-xl lg:col-span-2">
-          <p className="text-xs font-black uppercase tracking-[0.28em] text-[#a69bb3]">
-            {labels.overallRating}
-          </p>
-          <div className="mt-4 flex flex-wrap items-end gap-4">
-            <span className="text-6xl font-black">4.68</span>
-            <span className="pb-2 text-3xl font-black text-[#ffd36b] drop-shadow-[0_0_18px_rgba(255,211,107,0.45)]">
-              {"★★★★★"}
-            </span>
-            <span className="pb-3 text-sm text-[#a69bb3]">{labels.buyers}</span>
-          </div>
-          <div className="mt-6 space-y-3">
-            {ratingRows.map((row) => (
-              <RatingBar
-                key={row.label}
-                label={row.label}
-                value={row.value}
-                count={row.count}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-[28px] border border-white/10 bg-black/38 p-7 backdrop-blur-xl">
-          <p className="text-xs font-black uppercase tracking-[0.28em] text-[#a69bb3]">
-            {labels.soldTitle}
-          </p>
-          <div className="mt-4 text-5xl font-black">6,800+</div>
-          <p className="mt-4 leading-7 text-[#c9c2d0]">
-            {labels.soldText}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {reviews.map((review) => (
+      <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {creatorVideos.map((video) => (
           <article
-            key={review}
-            className="rounded-[22px] border border-white/10 bg-black/38 p-5 backdrop-blur-xl"
+            key={video.videoUrl}
+            className="group overflow-hidden rounded-[28px] border border-white/10 bg-black/45 shadow-[0_0_80px_rgba(168,85,247,0.08)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-[#b45cff]/80 hover:shadow-[0_0_70px_rgba(168,85,247,0.22)]"
           >
-            <div className="mb-4 flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-sm font-black">
-                Z
-              </span>
-              <div>
-                <p className="font-black">{labels.buyers}</p>
-                <p className="text-xs text-[#a69bb3]">{labels.customer}</p>
+            <div className="relative border-b border-white/10 bg-[#07030d]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(168,85,247,0.22),transparent_42%)] opacity-80" />
+              <div className="relative aspect-[9/14] w-full overflow-hidden">
+                <iframe
+                  src={video.embedUrl}
+                  title={`${video.creator} Zentux video review`}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="h-full w-full border-0"
+                />
               </div>
             </div>
-            <p className="text-2xl font-black text-[#ffd36b] drop-shadow-[0_0_14px_rgba(255,211,107,0.35)]">
-              {"★★★★★"}
-            </p>
-            <p className="mt-3 text-sm leading-7 text-[#c9c2d0]">{review}</p>
+
+            <div className="p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-2xl font-black text-white">
+                    {video.creator}
+                  </h3>
+                  <p className="mt-1 text-xs font-black uppercase tracking-[0.18em] text-[#20e8f2]">
+                    {video.platform}
+                  </p>
+                </div>
+                <span className="rounded-full border border-[#a855f7]/40 bg-[#160821]/70 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-[#d8b4fe]">
+                  Creator
+                </span>
+              </div>
+
+              <p className="mt-4 text-sm font-semibold leading-6 text-[#c9c2d0]">
+                {video.description}
+              </p>
+
+              <div className="mt-5 flex flex-wrap gap-3">
+                <a
+                  href={video.videoUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-4 py-3 text-xs font-black text-white shadow-[0_0_34px_rgba(168,85,247,0.22)] transition hover:scale-[1.02]"
+                >
+                  Watch Full Video
+                </a>
+                <a
+                  href={video.creatorUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-xs font-black text-white transition hover:border-[#20e8f2]/70 hover:bg-[#20e8f2]/10"
+                >
+                  Follow Creator
+                </a>
+              </div>
+            </div>
           </article>
         ))}
+      </div>
+
+      <div className="mt-10 overflow-hidden rounded-[28px] border border-[#a855f7]/30 bg-black/45 p-7 shadow-[0_0_90px_rgba(168,85,247,0.13)] backdrop-blur-xl">
+        <div className="relative">
+          <div className="pointer-events-none absolute -right-10 -top-16 h-44 w-44 rounded-full bg-[#a855f7]/20 blur-3xl" />
+          <p className="text-xs font-black uppercase tracking-[0.28em] text-[#b989ff]">
+            Creator Program
+          </p>
+          <div className="mt-4 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h3 className="text-3xl font-black text-white">
+                Want to review Zentux?
+              </h3>
+              <p className="mt-3 max-w-2xl text-sm font-semibold leading-7 text-[#c9c2d0]">
+                Create content about Zentux and apply to become an official creator.
+              </p>
+            </div>
+            <a
+              href={discordUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="w-fit rounded-xl bg-gradient-to-r from-[#20e8f2] to-[#a855f7] px-6 py-4 text-sm font-black text-white shadow-[0_0_45px_rgba(32,232,242,0.22)] transition hover:scale-[1.02]"
+            >
+              Apply as Creator
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
-
 function StatusPanel() {
   return (
     <section className="py-10">
@@ -1835,29 +1891,6 @@ function Metric({
           style={{ width, backgroundColor: danger ? "#c51f35" : "#a855f7" }}
         />
       </div>
-    </div>
-  );
-}
-
-function RatingBar({
-  label,
-  value,
-  count,
-}: {
-  label: string;
-  value: string;
-  count: string;
-}) {
-  return (
-    <div className="grid grid-cols-[34px_1fr_64px] items-center gap-3 text-xs font-bold text-[#a69bb3]">
-      <span>{label}</span>
-      <div className="h-2 overflow-hidden rounded-full bg-white/10">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-[#ffd36b] via-[#ff6bd5] to-[#8b76ff] shadow-[0_0_16px_rgba(255,211,107,0.32)]"
-          style={{ width: value }}
-        />
-      </div>
-      <span className="text-right">{count}</span>
     </div>
   );
 }
