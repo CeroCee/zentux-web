@@ -92,6 +92,124 @@ body {
   animation: zentuxLegalModalIn 220ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
 }
 
+.team-star-field {
+  background-image:
+    radial-gradient(circle, rgba(32, 232, 242, 0.55) 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(184, 92, 255, 0.6) 1px, transparent 1.8px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.42) 0.8px, transparent 1.4px);
+  background-position:
+    12px 18px,
+    78px 42px,
+    136px 92px;
+  background-size:
+    120px 120px,
+    180px 180px,
+    240px 240px;
+  animation: teamStarDrift 34s linear infinite;
+}
+
+.team-card {
+  --team-rotate-x: 0deg;
+  --team-rotate-y: 0deg;
+  --team-glow-x: 50%;
+  --team-glow-y: 50%;
+  animation: teamCardIn 520ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: var(--team-delay);
+  perspective: 1000px;
+  transform: translate3d(0, 0, 0);
+}
+
+.team-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 180deg,
+    rgba(184, 92, 255, 0.15),
+    var(--team-accent),
+    rgba(32, 232, 242, 0.9),
+    rgba(184, 92, 255, 0.7),
+    rgba(184, 92, 255, 0.15)
+  );
+  opacity: 0.62;
+  animation: teamBorderSpin 7s linear infinite;
+}
+
+.team-card::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: 27px;
+  background:
+    radial-gradient(
+      circle at var(--team-glow-x) var(--team-glow-y),
+      color-mix(in srgb, var(--team-accent) 32%, transparent),
+      transparent 34%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 48%);
+  opacity: 0;
+  transition: opacity 260ms ease;
+  pointer-events: none;
+}
+
+.team-card:hover::after {
+  opacity: 1;
+}
+
+.team-card-inner {
+  transform: rotateX(var(--team-rotate-x)) rotateY(var(--team-rotate-y));
+  transform-style: preserve-3d;
+  transition:
+    transform 180ms ease,
+    box-shadow 240ms ease,
+    border-color 240ms ease;
+}
+
+.team-card:hover .team-card-inner {
+  box-shadow:
+    0 28px 80px rgba(0, 0, 0, 0.42),
+    0 0 50px color-mix(in srgb, var(--team-accent) 28%, transparent);
+}
+
+.team-avatar-glow {
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--team-accent) 58%, transparent), transparent 64%);
+  filter: blur(10px);
+  opacity: 0.92;
+  animation: teamAvatarPulse 3.8s ease-in-out infinite;
+}
+
+.team-particle {
+  position: absolute;
+  height: 4px;
+  width: 4px;
+  border-radius: 999px;
+  background: var(--team-accent);
+  box-shadow: 0 0 16px var(--team-accent);
+  opacity: 0.65;
+  animation: teamParticleFloat 4.5s ease-in-out infinite;
+}
+
+.team-particle:nth-of-type(2) {
+  animation-delay: 700ms;
+}
+
+.team-particle:nth-of-type(3) {
+  animation-delay: 1300ms;
+}
+
+.team-particle:nth-of-type(4) {
+  animation-delay: 1900ms;
+}
+
+.team-social:hover {
+  border-color: color-mix(in srgb, var(--team-accent) 72%, white);
+  background: color-mix(in srgb, var(--team-accent) 20%, rgba(255, 255, 255, 0.05));
+  box-shadow: 0 0 24px color-mix(in srgb, var(--team-accent) 35%, transparent);
+  transform: translateY(-2px);
+}
+
 @keyframes zentuxSnowFall {
   from {
     transform: translate3d(0, -50%, 0);
@@ -159,17 +277,80 @@ body {
   }
 }
 
+@keyframes teamStarDrift {
+  from {
+    transform: translate3d(0, -10%, 0);
+  }
+
+  to {
+    transform: translate3d(0, 10%, 0);
+  }
+}
+
+@keyframes teamBorderSpin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes teamAvatarPulse {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes teamParticleFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(0, -10px, 0) scale(1.35);
+  }
+}
+
+@keyframes teamCardIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .zentux-snow-slow,
   .zentux-snow-medium,
   .zentux-snow-fast,
-  .zentux-discord-bubble {
+  .zentux-discord-bubble,
+  .team-star-field,
+  .team-card,
+  .team-card::before,
+  .team-avatar-glow,
+  .team-particle {
     animation: none;
+  }
+
+  .zentux-snow-slow,
+  .zentux-snow-medium,
+  .zentux-snow-fast {
     transform: translate3d(0, -25%, 0);
   }
 
   .zentux-discord-bubble,
-  .zentux-legal-modal {
+  .zentux-legal-modal,
+  .team-card-inner {
     transform: none;
   }
 }

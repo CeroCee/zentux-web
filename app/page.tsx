@@ -3,6 +3,7 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
+import TeamShowcase from "@/components/TeamShowcase";
 
 const BRAND_NAME = "Zentux";
 const OPTIMIZER_NAME = "Zentux Optimizer Pro";
@@ -530,7 +531,12 @@ export default function Home() {
         )}
         {activeTab === "Reviews" && <ReviewsPanel labels={labels} />}
         {activeTab === "Status" && <StatusPanel />}
-        {activeTab === "FAQ" && <FaqPanel />}
+        {activeTab === "FAQ" && (
+          <>
+            <FaqPanel />
+            <TeamShowcase />
+          </>
+        )}
       </div>
 
       <DiscordBubble
