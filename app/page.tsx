@@ -22,7 +22,7 @@ const cursorDownloadUrl =
 const supportUrl = "https://guns.lol/cerocee";
 const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
-const tabs = ["Home", "Products", "Reviews", "Status", "FAQ"] as const;
+const tabs = ["Home", "Products", "Reviews", "Status", "FAQ", "Meet The Team"] as const;
 type Tab = (typeof tabs)[number];
 type LegalPanel = "privacy" | "terms";
 
@@ -38,12 +38,12 @@ const languages = [
 type LanguageCode = (typeof languages)[number]["code"];
 
 const tabLabels: Record<LanguageCode, Record<Tab, string>> = {
-  es: { Home: "Home", Products: "Productos", Reviews: "Reviews", Status: "Estado", FAQ: "FAQ" },
-  en: { Home: "Home", Products: "Products", Reviews: "Reviews", Status: "Status", FAQ: "FAQ" },
-  de: { Home: "Home", Products: "Produkte", Reviews: "Bewertungen", Status: "Status", FAQ: "FAQ" },
-  fr: { Home: "Accueil", Products: "Produits", Reviews: "Avis", Status: "Statut", FAQ: "FAQ" },
-  it: { Home: "Home", Products: "Prodotti", Reviews: "Recensioni", Status: "Stato", FAQ: "FAQ" },
-  pt: { Home: "Home", Products: "Produtos", Reviews: "Reviews", Status: "Status", FAQ: "FAQ" },
+  es: { Home: "Home", Products: "Productos", Reviews: "Reviews", Status: "Estado", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  en: { Home: "Home", Products: "Products", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  de: { Home: "Home", Products: "Produkte", Reviews: "Bewertungen", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  fr: { Home: "Accueil", Products: "Produits", Reviews: "Avis", Status: "Statut", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  it: { Home: "Home", Products: "Prodotti", Reviews: "Recensioni", Status: "Stato", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  pt: { Home: "Home", Products: "Produtos", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
 };
 
 const copy = {
@@ -531,12 +531,8 @@ export default function Home() {
         )}
         {activeTab === "Reviews" && <ReviewsPanel labels={labels} />}
         {activeTab === "Status" && <StatusPanel />}
-        {activeTab === "FAQ" && (
-          <>
-            <FaqPanel />
-            <TeamShowcase />
-          </>
-        )}
+        {activeTab === "FAQ" && <FaqPanel />}
+        {activeTab === "Meet The Team" && <TeamShowcase />}
       </div>
 
       <DiscordBubble

@@ -20,9 +20,6 @@ type TeamMember = {
 
 const sharedLinks = {
   discord: "https://discord.gg/KEWZHDQq6X",
-  github: "https://github.com/CeroCee/zentux-web",
-  x: "https://x.com",
-  instagram: "https://instagram.com",
 };
 
 const teamMembers: TeamMember[] = [
@@ -37,7 +34,6 @@ const teamMembers: TeamMember[] = [
       { label: "YouTube", href: "https://www.youtube.com/@CeroCee", icon: "YT" },
       { label: "TikTok", href: "https://www.tiktok.com/@cero_cee", icon: "TT" },
       { label: "Discord", href: sharedLinks.discord, icon: "DC" },
-      { label: "GitHub", href: sharedLinks.github, icon: "GH" },
     ],
   },
   {
@@ -47,12 +43,7 @@ const teamMembers: TeamMember[] = [
     accent: "#20e8f2",
     bio:
       "Supports the daily momentum of Zentux by testing builds, reviewing user needs, and helping the team keep releases polished, stable, and aligned with the brand.",
-    socials: [
-      { label: "Discord", href: sharedLinks.discord, icon: "DC" },
-      { label: "GitHub", href: sharedLinks.github, icon: "GH" },
-      { label: "X", href: sharedLinks.x, icon: "X" },
-      { label: "Instagram", href: sharedLinks.instagram, icon: "IG" },
-    ],
+    socials: [],
   },
   {
     name: "Tmozz",
@@ -61,12 +52,16 @@ const teamMembers: TeamMember[] = [
     accent: "#ff335f",
     bio:
       "Helps direct the future of Zentux through product decisions, team coordination, and release planning. Tmozz keeps the project grounded in quality, trust, and a sharper experience for every user.",
-    socials: [
-      { label: "Discord", href: sharedLinks.discord, icon: "DC" },
-      { label: "GitHub", href: sharedLinks.github, icon: "GH" },
-      { label: "X", href: sharedLinks.x, icon: "X" },
-      { label: "Instagram", href: sharedLinks.instagram, icon: "IG" },
-    ],
+    socials: [],
+  },
+  {
+    name: "Đørixm Đurxngø",
+    role: "Staff",
+    image: "/team-dorixm-durxngo.png",
+    accent: "#ff2f76",
+    bio:
+      "Supports Zentux from the front line by helping keep the community organized, respectful, and informed. As Staff, Đørixm Đurxngø helps users feel guided, watches for issues, and keeps the team connected to real community feedback.",
+    socials: [],
   },
   {
     name: "Lead Developer",
@@ -75,12 +70,7 @@ const teamMembers: TeamMember[] = [
     accent: "#8cff5f",
     bio:
       "Builds the technical foundation of Zentux apps, turning ideas into reliable tools with clean systems, license checks, and performance-minded execution.",
-    socials: [
-      { label: "Discord", href: sharedLinks.discord, icon: "DC" },
-      { label: "GitHub", href: sharedLinks.github, icon: "GH" },
-      { label: "X", href: sharedLinks.x, icon: "X" },
-      { label: "Instagram", href: sharedLinks.instagram, icon: "IG" },
-    ],
+    socials: [],
   },
   {
     name: "Community Manager",
@@ -89,12 +79,7 @@ const teamMembers: TeamMember[] = [
     accent: "#d85cff",
     bio:
       "Shapes how Zentux feels across the website, product screens, and support channels, keeping the experience sharp, readable, and connected to the community.",
-    socials: [
-      { label: "Discord", href: sharedLinks.discord, icon: "DC" },
-      { label: "GitHub", href: sharedLinks.github, icon: "GH" },
-      { label: "X", href: sharedLinks.x, icon: "X" },
-      { label: "Instagram", href: sharedLinks.instagram, icon: "IG" },
-    ],
+    socials: [],
   },
 ];
 
@@ -187,21 +172,23 @@ export default function TeamShowcase() {
                 </p>
               </div>
 
-              <div className="mt-7 flex flex-wrap gap-2">
-                {member.socials.map((social) => (
-                  <a
-                    key={`${member.name}-${social.label}`}
-                    href={social.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`${member.name} on ${social.label}`}
-                    className="team-social inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-[11px] font-black text-white transition"
-                    title={social.label}
-                  >
-                    {social.icon}
-                  </a>
-                ))}
-              </div>
+              {member.socials.length > 0 && (
+                <div className="mt-7 flex flex-wrap gap-2">
+                  {member.socials.map((social) => (
+                    <a
+                      key={`${member.name}-${social.label}`}
+                      href={social.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`${member.name} on ${social.label}`}
+                      className="team-social inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-[11px] font-black text-white transition"
+                      title={social.label}
+                    >
+                      {social.icon}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </article>
         ))}
