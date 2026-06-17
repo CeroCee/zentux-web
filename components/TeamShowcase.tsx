@@ -88,13 +88,19 @@ const teamGroups: { title: string; members: TeamMember[] }[] = [
     title: "Staff",
     members: [
       {
-        name: "Đørixm Đurxngø",
+        name: "DorixmCee",
         role: "Staff",
         image: "/team-dorixm-durxngo.png",
         accent: "#ff2f76",
         bio:
-          "Supports Zentux from the front line by helping keep the community organized, respectful, and informed. As Staff, Đørixm Đurxngø helps users feel guided, watches for issues, and keeps the team connected to real community feedback.",
-        socials: [],
+          "Supports Zentux from the front line by helping keep the community organized, respectful, and informed. As Staff, DorixmCee helps users feel guided, watches for issues, and keeps the team connected to real community feedback.",
+        socials: [
+          {
+            label: "TikTok",
+            href: "https://www.tiktok.com/@dorixm1?_r=1&_t=ZS-97HCteifyK7",
+            icon: "/social-tt.png",
+          },
+        ],
       },
     ],
   },

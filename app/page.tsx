@@ -25,6 +25,8 @@ const discordUrl = "https://discord.gg/KEWZHDQq6X";
 const tabs = ["Home", "Products", "Reviews", "Status", "FAQ", "Meet The Team"] as const;
 type Tab = (typeof tabs)[number];
 type LegalPanel = "privacy" | "terms";
+const desktopTabs: Tab[] = ["Home", "Products", "Reviews"];
+const moreTabs: Tab[] = ["Status", "FAQ", "Meet The Team"];
 
 const languages = [
   { code: "es", label: "Español", flag: "🇪🇸" },
@@ -38,12 +40,12 @@ const languages = [
 type LanguageCode = (typeof languages)[number]["code"];
 
 const tabLabels: Record<LanguageCode, Record<Tab, string>> = {
-  es: { Home: "Home", Products: "Productos", Reviews: "Video Reviews", Status: "Estado", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  en: { Home: "Home", Products: "Products", Reviews: "Video Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  de: { Home: "Home", Products: "Produkte", Reviews: "Video Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  fr: { Home: "Accueil", Products: "Produits", Reviews: "Video Reviews", Status: "Statut", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  it: { Home: "Home", Products: "Prodotti", Reviews: "Video Reviews", Status: "Stato", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  pt: { Home: "Home", Products: "Produtos", Reviews: "Video Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  es: { Home: "Home", Products: "Productos", Reviews: "Reviews", Status: "Estado", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  en: { Home: "Home", Products: "Products", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  de: { Home: "Home", Products: "Produkte", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  fr: { Home: "Accueil", Products: "Produits", Reviews: "Reviews", Status: "Statut", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  it: { Home: "Home", Products: "Prodotti", Reviews: "Reviews", Status: "Stato", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  pt: { Home: "Home", Products: "Produtos", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
 };
 
 const copy = {
@@ -468,6 +470,8 @@ export default function Home() {
   const labels = t(language);
   const [onlineCount, setOnlineCount] = useState<number | null>(null);
   const [showDiscordBubble, setShowDiscordBubble] = useState(true);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [legalPanel, setLegalPanel] = useState<LegalPanel | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<
     (typeof products)[number] | null
@@ -495,14 +499,20 @@ export default function Home() {
     return () => window.clearInterval(timer);
   }, []);
 
+  const selectTab = (tab: Tab) => {
+    setActiveTab(tab);
+    setMoreOpen(false);
+    setMobileMenuOpen(false);
+  };
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05010b] text-white">
       <SiteBackground />
 
       <header className="fixed inset-x-0 top-0 z-50 px-4 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
           <button
-            onClick={() => setActiveTab("Home")}
+            onClick={() => selectTab("Home")}
             className="flex min-w-0 items-center gap-3 rounded-full border border-white/10 bg-black/35 px-3 py-2 backdrop-blur-xl transition hover:border-[#a855f7]/60"
           >
             <Image
@@ -521,24 +531,55 @@ export default function Home() {
             </div>
           </button>
 
-          <nav className="flex items-center rounded-full border border-white/10 bg-black/45 p-1 text-xs font-black text-[#bfb8c8] shadow-[0_0_60px_rgba(168,85,247,0.08)] backdrop-blur-xl sm:text-sm">
-            {tabs.map((tab) => (
+          <nav className="hidden items-center rounded-full border border-white/10 bg-black/45 p-1 text-xs font-black text-[#bfb8c8] shadow-[0_0_60px_rgba(168,85,247,0.08)] backdrop-blur-xl md:flex lg:text-sm">
+            {desktopTabs.map((tab) => (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`rounded-full px-3 py-2 transition sm:px-5 ${
+                onClick={() => selectTab(tab)}
+                className={`rounded-full px-4 py-2 transition lg:px-5 ${
                   activeTab === tab
-                    ? "bg-white text-black shadow-[0_0_30px_rgba(255,255,255,0.16)]"
+                    ? "border border-[#a855f7]/70 bg-[#160821]/80 text-white shadow-[0_0_24px_rgba(168,85,247,0.28)]"
                     : "hover:bg-white/10 hover:text-white"
                 }`}
               >
                 {tabLabels[language][tab]}
               </button>
             ))}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setMoreOpen((open) => !open)}
+                className={`rounded-full px-4 py-2 transition lg:px-5 ${
+                  moreTabs.includes(activeTab)
+                    ? "border border-[#a855f7]/70 bg-[#160821]/80 text-white shadow-[0_0_24px_rgba(168,85,247,0.28)]"
+                    : "hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                More <span className="text-[#b989ff]">▼</span>
+              </button>
+              {moreOpen && (
+                <div className="absolute left-1/2 top-full mt-3 w-56 -translate-x-1/2 rounded-2xl border border-[#a855f7]/25 bg-black/80 p-2 shadow-[0_0_50px_rgba(168,85,247,0.22)] backdrop-blur-2xl">
+                  {moreTabs.map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => selectTab(tab)}
+                      className={`block w-full rounded-xl px-4 py-3 text-left text-sm transition ${
+                        activeTab === tab
+                          ? "border border-[#a855f7]/50 bg-[#160821] text-white"
+                          : "text-[#d8d2df] hover:bg-white/[0.06] hover:text-white"
+                      }`}
+                    >
+                      {tabLabels[language][tab]}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </nav>
 
-          <div className="flex items-center gap-3">
-            <OnlineVisitors language={language} count={onlineCount} />
+          <div className="hidden items-center gap-3 md:flex">
+            <OnlineVisitors count={onlineCount} />
             <LanguageMenu language={language} setLanguage={setLanguage} />
             <a
               href={supportUrl}
@@ -549,7 +590,56 @@ export default function Home() {
               {labels.getHelp}
             </a>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#a855f7]/35 bg-black/45 text-xl font-black text-white shadow-[0_0_28px_rgba(168,85,247,0.16)] backdrop-blur-xl transition hover:border-[#a855f7] md:hidden"
+            aria-label="Open navigation menu"
+          >
+            ☰
+          </button>
         </div>
+
+        {mobileMenuOpen && (
+          <div className="mx-auto mt-3 max-w-7xl px-1 md:hidden">
+            <div className="zentux-mobile-menu rounded-[28px] border border-[#a855f7]/30 bg-black/78 p-3 shadow-[0_0_70px_rgba(168,85,247,0.24)] backdrop-blur-2xl">
+              <div className="grid gap-2">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab}
+                    type="button"
+                    onClick={() => selectTab(tab)}
+                    className={`rounded-2xl px-4 py-3 text-left text-sm font-black transition ${
+                      activeTab === tab
+                        ? "border border-[#a855f7]/60 bg-[#160821] text-white shadow-[0_0_22px_rgba(168,85,247,0.24)]"
+                        : "text-[#d8d2df] hover:bg-white/[0.06] hover:text-white"
+                    }`}
+                  >
+                    {tabLabels[language][tab]}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-3 grid gap-2 border-t border-white/10 pt-3">
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.035] px-4 py-3">
+                  <span className="text-sm font-black text-white">
+                    🟢 Online {onlineCount ?? "..."}
+                  </span>
+                  <LanguageMenu language={language} setLanguage={setLanguage} />
+                </div>
+                <a
+                  href={supportUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-2xl border border-[#a855f7]/45 bg-[#160821]/70 px-4 py-3 text-center text-sm font-black text-white shadow-[0_0_28px_rgba(168,85,247,0.16)]"
+                >
+                  {labels.getHelp}
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       <div className="relative z-10 mx-auto min-h-screen max-w-7xl px-5 pb-12 pt-28 sm:px-7 lg:pt-32">
@@ -587,35 +677,16 @@ export default function Home() {
 }
 
 function OnlineVisitors({
-  language,
   count,
 }: {
-  language: LanguageCode;
   count: number | null;
 }) {
-  const labels: Record<LanguageCode, string> = {
-    en: "People using the apps",
-    es: "Personas usando las apps",
-    de: "Personen nutzen die Apps",
-    fr: "Personnes utilisant les apps",
-    it: "Persone che usano le app",
-    pt: "Pessoas usando os apps",
-  };
-
   return (
     <div
-      className="hidden items-center gap-2.5 rounded-full border border-[#a855f7]/50 bg-black/45 px-4 py-2.5 text-xs font-black text-white shadow-[0_0_28px_rgba(168,85,247,0.2)] backdrop-blur-xl xl:flex"
-      title={
-        language === "es"
-          ? "Estimacion de personas usando las aplicaciones"
-          : "Estimated people using the apps"
-      }
+      className="hidden items-center gap-2 rounded-full border border-[#a855f7]/50 bg-black/45 px-3 py-2.5 text-xs font-black text-white shadow-[0_0_28px_rgba(168,85,247,0.2)] backdrop-blur-xl lg:flex"
+      title="Estimated people online"
     >
-      <span className="relative flex h-2.5 w-2.5">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]" />
-      </span>
-      <span>{labels[language]}</span>
+      <span>🟢 Online</span>
       <span className="min-w-6 text-right text-[#d684ff]">{count ?? "..."}</span>
     </div>
   );
@@ -636,10 +707,10 @@ function LanguageMenu({
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-black/45 text-lg shadow-[0_0_35px_rgba(168,85,247,0.12)] backdrop-blur-xl transition hover:border-[#a855f7]/60"
+        className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-black/45 text-xs font-black uppercase text-white shadow-[0_0_35px_rgba(168,85,247,0.12)] backdrop-blur-xl transition hover:border-[#a855f7]/60"
         aria-label="Change language"
       >
-        {selected.flag}
+        {selected.code}
       </button>
 
       {open && (
@@ -696,20 +767,32 @@ function HomePanel({
   onOpenLegal: (panel: LegalPanel) => void;
 }) {
   return (
-    <div className="space-y-14">
-      <section className="grid min-h-[calc(100vh-9rem)] gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-        <div>
-          <h1 className="max-w-3xl text-6xl font-black leading-[0.92] tracking-tight text-white sm:text-7xl lg:text-8xl">
+    <div className="space-y-10 sm:space-y-14">
+      <section className="grid min-h-[calc(100vh-8rem)] gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+        <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
+          <h1 className="text-5xl font-black leading-[0.95] tracking-tight text-white sm:text-7xl lg:text-8xl">
             {labels.homeTitleA}
             <span className="block bg-gradient-to-r from-[#d85cff] to-[#7c6bff] bg-clip-text text-transparent">
               {labels.homeTitleB}
             </span>
           </h1>
-          <p className="mt-7 max-w-xl text-lg font-semibold leading-8 text-[#a69bb3]">
-            {labels.homeText}
+          <p className="mx-auto mt-6 max-w-xl text-base font-semibold leading-7 text-[#c4b8ce] sm:text-lg lg:mx-0">
+            Gaming tools made for performance, automation and complete control.
           </p>
 
-          <div className="mt-9 flex flex-wrap gap-4">
+          <div className="mx-auto mt-5 flex max-w-xl flex-wrap justify-center gap-2 text-xs font-black uppercase tracking-[0.12em] text-[#d8c8ef] lg:mx-0 lg:justify-start">
+            <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2">
+              Ultra lightweight
+            </span>
+            <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2">
+              Secure licenses
+            </span>
+            <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2">
+              24/7 support
+            </span>
+          </div>
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
             <button
               onClick={() => setActiveTab("Products")}
               className="rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-8 py-4 text-sm font-black text-white shadow-[0_0_45px_rgba(168,85,247,0.35)] transition hover:scale-[1.02]"
@@ -726,14 +809,14 @@ function HomePanel({
             </a>
           </div>
 
-          <div className="mt-12 grid max-w-xl grid-cols-2 gap-3 border-y border-white/10 py-6 sm:grid-cols-4">
+          <div className="mx-auto mt-8 grid max-w-xl grid-cols-2 gap-3 border-y border-white/10 py-5 sm:grid-cols-4 lg:mx-0">
             <HeroStat value="6,800+" label={labels.productsSold} />
             <HeroStat value="4.68" label={labels.rating} />
             <HeroStat value="$3" label={labels.price} />
             <HeroStat value="24/7" label={labels.support} />
           </div>
 
-          <div className="mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
+          <div className="mx-auto mt-6 grid max-w-3xl gap-3 sm:grid-cols-3 lg:mx-0">
             <HomeTrustCard
               value="6.8k+"
               title="Happy Customers"
@@ -752,14 +835,75 @@ function HomePanel({
           </div>
         </div>
 
-        <div className="relative hidden min-h-[520px] lg:block">
-          <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#a855f7]/25 shadow-[0_0_120px_rgba(168,85,247,0.18)]" />
-          <div className="absolute left-1/2 top-1/2 h-60 w-60 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#a855f7]/25" />
-          <div className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white blur-2xl" />
+        <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
+          <ProductPreviewCluster />
         </div>
       </section>
 
       <LegalFooter setActiveTab={setActiveTab} onOpenLegal={onOpenLegal} />
+    </div>
+  );
+}
+
+function ProductPreviewCluster() {
+  const previews = [
+    {
+      name: "Zentux AutoClick",
+      image: "/zentux-autoclicker.png",
+      meta: "Automation",
+      tone: "from-[#ff335f]/35 to-[#a855f7]/15",
+    },
+    {
+      name: "Zentux Optimizer",
+      image: "/producto.png",
+      meta: "Performance",
+      tone: "from-[#d85cff]/35 to-[#20e8f2]/15",
+    },
+    {
+      name: "Zentux Recorder",
+      image: "/zentux-macro.png",
+      meta: "Macro Tools",
+      tone: "from-[#20e8f2]/25 to-[#806bff]/20",
+    },
+  ];
+
+  return (
+    <div className="relative min-h-[420px] overflow-hidden rounded-[32px] border border-white/10 bg-black/30 p-5 shadow-[0_0_100px_rgba(168,85,247,0.13)] backdrop-blur-xl sm:p-7 lg:min-h-[560px]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(168,85,247,0.24),transparent_42%)]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#a855f7]/25 shadow-[0_0_120px_rgba(168,85,247,0.18)] sm:h-80 sm:w-80" />
+
+      <div className="relative grid gap-4 sm:grid-cols-2 lg:block">
+        {previews.map((preview, index) => (
+          <article
+            key={preview.name}
+            className={`rounded-[24px] border border-[#a855f7]/25 bg-gradient-to-br ${preview.tone} p-3 shadow-[0_0_50px_rgba(168,85,247,0.15)] backdrop-blur-2xl transition hover:-translate-y-1 hover:border-[#c75cff]/70 lg:absolute lg:w-[280px] ${
+              index === 0
+                ? "lg:left-4 lg:top-8"
+                : index === 1
+                  ? "lg:right-4 lg:top-36"
+                  : "sm:col-span-2 lg:left-24 lg:top-72"
+            }`}
+          >
+            <div className="flex items-center gap-4">
+              <Image
+                src={preview.image}
+                alt={preview.name}
+                width={84}
+                height={84}
+                className="h-20 w-20 rounded-2xl object-cover shadow-[0_0_30px_rgba(168,85,247,0.24)]"
+              />
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-[#b989ff]">
+                  {preview.meta}
+                </p>
+                <h3 className="mt-1 text-xl font-black leading-tight text-white">
+                  {preview.name}
+                </h3>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
     </div>
   );
 }

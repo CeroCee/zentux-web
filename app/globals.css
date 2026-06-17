@@ -92,6 +92,11 @@ body {
   animation: zentuxLegalModalIn 220ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
 }
 
+.zentux-mobile-menu {
+  animation: zentuxMobileMenuIn 220ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  transform-origin: top right;
+}
+
 .team-star-field {
   background-image:
     radial-gradient(circle, rgba(32, 232, 242, 0.55) 1px, transparent 1.6px),
@@ -277,6 +282,18 @@ body {
   }
 }
 
+@keyframes zentuxMobileMenuIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -10px, 0) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
 @keyframes teamStarDrift {
   from {
     transform: translate3d(0, -10%, 0);
@@ -334,6 +351,7 @@ body {
   .zentux-snow-medium,
   .zentux-snow-fast,
   .zentux-discord-bubble,
+  .zentux-mobile-menu,
   .team-star-field,
   .team-card,
   .team-card::before,
@@ -350,6 +368,7 @@ body {
 
   .zentux-discord-bubble,
   .zentux-legal-modal,
+  .zentux-mobile-menu,
   .team-card-inner {
     transform: none;
   }
