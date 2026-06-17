@@ -8,6 +8,7 @@ const BRAND_NAME = "Zentux";
 const OPTIMIZER_NAME = "ZentuxOptimizer Pro";
 const AUTOCLICKER_NAME = "Zentux Autoclicker";
 const MACRO_NAME = "Zentux Macro";
+const CURSOR_NAME = "Zentux Cursor";
 const checkoutUrl = "https://buy.stripe.com/8x29ALdMMeKmcSs60q1wY01";
 const optimizerDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxOptimizer.exe";
@@ -15,6 +16,8 @@ const autoclickerDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxAutoclicker.exe";
 const macroDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxMacro.exe";
+const cursorDownloadUrl =
+  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxCursor.exe";
 const supportUrl = "https://guns.lol/cerocee";
 const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
@@ -81,7 +84,7 @@ const copy = {
     oneLicense: "Una licencia desbloquea todos los productos Zentux compatibles.",
     included: "Incluido",
     modalLicenseText:
-      "Tu suscripcion activa funciona como un paquete completo de Zentux. La misma licencia puede validar ZentuxOptimizer Pro, Zentux Autoclicker y Zentux Macro mientras la suscripcion siga activa.",
+      "Tu suscripcion activa funciona como un paquete completo de Zentux. La misma licencia puede validar ZentuxOptimizer Pro, Zentux Autoclicker, Zentux Macro y Zentux Cursor mientras la suscripcion siga activa.",
     delivery: "Entrega",
     validation: "Validacion",
     downloads: "Descargas",
@@ -137,7 +140,7 @@ const copy = {
     oneLicense: "One license unlocks every supported Zentux product.",
     included: "Included",
     modalLicenseText:
-      "Your active subscription works as a full Zentux package. The same license can validate supported apps like ZentuxOptimizer Pro, Zentux Autoclicker, and Zentux Macro, as long as the subscription is active.",
+      "Your active subscription works as a full Zentux package. The same license can validate supported apps like ZentuxOptimizer Pro, Zentux Autoclicker, Zentux Macro, and Zentux Cursor, as long as the subscription is active.",
     delivery: "Delivery",
     validation: "Validation",
     downloads: "Downloads",
@@ -361,6 +364,18 @@ const products = [
     downloadUrl: macroDownloadUrl,
     details:
       "Zentux Macro records your mouse and keyboard actions, then repeats them with a cleaner interface and more control than basic macro tools. It is designed for users who want a more advanced TinyTask-style workflow inside the Zentux package.",
+  },
+  {
+    name: CURSOR_NAME,
+    image: "/zentux-cursor.png",
+    badge: "New",
+    description: "Custom cursor app for your favorite games",
+    category: "Automation",
+    price: "Included",
+    status: "- In Stock",
+    downloadUrl: cursorDownloadUrl,
+    details:
+      "Zentux Cursor lets you personalize your cursor for your favorite games with a bold gamer style, quick setup, saved cursor profiles, and license-protected access inside the Zentux package.",
   },
 ];
 
@@ -1661,7 +1676,7 @@ function FaqPanel() {
         />
         <FaqItem
           q="📦 What is included?"
-          a="The package includes supported Zentux products like ZentuxOptimizer Pro, Zentux Autoclicker, and Zentux Macro when those builds are available."
+          a="The package includes supported Zentux products like ZentuxOptimizer Pro, Zentux Autoclicker, Zentux Macro, and Zentux Cursor when those builds are available."
         />
         <FaqItem
           q="⬇️ Can I download the apps now?"
