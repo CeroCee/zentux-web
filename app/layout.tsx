@@ -7,10 +7,10 @@ export const metadata: Metadata = {
     template: "%s | Zentux",
   },
   description:
-    "ZentuxOptimizer Pro is a premium Windows optimizer for gamers with cleanup, RAM tools, FPS diagnostics, game boosting, and online license activation.",
+    "Zentux Optimizer Pro is a premium Windows optimizer for gamers with cleanup, RAM tools, FPS diagnostics, game boosting, and online license activation.",
   applicationName: "Zentux",
   keywords: [
-    "ZentuxOptimizer",
+    "Zentux Optimizer",
     "Zentux",
     "Windows optimizer",
     "gaming optimizer",

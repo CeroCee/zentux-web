@@ -12,7 +12,7 @@ export default function BuyProButton({ compact = false }: { compact?: boolean })
           : "inline-flex items-center justify-center rounded-full bg-[#c51f35] px-7 py-3.5 text-sm font-bold text-white shadow-[0_0_30px_rgba(197,31,53,0.34)] transition hover:bg-[#e12a41]"
       }
     >
-      Buy ZentuxOptimizer Pro
+      Buy Zentux Optimizer Pro
     </a>
   );
 }

@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
 const BRAND_NAME = "Zentux";
-const OPTIMIZER_NAME = "ZentuxOptimizer Pro";
+const OPTIMIZER_NAME = "Zentux Optimizer Pro";
 const AUTOCLICKER_NAME = "Zentux Autoclicker";
 const MACRO_NAME = "Zentux Macro";
 const CURSOR_NAME = "Zentux Cursor";
@@ -17,7 +17,7 @@ const autoclickerDownloadUrl =
 const macroDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxMacro.exe";
 const cursorDownloadUrl =
-  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxCursor.exe";
+  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Cursorv3Setup.exe";
 const supportUrl = "https://guns.lol/cerocee";
 const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
@@ -70,7 +70,7 @@ const copy = {
     popular: "Popular",
     name: "Nombre",
     zentuxAccess: "Zentux Access",
-    accessText: "Una licencia activa desbloquea todos los productos Zentux compatibles.",
+    accessText: "Una licencia activa desbloquea los productos premium Zentux compatibles.",
     showing: "Mostrando",
     buyPackage: "Comprar paquete completo",
     available: "Disponible",
@@ -81,10 +81,10 @@ const copy = {
     packageLabel: "Paquete Zentux",
     close: "Cerrar",
     completeLicense: "Licencia completa",
-    oneLicense: "Una licencia desbloquea todos los productos Zentux compatibles.",
+    oneLicense: "Una licencia desbloquea los productos premium Zentux compatibles.",
     included: "Incluido",
     modalLicenseText:
-      "Tu suscripcion activa funciona como un paquete completo de Zentux. La misma licencia puede validar ZentuxOptimizer Pro, Zentux Autoclicker, Zentux Macro y Zentux Cursor mientras la suscripcion siga activa.",
+      "Tu suscripcion activa funciona como un paquete completo de Zentux. La misma licencia puede validar Zentux Optimizer Pro, Zentux Autoclicker y Zentux Macro mientras la suscripcion siga activa.",
     delivery: "Entrega",
     validation: "Validacion",
     downloads: "Descargas",
@@ -126,7 +126,7 @@ const copy = {
     popular: "Popular",
     name: "Name",
     zentuxAccess: "Zentux Access",
-    accessText: "One active license unlocks every supported Zentux product.",
+    accessText: "One active license unlocks supported premium Zentux products.",
     showing: "Showing",
     buyPackage: "Buy Complete Package",
     available: "Available",
@@ -137,10 +137,10 @@ const copy = {
     packageLabel: "Zentux Package",
     close: "Close",
     completeLicense: "Complete license",
-    oneLicense: "One license unlocks every supported Zentux product.",
+    oneLicense: "One license unlocks supported premium Zentux products.",
     included: "Included",
     modalLicenseText:
-      "Your active subscription works as a full Zentux package. The same license can validate supported apps like ZentuxOptimizer Pro, Zentux Autoclicker, Zentux Macro, and Zentux Cursor, as long as the subscription is active.",
+      "Your active subscription works as a full Zentux package. The same license can validate supported apps like Zentux Optimizer Pro, Zentux Autoclicker, and Zentux Macro, as long as the subscription is active.",
     delivery: "Delivery",
     validation: "Validation",
     downloads: "Downloads",
@@ -182,7 +182,7 @@ const copy = {
     popular: "Popular",
     name: "Name",
     zentuxAccess: "Zentux Access",
-    accessText: "One active license unlocks every supported Zentux product.",
+    accessText: "One active license unlocks supported premium Zentux products.",
     showing: "Showing",
     buyPackage: "Buy Complete Package",
     available: "Available",
@@ -221,7 +221,7 @@ const copy = {
     popular: "Popular",
     name: "Name",
     zentuxAccess: "Zentux Access",
-    accessText: "One active license unlocks every supported Zentux product.",
+    accessText: "One active license unlocks supported premium Zentux products.",
     showing: "Showing",
     buyPackage: "Buy Complete Package",
     available: "Available",
@@ -260,7 +260,7 @@ const copy = {
     popular: "Popular",
     name: "Name",
     zentuxAccess: "Zentux Access",
-    accessText: "One active license unlocks every supported Zentux product.",
+    accessText: "One active license unlocks supported premium Zentux products.",
     showing: "Showing",
     buyPackage: "Buy Complete Package",
     available: "Available",
@@ -299,7 +299,7 @@ const copy = {
     popular: "Popular",
     name: "Name",
     zentuxAccess: "Zentux Access",
-    accessText: "One active license unlocks every supported Zentux product.",
+    accessText: "One active license unlocks supported premium Zentux products.",
     showing: "Showing",
     buyPackage: "Buy Complete Package",
     available: "Available",
@@ -339,7 +339,7 @@ const products = [
     status: "- In Stock",
     downloadUrl: optimizerDownloadUrl,
     details:
-      "ZentuxOptimizer Pro helps prepare Windows for gaming with cleaner tools, RAM review, startup control, game preparation, diagnostics, and license-protected Pro access.",
+      "Zentux Optimizer Pro helps prepare Windows for gaming with cleaner tools, RAM review, startup control, game preparation, diagnostics, and license-protected Pro access.",
   },
   {
     name: AUTOCLICKER_NAME,
@@ -368,14 +368,14 @@ const products = [
   {
     name: CURSOR_NAME,
     image: "/zentux-cursor.png",
-    badge: "New",
+    badge: "Free",
     description: "Custom cursor app for your favorite games",
     category: "Automation",
-    price: "Included",
+    price: "Free",
     status: "- In Stock",
     downloadUrl: cursorDownloadUrl,
     details:
-      "Zentux Cursor lets you personalize your cursor for your favorite games with a bold gamer style, quick setup, saved cursor profiles, and license-protected access inside the Zentux package.",
+      "Zentux Cursor lets you personalize your cursor for your favorite games with a bold gamer style, quick setup, saved cursor profiles, and a free installer download.",
   },
 ];
 
@@ -1361,6 +1361,8 @@ function ProductCard({
   onSelect: () => void;
   priority?: boolean;
 }) {
+  const isFreeProduct = product.price === "Free";
+
   return (
     <article
       className="group mx-auto w-full max-w-[430px] overflow-hidden rounded-[28px] border border-white/12 bg-[#0a070d]/95 text-white no-underline transition hover:-translate-y-1 hover:border-[#c75cff]/80 hover:shadow-[0_0_60px_rgba(168,85,247,0.24)]"
@@ -1407,7 +1409,9 @@ function ProductCard({
           </div>
           <div className="flex justify-between gap-3">
             <span>{labels.options}</span>
-            <span className="text-white">Complete package</span>
+            <span className="text-white">
+              {isFreeProduct ? "Free download" : "Complete package"}
+            </span>
           </div>
         </div>
         <div className="mt-6 flex items-center justify-between gap-3">
@@ -1433,6 +1437,7 @@ function ProductDetailsModal({
   if (!product) {
     return null;
   }
+  const isFreeProduct = product.price === "Free";
 
   return (
     <div className="fixed inset-0 z-[85] flex items-center justify-center bg-black/78 px-4 py-6 backdrop-blur-sm">
@@ -1459,7 +1464,7 @@ function ProductDetailsModal({
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.24em] text-[#c76cff]">
-                {labels.packageLabel ?? copy.en.packageLabel}
+                {isFreeProduct ? "Free Tool" : labels.packageLabel ?? copy.en.packageLabel}
               </p>
               <h2 className="mt-3 text-4xl font-black leading-tight text-white">
                 {product.name}
@@ -1481,18 +1486,20 @@ function ProductDetailsModal({
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.22em] text-[#b989ff]">
-                  {labels.completeLicense ?? copy.en.completeLicense}
+                  {isFreeProduct ? "Free download" : labels.completeLicense ?? copy.en.completeLicense}
                 </p>
                 <h3 className="mt-2 text-2xl font-black text-white">
-                  {labels.oneLicense ?? copy.en.oneLicense}
+                  {isFreeProduct ? "No package required." : labels.oneLicense ?? copy.en.oneLicense}
                 </h3>
               </div>
               <span className="rounded-full bg-white px-4 py-1.5 text-xs font-black uppercase tracking-wide text-black">
-                {labels.included ?? copy.en.included}
+                {isFreeProduct ? "Free" : labels.included ?? copy.en.included}
               </span>
             </div>
             <p className="mt-4 text-sm font-semibold leading-7 text-[#c9c2d0]">
-              {labels.modalLicenseText ?? copy.en.modalLicenseText}
+              {isFreeProduct
+                ? "Zentux Cursor is a free app. Download the installer directly and use it to personalize your cursor in supported games."
+                : labels.modalLicenseText ?? copy.en.modalLicenseText}
             </p>
           </div>
 
@@ -1511,7 +1518,11 @@ function ProductDetailsModal({
             />
             <DetailPoint
               title={labels.downloads ?? copy.en.downloads}
-              text={labels.downloadUnavailableText ?? copy.en.downloadUnavailableText}
+              text={
+                isFreeProduct
+                  ? "The Zentux Cursor installer is available now as a free download."
+                  : labels.downloadUnavailableText ?? copy.en.downloadUnavailableText
+              }
             />
           </div>
 
@@ -1520,26 +1531,41 @@ function ProductDetailsModal({
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href={checkoutUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-7 py-4 text-sm font-black text-white shadow-[0_0_45px_rgba(168,85,247,0.28)] transition hover:scale-[1.02]"
-            >
-              {labels.buyPackage ?? copy.en.buyPackage}
-            </a>
-            <button
-              type="button"
-              disabled
-              title="Downloads will be enabled when the app builds are ready."
-              className="cursor-not-allowed rounded-xl border border-white/10 bg-white/[0.035] px-7 py-4 text-sm font-black text-[#8f849a] opacity-80"
-            >
-              {labels.downloadUnavailable ?? copy.en.downloadUnavailable}
-            </button>
+            {isFreeProduct ? (
+              <a
+                href={product.downloadUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-xl bg-gradient-to-r from-[#59ffb7] to-[#8cff5f] px-7 py-4 text-sm font-black text-black shadow-[0_0_45px_rgba(89,255,183,0.22)] transition hover:scale-[1.02]"
+              >
+                Download Free
+              </a>
+            ) : (
+              <>
+                <a
+                  href={checkoutUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-7 py-4 text-sm font-black text-white shadow-[0_0_45px_rgba(168,85,247,0.28)] transition hover:scale-[1.02]"
+                >
+                  {labels.buyPackage ?? copy.en.buyPackage}
+                </a>
+                <button
+                  type="button"
+                  disabled
+                  title="Downloads will be enabled when the app builds are ready."
+                  className="cursor-not-allowed rounded-xl border border-white/10 bg-white/[0.035] px-7 py-4 text-sm font-black text-[#8f849a] opacity-80"
+                >
+                  {labels.downloadUnavailable ?? copy.en.downloadUnavailable}
+                </button>
+              </>
+            )}
           </div>
-          <p className="mt-3 text-xs font-bold text-[#8f849a]">
-            {labels.downloadUnavailableText ?? copy.en.downloadUnavailableText}
-          </p>
+          {!isFreeProduct && (
+            <p className="mt-3 text-xs font-bold text-[#8f849a]">
+              {labels.downloadUnavailableText ?? copy.en.downloadUnavailableText}
+            </p>
+          )}
         </div>
       </section>
     </div>
@@ -1668,7 +1694,7 @@ function FaqPanel() {
       <div className="mt-10 grid gap-4 lg:grid-cols-2">
         <FaqItem
           q="💳 Is Zentux free?"
-          a="No. Zentux is subscription based. One active license unlocks supported Zentux products included in the package."
+          a="No. Zentux premium apps are subscription based. One active license unlocks supported Zentux products included in the package. Zentux Cursor is free."
         />
         <FaqItem
           q="📩 How do I receive my license?"
@@ -1676,7 +1702,7 @@ function FaqPanel() {
         />
         <FaqItem
           q="📦 What is included?"
-          a="The package includes supported Zentux products like ZentuxOptimizer Pro, Zentux Autoclicker, Zentux Macro, and Zentux Cursor when those builds are available."
+          a="The package includes supported Zentux products like Zentux Optimizer Pro, Zentux Autoclicker, and Zentux Macro when those builds are available. Zentux Cursor is available as a separate free download."
         />
         <FaqItem
           q="⬇️ Can I download the apps now?"
