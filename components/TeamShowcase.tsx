@@ -34,9 +34,14 @@ const teamGroups: { title: string; members: TeamMember[] }[] = [
         bio:
           "Leads the vision, product direction, and final decisions behind Zentux. As director, CeroCee turns community feedback into clear priorities, protects the brand standard, and keeps every release focused on premium gaming tools.",
         socials: [
-          { label: "YouTube", href: "https://www.youtube.com/@CeroCee", icon: "YT" },
-          { label: "TikTok", href: "https://www.tiktok.com/@cero_cee", icon: "TT" },
-          { label: "Discord", href: sharedLinks.discord, icon: "DC" },
+          { label: "YouTube", href: "https://www.youtube.com/@CeroCee", icon: "/social-yt.png" },
+          { label: "TikTok", href: "https://www.tiktok.com/@cero_cee", icon: "/social-tt.png" },
+          {
+            label: "Instagram",
+            href: "https://www.instagram.com/cerocee?igsh=MTNxYnoxdHBsMXU5Mw%3D%3D&utm_source=qr",
+            icon: "/social-ig.png",
+          },
+          { label: "Discord", href: sharedLinks.discord, icon: "/social-dc.png" },
         ],
       },
       {
@@ -73,7 +78,7 @@ const teamGroups: { title: string; members: TeamMember[] }[] = [
           {
             label: "TikTok",
             href: "https://www.tiktok.com/@kjcee6?_r=1&_t=ZP-97HB5BtnFJ1",
-            icon: "TT",
+            icon: "/social-tt.png",
           },
         ],
       },
@@ -179,10 +184,16 @@ function TeamCard({
                 target="_blank"
                 rel="noreferrer"
                 aria-label={`${member.name} on ${social.label}`}
-                className="team-social inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-[11px] font-black text-white transition"
+                className="team-social inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] p-1.5 transition"
                 title={social.label}
               >
-                {social.icon}
+                <Image
+                  src={social.icon}
+                  alt=""
+                  width={30}
+                  height={30}
+                  className="h-full w-full object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.18)]"
+                />
               </a>
             ))}
           </div>
