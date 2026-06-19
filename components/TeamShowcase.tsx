@@ -42,6 +42,11 @@ const teamGroups: { title: string; members: TeamMember[] }[] = [
             icon: "/social-ig.png",
           },
           { label: "Discord", href: sharedLinks.discord, icon: "/social-dc.png" },
+          {
+            label: "Roblox",
+            href: "https://www.roblox.com/es/users/492800898/profile",
+            icon: "/social-roblox.png",
+          },
         ],
       },
       {
@@ -60,7 +65,13 @@ const teamGroups: { title: string; members: TeamMember[] }[] = [
         accent: "#d85cff",
         bio:
           "Guides Zentux with leadership focused on structure, trust, and long-term growth. As a director, PoloCee helps shape priorities, support team decisions, and keep the brand moving with a professional standard.",
-        socials: [],
+        socials: [
+          {
+            label: "Roblox",
+            href: "https://www.roblox.com/users/10690376642/profile",
+            icon: "/social-roblox.png",
+          },
+        ],
       },
     ],
   },
@@ -79,6 +90,31 @@ const teamGroups: { title: string; members: TeamMember[] }[] = [
             label: "TikTok",
             href: "https://www.tiktok.com/@kjcee6?_r=1&_t=ZP-97HB5BtnFJ1",
             icon: "/social-tt.png",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "PR & Partnerships",
+    members: [
+      {
+        name: "ZazaCee",
+        role: "PR & Partnerships",
+        image: "/team-zazacee.png",
+        accent: "#f5d0ff",
+        bio:
+          "Builds relationships around Zentux through outreach, creator connections, and partnership opportunities. PR & Partnerships keeps the brand visible, trusted, and connected with communities that can help Zentux grow.",
+        socials: [
+          {
+            label: "Instagram",
+            href: "https://www.instagram.com/z_r3ynoso?igsh=NTg2YTh1MDlhbHlw&utm_source=qr",
+            icon: "/social-ig.png",
+          },
+          {
+            label: "Roblox",
+            href: "https://www.roblox.com/es/users/10790940793/profile?friendshipSourceType=ProfileShare",
+            icon: "/social-roblox.png",
           },
         ],
       },
