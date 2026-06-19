@@ -339,8 +339,9 @@ const products = [
     description: "Windows performance optimizer",
     category: "Performance",
     price: "Included",
-    status: "- In Stock",
+    status: "- No disponible",
     downloadUrl: optimizerDownloadUrl,
+    downloadActive: false,
     details:
       "Zentux Optimizer Pro helps prepare Windows for gaming with cleaner tools, RAM review, startup control, game preparation, diagnostics, and license-protected Pro access.",
   },
@@ -353,6 +354,7 @@ const products = [
     price: "Included",
     status: "- In Stock",
     downloadUrl: autoclickerDownloadUrl,
+    downloadActive: true,
     details:
       "Zentux Autoclicker is built for fast click workflows with Hold mode, Toggle mode, configurable hotkeys, mouse button support, and a compact gamer interface.",
   },
@@ -363,8 +365,9 @@ const products = [
     description: "Advanced macro recorder and repeater",
     category: "Automation",
     price: "Included",
-    status: "- In Stock",
+    status: "- No disponible",
     downloadUrl: macroDownloadUrl,
+    downloadActive: false,
     details:
       "Zentux Macro records your mouse and keyboard actions, then repeats them with a cleaner interface and more control than basic macro tools. It is designed for users who want a more advanced TinyTask-style workflow inside the Zentux package.",
   },
@@ -373,10 +376,11 @@ const products = [
     image: "/zentux-cursor.png",
     badge: "Free",
     description: "Custom cursor app for your favorite games",
-    category: "Automation",
+    category: "Free",
     price: "Free",
     status: "- In Stock",
     downloadUrl: cursorDownloadUrl,
+    downloadActive: true,
     details:
       "Zentux Cursor lets you personalize your cursor for your favorite games with a bold gamer style, quick setup, saved cursor profiles, and a free installer download.",
   },
@@ -1281,7 +1285,7 @@ function ProductsPanel({
   onSelectProduct: (product: (typeof products)[number]) => void;
 }) {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<"All" | "Performance" | "Automation">("All");
+  const [category, setCategory] = useState<"All" | "Performance" | "Automation" | "Free">("All");
   const [sort, setSort] = useState("Popular");
   const visibleProducts = products
     .filter((product) => category === "All" || product.category === category)
@@ -1344,6 +1348,12 @@ function ProductsPanel({
                 label={labels.automation}
                 count={products.filter((product) => product.category === "Automation").length}
                 onClick={() => setCategory("Automation")}
+              />
+              <CategoryButton
+                active={category === "Free"}
+                label="Free"
+                count={products.filter((product) => product.category === "Free").length}
+                onClick={() => setCategory("Free")}
               />
             </div>
           </div>
@@ -1542,6 +1552,7 @@ function ProductCard({
   priority?: boolean;
 }) {
   const isFreeProduct = product.price === "Free";
+  const canDownload = product.downloadActive;
 
   return (
     <article
@@ -1581,7 +1592,9 @@ function ProductCard({
         <div className="mt-6 space-y-3 border-t border-white/10 pt-4 text-xs font-black uppercase tracking-wide text-[#9f93aa]">
           <div className="flex justify-between gap-3">
             <span>{labels.status}</span>
-            <span className="text-[#59ffb7]">{product.status}</span>
+            <span className={canDownload ? "text-[#59ffb7]" : "text-[#ffb86b]"}>
+              {product.status}
+            </span>
           </div>
           <div className="flex justify-between gap-3">
             <span>{labels.category}</span>
@@ -1596,8 +1609,14 @@ function ProductCard({
         </div>
         <div className="mt-6 flex items-center justify-between gap-3">
           <span className="text-xl font-black">{product.price}</span>
-          <span className="rounded-full border border-white/20 bg-white/[0.05] px-4 py-1 text-[10px] font-black uppercase tracking-wide">
-            {labels.available}
+          <span
+            className={`rounded-full border px-4 py-1 text-[10px] font-black uppercase tracking-wide ${
+              canDownload
+                ? "border-white/20 bg-white/[0.05] text-white"
+                : "border-[#ffb86b]/30 bg-[#ffb86b]/10 text-[#ffcf95]"
+            }`}
+          >
+            {canDownload ? labels.available : "No disponible"}
           </span>
         </div>
       </div>
@@ -1618,6 +1637,7 @@ function ProductDetailsModal({
     return null;
   }
   const isFreeProduct = product.price === "Free";
+  const canDownload = product.downloadActive;
 
   return (
     <div className="fixed inset-0 z-[85] flex items-center justify-center bg-black/78 px-4 py-6 backdrop-blur-sm">
@@ -1686,7 +1706,11 @@ function ProductDetailsModal({
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <DetailPoint
               title={labels.status ?? copy.en.status}
-              text={labels.inStockText ?? copy.en.inStockText}
+              text={
+                canDownload
+                  ? labels.inStockText ?? copy.en.inStockText
+                  : "No disponible de momento."
+              }
             />
             <DetailPoint
               title={labels.delivery ?? copy.en.delivery}
@@ -1699,8 +1723,8 @@ function ProductDetailsModal({
             <DetailPoint
               title={labels.downloads ?? copy.en.downloads}
               text={
-                isFreeProduct
-                  ? "The Zentux Cursor installer is available now as a free download."
+                canDownload
+                  ? "The installer is available now from this product window."
                   : labels.downloadUnavailableText ?? copy.en.downloadUnavailableText
               }
             />
@@ -1730,18 +1754,29 @@ function ProductDetailsModal({
                 >
                   {labels.buyPackage ?? copy.en.buyPackage}
                 </a>
-                <button
-                  type="button"
-                  disabled
-                  title="Downloads will be enabled when the app builds are ready."
-                  className="cursor-not-allowed rounded-xl border border-white/10 bg-white/[0.035] px-7 py-4 text-sm font-black text-[#8f849a] opacity-80"
-                >
-                  {labels.downloadUnavailable ?? copy.en.downloadUnavailable}
-                </button>
+                {canDownload ? (
+                  <a
+                    href={product.downloadUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-xl border border-[#59ffb7]/35 bg-[#59ffb7]/10 px-7 py-4 text-sm font-black text-[#9dffd1] shadow-[0_0_34px_rgba(89,255,183,0.16)] transition hover:scale-[1.02] hover:bg-[#59ffb7]/15"
+                  >
+                    Download App
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    disabled
+                    title="Downloads will be enabled when the app builds are ready."
+                    className="cursor-not-allowed rounded-xl border border-white/10 bg-white/[0.035] px-7 py-4 text-sm font-black text-[#8f849a] opacity-80"
+                  >
+                    {labels.downloadUnavailable ?? copy.en.downloadUnavailable}
+                  </button>
+                )}
               </>
             )}
           </div>
-          {!isFreeProduct && (
+          {!isFreeProduct && !canDownload && (
             <p className="mt-3 text-xs font-bold text-[#8f849a]">
               {labels.downloadUnavailableText ?? copy.en.downloadUnavailableText}
             </p>
@@ -1873,9 +1908,10 @@ function StatusPanel() {
       />
 
       <div className="mt-10 space-y-3 rounded-[28px] border border-white/10 bg-black/38 p-5 backdrop-blur-xl">
-        <StatusRow name={OPTIMIZER_NAME} price="Included" status="Available" />
-        <StatusRow name={AUTOCLICKER_NAME} price="Included" status="Available" />
-        <StatusRow name={MACRO_NAME} price="Included" status="Available" />
+        <StatusRow name={OPTIMIZER_NAME} price="Included" status="No disponible" />
+        <StatusRow name={AUTOCLICKER_NAME} price="Included" status="Download Active" />
+        <StatusRow name={MACRO_NAME} price="Included" status="No disponible" />
+        <StatusRow name={CURSOR_NAME} price="Free" status="Download Active" />
         <StatusRow name="License Validation" price="Included" status="Online" />
         <StatusRow name="Email License Delivery" price="Included" status="Online" />
         <StatusRow name="Support Page" price="Included" status="Online" />
@@ -1908,7 +1944,7 @@ function FaqPanel() {
         />
         <FaqItem
           q="⬇️ Can I download the apps now?"
-          a="Downloads are temporarily unavailable while the apps are being finished. They will be enabled from each product's View Details window."
+          a="Zentux Autoclicker and Zentux Cursor currently have active download buttons. Other apps will show downloads again when their builds are ready."
         />
         <FaqItem
           q="🎮 Will Zentux always increase FPS?"
