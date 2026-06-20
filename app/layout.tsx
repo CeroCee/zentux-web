@@ -30,9 +30,9 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/zentux-icon.png",
-        width: 512,
-        height: 512,
+        url: "/logo-web.png",
+        width: 1024,
+        height: 1024,
         alt: "Zentux logo",
       },
     ],
@@ -42,15 +42,15 @@ export const metadata: Metadata = {
     title: "Zentux",
     description:
       "Premium Windows performance tools for gamers with online license activation.",
-    images: ["/zentux-icon.png"],
+    images: ["/logo-web.png"],
   },
   icons: {
     icon: [
-      { url: "/zentux-icon.png", type: "image/png" },
+      { url: "/logo-web.png", type: "image/png" },
       { url: "/favicon.ico" },
     ],
     shortcut: "/favicon.ico",
-    apple: "/zentux-icon.png",
+    apple: "/logo-web.png",
   },
   robots: {
     index: true,

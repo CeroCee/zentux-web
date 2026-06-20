@@ -520,11 +520,11 @@ export default function Home() {
             className="flex min-w-0 items-center gap-3 rounded-full border border-white/10 bg-black/35 px-3 py-2 backdrop-blur-xl transition hover:border-[#a855f7]/60"
           >
             <Image
-              src="/zentux-icon.png"
+              src="/logo-web.png"
               alt="Zentux logo"
               width={38}
               height={38}
-              className="rounded-full"
+              className="rounded-full object-cover"
               priority
             />
             <div className="hidden text-left sm:block">
@@ -929,11 +929,11 @@ function LegalFooter({
             className="flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-3 py-2 transition hover:border-[#a855f7]/60"
           >
             <Image
-              src="/zentux-icon.png"
+              src="/logo-web.png"
               alt="Zentux logo"
               width={44}
               height={44}
-              className="rounded-full"
+              className="rounded-full object-cover"
             />
             <div className="text-left">
               <div className="text-lg font-black leading-none">{BRAND_NAME}</div>
