@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const siteUrl = "https://www.zentux.gg";
+const logoUrl = `${siteUrl}/logo-web.png?v=20260620`;
+
 export const metadata: Metadata = {
   title: {
     default: "Zentux",
@@ -19,18 +22,18 @@ export const metadata: Metadata = {
     "PC cleaner",
     "game booster",
   ],
-  metadataBase: new URL("https://zentux.gg"),
+  metadataBase: new URL(siteUrl),
   openGraph: {
     title: "Zentux",
     description:
       "Premium Windows performance tools for gamers. Cleanup, RAM optimizer, game booster, FPS diagnostics, and license activation.",
-    url: "https://zentux.gg",
+    url: siteUrl,
     siteName: "Zentux",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "/logo-web.png",
+        url: logoUrl,
         width: 1024,
         height: 1024,
         alt: "Zentux logo",
@@ -42,15 +45,16 @@ export const metadata: Metadata = {
     title: "Zentux",
     description:
       "Premium Windows performance tools for gamers with online license activation.",
-    images: ["/logo-web.png"],
+    images: [logoUrl],
   },
   icons: {
     icon: [
-      { url: "/logo-web.png", type: "image/png" },
-      { url: "/favicon.ico" },
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/logo-web.png?v=20260620", type: "image/png" },
     ],
     shortcut: "/favicon.ico",
-    apple: "/logo-web.png",
+    apple: "/apple-icon.png",
   },
   robots: {
     index: true,
