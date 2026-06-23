@@ -7,7 +7,8 @@ import TeamShowcase from "@/components/TeamShowcase";
 
 const BRAND_NAME = "Zentux";
 const OPTIMIZER_NAME = "Zentux Optimizer Pro";
-const AUTOCLICKER_NAME = "Zentux Autoclicker";
+const AUTOCLICKER_NAME = "Zentux v7";
+const FREE_AUTOCLICKER_NAME = "Zentux v6";
 const MACRO_NAME = "Zentux Macro";
 const CURSOR_NAME = "Zentux Cursor";
 const checkoutUrl = "https://buy.stripe.com/8x29ALdMMeKmcSs60q1wY01";
@@ -19,6 +20,8 @@ const macroDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxMacro.exe";
 const cursorDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Cursorv3Setup.exe";
+const freeAutoclickerDownloadUrl =
+  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Zentux%20v6.exe";
 const supportUrl = "https://guns.lol/cerocee";
 const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
@@ -87,7 +90,7 @@ const copy = {
     oneLicense: "Una licencia desbloquea los productos premium Zentux compatibles.",
     included: "Incluido",
     modalLicenseText:
-      "Tu suscripcion activa funciona como un paquete completo de Zentux. La misma licencia puede validar Zentux Optimizer Pro, Zentux Autoclicker y Zentux Macro mientras la suscripcion siga activa.",
+      "Tu suscripcion activa funciona como un paquete completo de Zentux. La misma licencia puede validar Zentux Optimizer Pro, Zentux v7 y Zentux Macro mientras la suscripcion siga activa.",
     delivery: "Entrega",
     validation: "Validacion",
     downloads: "Descargas",
@@ -143,7 +146,7 @@ const copy = {
     oneLicense: "One license unlocks supported premium Zentux products.",
     included: "Included",
     modalLicenseText:
-      "Your active subscription works as a full Zentux package. The same license can validate supported apps like Zentux Optimizer Pro, Zentux Autoclicker, and Zentux Macro, as long as the subscription is active.",
+      "Your active subscription works as a full Zentux package. The same license can validate supported apps like Zentux Optimizer Pro, Zentux v7, and Zentux Macro, as long as the subscription is active.",
     delivery: "Delivery",
     validation: "Validation",
     downloads: "Downloads",
@@ -356,7 +359,20 @@ const products = [
     downloadUrl: autoclickerDownloadUrl,
     downloadActive: true,
     details:
-      "Zentux Autoclicker is built for fast click workflows with Hold mode, Toggle mode, configurable hotkeys, mouse button support, and a compact gamer interface.",
+      "Zentux v7 is the premium autoclicker built for fast click workflows with Hold mode, Toggle mode, configurable hotkeys, mouse button support, and a compact gamer interface.",
+  },
+  {
+    name: FREE_AUTOCLICKER_NAME,
+    image: "/zentux-v6.png",
+    badge: "Free",
+    description: "Free autoclicker with no license required",
+    category: "Free",
+    price: "Free",
+    status: "- In Stock",
+    downloadUrl: freeAutoclickerDownloadUrl,
+    downloadActive: true,
+    details:
+      "Zentux v6 is a free autoclicker made for simple click automation without a license. Download it, open it, and use the basic autoclick tools without needing a Zentux subscription.",
   },
   {
     name: MACRO_NAME,
@@ -414,7 +430,7 @@ const creatorVideos = [
   {
     creator: "Zhowtime13",
     platform: "TikTok",
-    description: "Zentux Cursor and Autoclicker combo test",
+    description: "Zentux Cursor and Zentux v7 combo test",
     embedUrl: "https://www.tiktok.com/embed/v2/7602112098117700884",
     videoUrl: "https://www.tiktok.com/@zhowt1m3/video/7602112098117700884",
     creatorUrl: "https://www.tiktok.com/@zhowt1m3",
@@ -422,7 +438,7 @@ const creatorVideos = [
   {
     creator: "1mspeedx",
     platform: "TikTok",
-    description: "Zentux Autoclicker gameplay review",
+    description: "Zentux v7 gameplay review",
     embedUrl: "https://www.tiktok.com/embed/v2/7557722639482080524",
     videoUrl: "https://www.tiktok.com/@1mspeedx/video/7557722639482080524",
     creatorUrl: "https://www.tiktok.com/@1mspeedx",
@@ -852,7 +868,7 @@ function HomePanel({
 function ProductPreviewCluster() {
   const previews = [
     {
-      name: "Zentux AutoClick",
+      name: "Zentux v7",
       image: "/zentux-autoclicker.png",
       meta: "Automation",
       tone: "from-[#ff335f]/35 to-[#a855f7]/15",
@@ -1932,7 +1948,7 @@ function FaqPanel() {
       <div className="mt-10 grid gap-4 lg:grid-cols-2">
         <FaqItem
           q="💳 Is Zentux free?"
-          a="No. Zentux premium apps are subscription based. One active license unlocks supported Zentux products included in the package. Zentux Cursor is free."
+          a="No. Zentux premium apps are subscription based. One active license unlocks supported Zentux products included in the package. Zentux Cursor and Zentux v6 are free."
         />
         <FaqItem
           q="📩 How do I receive my license?"
@@ -1940,11 +1956,11 @@ function FaqPanel() {
         />
         <FaqItem
           q="📦 What is included?"
-          a="The package includes supported Zentux products like Zentux Optimizer Pro, Zentux Autoclicker, and Zentux Macro when those builds are available. Zentux Cursor is available as a separate free download."
+          a="The package includes supported Zentux products like Zentux Optimizer Pro, Zentux v7, and Zentux Macro when those builds are available. Zentux Cursor and Zentux v6 are available as separate free downloads."
         />
         <FaqItem
           q="⬇️ Can I download the apps now?"
-          a="Zentux Autoclicker and Zentux Cursor currently have active download buttons. Other apps will show downloads again when their builds are ready."
+          a="Zentux v7, Zentux v6, and Zentux Cursor currently have active download buttons. Other apps will show downloads again when their builds are ready."
         />
         <FaqItem
           q="🎮 Will Zentux always increase FPS?"
