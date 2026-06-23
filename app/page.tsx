@@ -15,13 +15,13 @@ const checkoutUrl = "https://buy.stripe.com/8x29ALdMMeKmcSs60q1wY01";
 const optimizerDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxOptimizer.exe";
 const autoclickerDownloadUrl =
-  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxAutoclicker.exe";
+  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Zentux.v7.exe";
 const macroDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxMacro.exe";
 const cursorDownloadUrl =
-  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Cursorv3Setup.exe";
+  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Cursorv3.exe";
 const freeAutoclickerDownloadUrl =
-  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Zentux%20v6.exe";
+  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Zentux.v6.exe";
 const supportUrl = "https://guns.lol/cerocee";
 const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
