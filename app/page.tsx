@@ -1714,7 +1714,7 @@ function ProductDetailsModal({
             </div>
             <p className="mt-4 text-sm font-semibold leading-7 text-[#c9c2d0]">
               {isFreeProduct
-                ? "Zentux Cursor is a free app. Download the installer directly and use it to personalize your cursor in supported games."
+                ? `${product.name} is free. Download it directly from this website and use it without a Zentux license or email delivery.`
                 : labels.modalLicenseText ?? copy.en.modalLicenseText}
             </p>
           </div>
@@ -1729,18 +1729,28 @@ function ProductDetailsModal({
               }
             />
             <DetailPoint
-              title={labels.delivery ?? copy.en.delivery}
-              text={labels.licenseEmailText ?? copy.en.licenseEmailText}
+              title={isFreeProduct ? "Descarga directa" : labels.delivery ?? copy.en.delivery}
+              text={
+                isFreeProduct
+                  ? "No se envia nada al Gmail. La descarga empieza directamente desde esta pagina."
+                  : labels.licenseEmailText ?? copy.en.licenseEmailText
+              }
             />
             <DetailPoint
-              title={labels.validation ?? copy.en.validation}
-              text={labels.validationText ?? copy.en.validationText}
+              title={isFreeProduct ? "Sin licencia" : labels.validation ?? copy.en.validation}
+              text={
+                isFreeProduct
+                  ? "No necesita suscripcion, pago ni validacion online para usar este producto."
+                  : labels.validationText ?? copy.en.validationText
+              }
             />
             <DetailPoint
               title={labels.downloads ?? copy.en.downloads}
               text={
                 canDownload
-                  ? "The installer is available now from this product window."
+                  ? isFreeProduct
+                    ? "El instalador gratis esta disponible ahora desde este boton."
+                    : "The installer is available now from this product window."
                   : labels.downloadUnavailableText ?? copy.en.downloadUnavailableText
               }
             />
