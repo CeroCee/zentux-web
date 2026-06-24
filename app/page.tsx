@@ -19,7 +19,7 @@ const autoclickerDownloadUrl =
 const macroDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxMacro.exe";
 const cursorDownloadUrl =
-  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Cursorv3.exe";
+  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Cursorv3Setup.exe";
 const freeAutoclickerDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Zentux.v6.exe";
 const supportUrl = "https://guns.lol/cerocee";
