@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Providers } from "./providers";
 
 const siteUrl = "https://www.zentux.gg";
 const logoUrl = `${siteUrl}/logo-web.png?v=20260620`;
@@ -69,7 +70,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body><Providers>{children}</Providers></body>
     </html>
   );
 }

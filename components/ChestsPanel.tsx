@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { ChestOpeningReel } from "./ChestOpeningReel";
 import { ChestResultsSummary } from "./ChestResultsSummary";
 import { chestOutcomes, type ChestResult } from "./chestData";
+import { useAccount } from "./AccountContext";
 
 const licenseApiUrl = (
   process.env.NEXT_PUBLIC_LICENSE_API_URL ??
@@ -11,9 +13,9 @@ const licenseApiUrl = (
 ).replace(/\/+$/, "");
 
 const chestPackages = [
-  { id: "chest-1", count: 1, price: "$3.99", label: "1 Zentux Chest", featured: false },
-  { id: "chest-3", count: 3, price: "$9.99", label: "3 Zentux Chests", featured: true },
-  { id: "chest-5", count: 5, price: "$14.99", label: "5 Zentux Chests", featured: false },
+  { id: "chest-1", count: 1, price: 25000, label: "1 Zentux Chest", featured: false },
+  { id: "chest-3", count: 3, price: 60000, label: "3 Zentux Chests", featured: true },
+  { id: "chest-5", count: 5, price: 90000, label: "5 Zentux Chests", featured: false },
 ] as const;
 
 type OrderResult = {
@@ -28,6 +30,8 @@ type ChestsPanelProps = {
 };
 
 export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
+  const { status } = useSession();
+  const { profile, refresh } = useAccount();
   const [buyingPackage, setBuyingPackage] = useState<string | null>(null);
   const [openState, setOpenState] = useState<"idle" | "opening" | "ready" | "error">(
     sessionId ? "opening" : "idle",
@@ -78,19 +82,28 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
   }, [sessionId]);
 
   const startCheckout = async (packageId: string) => {
+    if (status !== "authenticated") {
+      await signIn("discord");
+      return;
+    }
     setBuyingPackage(packageId);
     setError(null);
     try {
-      const response = await fetch(`${licenseApiUrl}/api/chests/checkout`, {
+      const response = await fetch("/api/account/chests/purchase", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ packageId }),
       });
-      const data = (await response.json()) as { checkoutUrl?: string; error?: string };
-      if (!response.ok || !data.checkoutUrl) {
-        throw new Error(data.error || "No se pudo iniciar el pago.");
+      const data = (await response.json()) as OrderResult & { error?: string };
+      if (!response.ok || !data.results) {
+        throw new Error(data.error || "No se pudo comprar la caja.");
       }
-      window.location.assign(data.checkoutUrl);
+      setResults(data.results);
+      setOpeningIndex(0);
+      setAnimationComplete(data.results.length === 0);
+      setOpenState("ready");
+      await refresh();
+      setBuyingPackage(null);
     } catch (checkoutError) {
       setError(checkoutError instanceof Error ? checkoutError.message : "No se pudo iniciar el pago.");
       setBuyingPackage(null);
@@ -119,12 +132,12 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
               Zentux <span className="bg-gradient-to-r from-[#f472b6] via-[#c084fc] to-[#22d3ee] bg-clip-text text-transparent">Chests.</span>
             </h1>
             <p className="mt-5 max-w-2xl text-base font-semibold leading-7 text-[#bbb2c8] sm:text-lg">
-              Abre cajas y gana acceso desde 15 días hasta Lifetime. Todos los premios de una compra se suman en una sola key, entregada aquí y por email.
+              Abre cajas con Z-Coins ganados en Discord y gana acceso desde 15 días hasta Lifetime. Todos los premios se suman a tu única key.
             </p>
             <div className="mt-6 flex flex-wrap gap-3 text-xs font-black uppercase tracking-[.14em] text-[#a69bb3]">
               <span className="rounded-full border border-white/10 bg-white/[.04] px-4 py-2">100% transparente</span>
               <span className="rounded-full border border-white/10 bg-white/[.04] px-4 py-2">Entrega instantánea</span>
-              <span className="rounded-full border border-white/10 bg-white/[.04] px-4 py-2">Pago seguro Stripe</span>
+              <span className="rounded-full border border-white/10 bg-white/[.04] px-4 py-2">Solo Z-Coins ganados</span>
             </div>
           </div>
 
@@ -177,14 +190,14 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
               <div className="text-4xl">🎁</div>
               <h3 className="mt-5 text-2xl font-black text-white">{pack.label}</h3>
               <p className="mt-2 text-sm font-semibold text-[#9f94ad]">{pack.count} oportunidad{pack.count === 1 ? "" : "es"} independiente{pack.count === 1 ? "" : "s"}</p>
-              <div className="mt-7 text-4xl font-black text-white">{pack.price}<span className="ml-2 text-sm text-[#8f84a0]">USD</span></div>
+              <div className="mt-7 text-3xl font-black text-white">{pack.price.toLocaleString("es-ES")}<span className="ml-2 text-sm text-[#facc15]">Z-Coins</span></div>
               <button
                 type="button"
                 disabled={buyingPackage !== null}
                 onClick={() => void startCheckout(pack.id)}
                 className="mt-6 w-full rounded-2xl bg-gradient-to-r from-[#db2777] via-[#a855f7] to-[#6366f1] px-5 py-4 text-sm font-black uppercase tracking-[.12em] text-white shadow-[0_0_35px_rgba(168,85,247,.24)] transition hover:scale-[1.02] disabled:cursor-wait disabled:opacity-60"
               >
-                {buyingPackage === pack.id ? "Conectando con Stripe…" : `Comprar ${pack.count === 1 ? "Chest" : "Chests"}`}
+                {buyingPackage === pack.id ? "Comprando…" : status === "authenticated" ? `Comprar ${pack.count === 1 ? "Chest" : "Chests"}` : "Entrar con Discord"}
               </button>
             </article>
           ))}
@@ -212,7 +225,7 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
       </div>
 
       <p className="mt-8 text-center text-xs font-semibold leading-6 text-[#776d84]">
-        Al comprar aceptas las condiciones de Zentux. Los resultados son aleatorios y definitivos. Nunca compartas tus keys.
+        Balance disponible: {(profile?.account.zcoins || 0).toLocaleString("es-ES")} Z-Coins ganados. Zenitx nunca puede usarse para cajas.
       </p>
     </section>
   );

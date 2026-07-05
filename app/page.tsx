@@ -5,6 +5,10 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import TeamShowcase from "@/components/TeamShowcase";
 import { ChestsPanel } from "@/components/ChestsPanel";
+import { ZenitxPanel } from "@/components/ZenitxPanel";
+import { ProfileMenu } from "@/components/ProfileMenu";
+import { ProfilePanel } from "@/components/ProfilePanel";
+import { AuthenticatedCheckoutLink } from "@/components/AuthenticatedCheckoutLink";
 
 const BRAND_NAME = "Zentux";
 const OPTIMIZER_NAME = "Zentux Optimizer Pro";
@@ -46,10 +50,10 @@ const pricingPlans = [
 const supportUrl = "https://guns.lol/cerocee";
 const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
-const tabs = ["Home", "Products", "Chests", "Reviews", "Status", "FAQ", "Meet The Team"] as const;
+const tabs = ["Home", "Products", "Chests", "Zenitx", "Reviews", "Status", "FAQ", "Meet The Team", "Profile"] as const;
 type Tab = (typeof tabs)[number];
 type LegalPanel = "privacy" | "terms";
-const desktopTabs: Tab[] = ["Home", "Products", "Chests", "Reviews"];
+const desktopTabs: Tab[] = ["Home", "Products", "Chests", "Zenitx", "Reviews"];
 const moreTabs: Tab[] = ["Status", "FAQ", "Meet The Team"];
 
 const languages = [
@@ -64,12 +68,12 @@ const languages = [
 type LanguageCode = (typeof languages)[number]["code"];
 
 const tabLabels: Record<LanguageCode, Record<Tab, string>> = {
-  es: { Home: "Home", Products: "Productos", Chests: "Cajas", Reviews: "Reviews", Status: "Estado", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  en: { Home: "Home", Products: "Products", Chests: "Chests", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  de: { Home: "Home", Products: "Produkte", Chests: "Chests", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  fr: { Home: "Accueil", Products: "Produits", Chests: "Coffres", Reviews: "Reviews", Status: "Statut", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  it: { Home: "Home", Products: "Prodotti", Chests: "Casse", Reviews: "Reviews", Status: "Stato", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  pt: { Home: "Home", Products: "Produtos", Chests: "Baús", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  es: { Home: "Home", Products: "Productos", Chests: "Cajas", Zenitx: "Zenitx", Reviews: "Reviews", Status: "Estado", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Mi Perfil" },
+  en: { Home: "Home", Products: "Products", Chests: "Chests", Zenitx: "Zenitx", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "My Profile" },
+  de: { Home: "Home", Products: "Produkte", Chests: "Chests", Zenitx: "Zenitx", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profil" },
+  fr: { Home: "Accueil", Products: "Produits", Chests: "Coffres", Zenitx: "Zenitx", Reviews: "Reviews", Status: "Statut", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profil" },
+  it: { Home: "Home", Products: "Prodotti", Chests: "Casse", Zenitx: "Zenitx", Reviews: "Reviews", Status: "Stato", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profilo" },
+  pt: { Home: "Home", Products: "Produtos", Chests: "Baús", Zenitx: "Zenitx", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Perfil" },
 };
 
 const copy = {
@@ -529,6 +533,8 @@ export default function Home() {
   const [legalPanel, setLegalPanel] = useState<LegalPanel | null>(null);
   const [chestSessionId, setChestSessionId] = useState<string | null>(null);
   const [chestCheckoutCancelled, setChestCheckoutCancelled] = useState(false);
+  const [zenitxSessionId, setZenitxSessionId] = useState<string | null>(null);
+  const [zenitxCheckoutCancelled, setZenitxCheckoutCancelled] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<
     (typeof products)[number] | null
   >(null);
@@ -540,6 +546,10 @@ export default function Home() {
       const shouldOpenChests = search.get("tab") === "chests" || Boolean(sessionId);
       if (sessionId) setChestSessionId(sessionId);
       if (search.get("chest_cancelled") === "1") setChestCheckoutCancelled(true);
+      const zenitxSession = search.get("zenitx_session");
+      if (zenitxSession) setZenitxSessionId(zenitxSession);
+      if (search.get("zenitx_cancelled") === "1") setZenitxCheckoutCancelled(true);
+      if (search.get("tab") === "zenitx" || zenitxSession) setActiveTab("Zenitx");
       if (shouldOpenChests) setActiveTab("Chests");
     }, 0);
     return () => window.clearTimeout(timer);
@@ -662,6 +672,7 @@ export default function Home() {
             >
               {labels.getHelp}
             </a>
+            <ProfileMenu onOpenProfile={() => selectTab("Profile")} />
           </div>
 
           <button
@@ -732,6 +743,8 @@ export default function Home() {
             cancelled={chestCheckoutCancelled}
           />
         )}
+        {activeTab === "Zenitx" && <ZenitxPanel sessionId={zenitxSessionId} cancelled={zenitxCheckoutCancelled} />}
+        {activeTab === "Profile" && <ProfilePanel />}
         {activeTab === "Reviews" && <ReviewsPanel />}
         {activeTab === "Status" && <StatusPanel />}
         {activeTab === "FAQ" && <FaqPanel />}
@@ -739,7 +752,7 @@ export default function Home() {
       </div>
 
       <DiscordBubble
-        visible={showDiscordBubble}
+        visible={showDiscordBubble && activeTab === "Home"}
         onClose={() => setShowDiscordBubble(false)}
       />
       <LegalModal
@@ -1048,9 +1061,9 @@ function LegalFooter({
         </FooterColumn>
 
         <FooterColumn title="Products">
-          <a href={checkoutUrl} target="_blank" rel="noreferrer">
+          <AuthenticatedCheckoutLink href={checkoutUrl}>
             Buy License
-          </a>
+          </AuthenticatedCheckoutLink>
           <button onClick={() => setActiveTab("Products")}>Downloads</button>
           <button onClick={() => setActiveTab("Status")}>Status</button>
           <button onClick={() => setActiveTab("Products")}>Features</button>
@@ -1461,14 +1474,12 @@ function ProductsPanel({
             <p className="text-sm font-bold text-[#a69bb3]">
               {labels.showing} {visibleProducts.length} / {products.length}
             </p>
-            <a
+            <AuthenticatedCheckoutLink
               href={checkoutUrl}
-              target="_blank"
-              rel="noreferrer"
               className="rounded-full bg-white px-5 py-2 text-xs font-black text-black transition hover:scale-[1.03]"
             >
               {labels.buyPackage}
-            </a>
+            </AuthenticatedCheckoutLink>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -1897,14 +1908,12 @@ function ProductDetailsModal({
             </div>
 
             {selectedPlan.checkoutUrl ? (
-              <a
+              <AuthenticatedCheckoutLink
                 href={selectedPlan.checkoutUrl}
-                target="_blank"
-                rel="noreferrer"
                 className="mt-6 block w-full rounded-full bg-white px-7 py-4 text-center text-sm font-black text-black shadow-[0_0_36px_rgba(196,112,255,0.5)] transition hover:scale-[1.01]"
               >
                 {labels.purchaseNow ?? copy.en.purchaseNow}
-              </a>
+              </AuthenticatedCheckoutLink>
             ) : (
               <button
                 type="button"
