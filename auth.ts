@@ -4,6 +4,8 @@ import Discord from "next-auth/providers/discord";
 async function syncDiscordAccount(profile: { id: string; username?: string | null; global_name?: string | null; avatar?: string | null }) {
   const baseUrl = String(process.env.LICENSE_API_URL || process.env.NEXT_PUBLIC_LICENSE_API_URL || "").replace(/\/+$/, "");
   const secret = process.env.WEB_APP_SECRET;
+  // Production requests use Vercel's short-lived OIDC identity in the account API routes.
+  // This fallback keeps local development compatible with WEB_APP_SECRET.
   if (!baseUrl || !secret) return;
   const avatarUrl = profile.avatar
     ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=256`

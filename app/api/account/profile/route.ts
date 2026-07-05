@@ -1,5 +1,4 @@
 import { authenticatedAccountRequest } from "@/lib/account-api";
-export async function GET() {
-  return (await authenticatedAccountRequest("/api/web/profile")).response;
+export async function GET(request: Request) {
+  return (await authenticatedAccountRequest(request, "/api/web/profile")).response;
 }
-
