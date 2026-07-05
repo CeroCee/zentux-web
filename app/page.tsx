@@ -22,6 +22,26 @@ const cursorDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Cursorv3Setup.exe";
 const freeAutoclickerDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Zentux.v6.exe";
+const pricingPlans = [
+  {
+    id: "15-days",
+    label: "15 dias",
+    price: "$1.79 USD",
+    checkoutUrl: process.env.NEXT_PUBLIC_STRIPE_15_DAY_URL ?? "",
+  },
+  {
+    id: "30-days",
+    label: "30 dias",
+    price: "$3.58 USD",
+    checkoutUrl: process.env.NEXT_PUBLIC_STRIPE_30_DAY_URL ?? "",
+  },
+  {
+    id: "7-months",
+    label: "7 meses",
+    price: "$25 USD",
+    checkoutUrl: process.env.NEXT_PUBLIC_STRIPE_7_MONTH_URL ?? "",
+  },
+] as const;
 const supportUrl = "https://guns.lol/cerocee";
 const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
@@ -72,6 +92,7 @@ const copy = {
     allProducts: "Todos",
     performance: "Performance",
     automation: "Automatizacion",
+    personalization: "Personalizacion",
     sort: "Ordenar",
     popular: "Popular",
     name: "Nombre",
@@ -100,6 +121,10 @@ const copy = {
     downloadUnavailable: "Descarga no disponible",
     downloadUnavailableText:
       "Las descargas se activaran dentro de esta ventana cuando cada app este lista.",
+    startingPrice: "Precio inicial",
+    optionLabel: "Opcion",
+    purchaseNow: "Comprar ahora",
+    paymentLinkPending: "Enlace de pago pendiente",
     reviewsTitle: "Customer Reviews",
     reviewsText: "Opiniones reales de compradores Zentux despues de activar sus productos.",
     overallRating: "Overall rating",
@@ -128,6 +153,7 @@ const copy = {
     allProducts: "All Products",
     performance: "Performance",
     automation: "Automation",
+    personalization: "Personalization",
     sort: "Sort",
     popular: "Popular",
     name: "Name",
@@ -156,6 +182,10 @@ const copy = {
     downloadUnavailable: "Download Unavailable",
     downloadUnavailableText:
       "Downloads will be enabled inside this details window when each app is ready.",
+    startingPrice: "Starting price",
+    optionLabel: "Option",
+    purchaseNow: "Purchase now",
+    paymentLinkPending: "Payment link pending",
     reviewsTitle: "Customer Reviews",
     reviewsText: "Real feedback from Zentux buyers after activation and support.",
     overallRating: "Overall rating",
@@ -184,6 +214,7 @@ const copy = {
     allProducts: "All Products",
     performance: "Performance",
     automation: "Automation",
+    personalization: "Personnalisation",
     sort: "Sort",
     popular: "Popular",
     name: "Name",
@@ -223,6 +254,7 @@ const copy = {
     allProducts: "All Products",
     performance: "Performance",
     automation: "Automation",
+    personalization: "Personalizzazione",
     sort: "Sort",
     popular: "Popular",
     name: "Name",
@@ -262,6 +294,7 @@ const copy = {
     allProducts: "All Products",
     performance: "Performance",
     automation: "Automation",
+    personalization: "Personalizacao",
     sort: "Sort",
     popular: "Popular",
     name: "Name",
@@ -510,13 +543,18 @@ export default function Home() {
   }, [showDiscordBubble]);
 
   useEffect(() => {
-    setOnlineCount(getSharedAppUsageCount());
+    const initialTimer = window.setTimeout(() => {
+      setOnlineCount(getSharedAppUsageCount());
+    }, 0);
 
     const timer = window.setInterval(() => {
       setOnlineCount(getSharedAppUsageCount());
     }, 1000);
 
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearTimeout(initialTimer);
+      window.clearInterval(timer);
+    };
   }, []);
 
   const selectTab = (tab: Tab) => {
@@ -832,7 +870,7 @@ function HomePanel({
           <div className="mx-auto mt-8 grid max-w-xl grid-cols-2 gap-3 border-y border-white/10 py-5 sm:grid-cols-4 lg:mx-0">
             <HeroStat value="6,800+" label={labels.productsSold} />
             <HeroStat value="4.68" label={labels.rating} />
-            <HeroStat value="$3" label={labels.price} />
+            <HeroStat value="$1.79" label={labels.price} />
             <HeroStat value="24/7" label={labels.support} />
           </div>
 
@@ -1229,19 +1267,16 @@ function DiscordBubble({
 }) {
   const [isClosing, setIsClosing] = useState(false);
 
-  useEffect(() => {
-    if (visible) {
-      setIsClosing(false);
-    }
-  }, [visible]);
-
   if (!visible) {
     return null;
   }
 
   const closeBubble = () => {
     setIsClosing(true);
-    window.setTimeout(onClose, 260);
+    window.setTimeout(() => {
+      onClose();
+      setIsClosing(false);
+    }, 260);
   };
 
   return (
@@ -1649,6 +1684,13 @@ function ProductDetailsModal({
   labels: Record<string, string>;
   onClose: () => void;
 }) {
+  const [selectedPlanId, setSelectedPlanId] = useState<
+    (typeof pricingPlans)[number]["id"]
+  >(pricingPlans[0].id);
+  const [plansOpen, setPlansOpen] = useState(false);
+  const selectedPlan =
+    pricingPlans.find((plan) => plan.id === selectedPlanId) ?? pricingPlans[0];
+
   if (!product) {
     return null;
   }
@@ -1656,18 +1698,18 @@ function ProductDetailsModal({
   const canDownload = product.downloadActive;
 
   return (
-    <div className="fixed inset-0 z-[85] flex items-center justify-center bg-black/78 px-4 py-6 backdrop-blur-sm">
-      <section className="zentux-legal-modal grid max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-[2rem] border border-[#a855f7]/35 bg-[#080512] shadow-[0_0_100px_rgba(168,85,247,0.26)] lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="relative min-h-[360px] border-b border-white/10 bg-black lg:border-b-0 lg:border-r">
+    <div className="fixed inset-0 z-[85] flex items-center justify-center bg-black/80 px-3 py-4 backdrop-blur-md sm:px-6">
+      <section className="zentux-legal-modal grid max-h-[94vh] w-full max-w-6xl overflow-hidden rounded-[1.75rem] border border-[#a855f7]/55 bg-[#07030f] shadow-[0_0_110px_rgba(168,85,247,0.3)] lg:grid-cols-[0.94fr_1.06fr]">
+        <div className="relative min-h-[330px] border-b border-[#a855f7]/25 bg-black lg:min-h-[760px] lg:border-b-0 lg:border-r">
           <Image
             src={product.image}
             alt={product.name}
             fill
             quality={100}
-            sizes="(min-width: 1024px) 420px, 100vw"
+            sizes="(min-width: 1024px) 540px, 100vw"
             className="object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/12 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/10" />
           <span className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-black uppercase tracking-wide text-black">
             {product.badge}
           </span>
@@ -1676,13 +1718,13 @@ function ProductDetailsModal({
           </span>
         </div>
 
-        <div className="max-h-[90vh] overflow-y-auto p-6 sm:p-8">
-          <div className="flex items-start justify-between gap-4">
-            <div>
+        <div className="relative max-h-[94vh] overflow-y-auto p-5 sm:p-8 lg:p-10">
+          <div>
+            <div className="pr-20 sm:pr-28">
               <p className="text-xs font-black uppercase tracking-[0.24em] text-[#c76cff]">
                 {isFreeProduct ? "Free Tool" : labels.packageLabel ?? copy.en.packageLabel}
               </p>
-              <h2 className="mt-3 text-4xl font-black leading-tight text-white">
+              <h2 className="mt-3 text-3xl font-black leading-tight text-white sm:text-4xl">
                 {product.name}
               </h2>
               <p className="mt-3 text-lg font-semibold text-[#bfb5c9]">
@@ -1692,19 +1734,19 @@ function ProductDetailsModal({
             <button
               type="button"
               onClick={onClose}
-              className="shrink-0 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-black text-white transition hover:bg-white hover:text-black"
+              className="absolute right-4 top-4 rounded-full border border-white/10 bg-[#120b19]/90 px-3 py-2 text-xs font-black text-white backdrop-blur-xl transition hover:bg-white hover:text-black sm:right-7 sm:top-7 sm:px-4 sm:text-sm lg:right-9 lg:top-9"
             >
               {labels.close ?? copy.en.close}
             </button>
           </div>
 
-          <div className="mt-7 rounded-2xl border border-[#a855f7]/30 bg-[#160821]/70 p-5">
+          <div className="mt-7 rounded-[1.35rem] border border-[#a855f7]/40 bg-[#160821]/65 p-5 sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.22em] text-[#b989ff]">
                   {isFreeProduct ? "Free download" : labels.completeLicense ?? copy.en.completeLicense}
                 </p>
-                <h3 className="mt-2 text-2xl font-black text-white">
+                <h3 className="mt-2 text-xl font-black text-white sm:text-2xl">
                   {isFreeProduct ? "No package required." : labels.oneLicense ?? copy.en.oneLicense}
                 </h3>
               </div>
@@ -1719,7 +1761,7 @@ function ProductDetailsModal({
             </p>
           </div>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <DetailPoint
               title={labels.status ?? copy.en.status}
               text={
@@ -1760,52 +1802,121 @@ function ProductDetailsModal({
             {product.details}
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            {isFreeProduct ? (
+          {isFreeProduct ? (
+            <div className="mt-7 rounded-[1.5rem] border border-[#59ffb7]/45 bg-[#071712]/90 p-5 shadow-[0_0_35px_rgba(89,255,183,0.14)] sm:p-6">
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-[#79ffc2]">
+                Free download
+              </p>
+              <p className="mt-2 text-3xl font-black text-white">$0 USD</p>
               <a
                 href={product.downloadUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-xl bg-gradient-to-r from-[#59ffb7] to-[#8cff5f] px-7 py-4 text-sm font-black text-black shadow-[0_0_45px_rgba(89,255,183,0.22)] transition hover:scale-[1.02]"
+                className="mt-6 block w-full rounded-full bg-gradient-to-r from-[#59ffb7] to-[#8cff5f] px-7 py-4 text-center text-sm font-black text-black shadow-[0_0_38px_rgba(89,255,183,0.28)] transition hover:scale-[1.01]"
               >
                 Download Free
               </a>
-            ) : (
-              <>
-                <a
-                  href={checkoutUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-7 py-4 text-sm font-black text-white shadow-[0_0_45px_rgba(168,85,247,0.28)] transition hover:scale-[1.02]"
-                >
-                  {labels.buyPackage ?? copy.en.buyPackage}
-                </a>
-                {canDownload ? (
-                  <a
-                    href={product.downloadUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="rounded-xl border border-[#59ffb7]/35 bg-[#59ffb7]/10 px-7 py-4 text-sm font-black text-[#9dffd1] shadow-[0_0_34px_rgba(89,255,183,0.16)] transition hover:scale-[1.02] hover:bg-[#59ffb7]/15"
-                  >
-                    Download App
-                  </a>
-                ) : (
-                  <button
-                    type="button"
-                    disabled
-                    title="Downloads will be enabled when the app builds are ready."
-                    className="cursor-not-allowed rounded-xl border border-white/10 bg-white/[0.035] px-7 py-4 text-sm font-black text-[#8f849a] opacity-80"
-                  >
-                    {labels.downloadUnavailable ?? copy.en.downloadUnavailable}
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-          {!isFreeProduct && !canDownload && (
-            <p className="mt-3 text-xs font-bold text-[#8f849a]">
-              {labels.downloadUnavailableText ?? copy.en.downloadUnavailableText}
+              <p className="mt-4 flex items-center gap-2 text-xs font-bold text-[#b9d9ca]">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#59ffb7] shadow-[0_0_14px_#59ffb7]" />
+                No license or payment required.
+              </p>
+            </div>
+          ) : (
+          <div className="mt-7 rounded-[1.5rem] border border-[#b15cff]/70 bg-[#10051b]/90 p-5 shadow-[0_0_35px_rgba(168,85,247,0.2)] sm:p-6">
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#c985ff]">
+              {labels.startingPrice ?? copy.en.startingPrice}
             </p>
+            <p className="mt-2 text-4xl font-black text-white">{selectedPlan.price}</p>
+
+            <div className="relative mt-5">
+              <p className="mb-2 text-xs font-black uppercase tracking-[0.22em] text-[#c985ff]">
+                {labels.optionLabel ?? copy.en.optionLabel}
+              </p>
+              <button
+                type="button"
+                onClick={() => setPlansOpen((open) => !open)}
+                aria-expanded={plansOpen}
+                className="flex w-full items-center justify-between rounded-full border border-[#a855f7]/75 bg-[#0d0618] px-5 py-4 text-left font-black text-white transition hover:border-[#d18aff]"
+              >
+                <span>{selectedPlan.label}</span>
+                <span className={`text-xl transition ${plansOpen ? "rotate-180" : ""}`}>⌄</span>
+              </button>
+
+              {plansOpen ? (
+                <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-20 overflow-hidden rounded-[1.25rem] border border-[#a855f7]/65 bg-[#11071d] p-2 shadow-[0_22px_60px_rgba(0,0,0,0.65)]">
+                  {pricingPlans.map((plan) => {
+                    const active = plan.id === selectedPlan.id;
+                    return (
+                      <button
+                        key={plan.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedPlanId(plan.id);
+                          setPlansOpen(false);
+                        }}
+                        className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left font-bold transition ${
+                          active
+                            ? "bg-[#7c2ed1]/35 text-white"
+                            : "text-[#d8cfe1] hover:bg-white/[0.06]"
+                        }`}
+                      >
+                        <span className="flex items-center gap-3">
+                          <span className={`grid h-6 w-6 place-items-center rounded-full text-xs ${active ? "bg-[#9b4dff]" : "border border-white/15"}`}>
+                            {active ? "✓" : ""}
+                          </span>
+                          {plan.label}
+                        </span>
+                        <span>{plan.price}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
+            </div>
+
+            {selectedPlan.checkoutUrl ? (
+              <a
+                href={selectedPlan.checkoutUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-6 block w-full rounded-full bg-white px-7 py-4 text-center text-sm font-black text-black shadow-[0_0_36px_rgba(196,112,255,0.5)] transition hover:scale-[1.01]"
+              >
+                {labels.purchaseNow ?? copy.en.purchaseNow}
+              </a>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="mt-6 w-full cursor-not-allowed rounded-full border border-white/10 bg-white/10 px-7 py-4 text-sm font-black text-[#a99daf]"
+              >
+                {labels.paymentLinkPending ?? copy.en.paymentLinkPending}
+              </button>
+            )}
+
+            {canDownload ? (
+              <a
+                href={product.downloadUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 block w-full rounded-full border border-[#59ffb7]/55 bg-[#59ffb7]/10 px-7 py-4 text-center text-sm font-black text-[#9dffd1] transition hover:bg-[#59ffb7]/15"
+              >
+                Download App
+              </a>
+            ) : (
+              <button
+                type="button"
+                disabled
+                title="Downloads will be enabled when the app builds are ready."
+                className="mt-3 w-full cursor-not-allowed rounded-full border border-[#a855f7]/55 bg-transparent px-7 py-4 text-sm font-black text-[#8f849a] opacity-80"
+              >
+                {labels.downloadUnavailable ?? copy.en.downloadUnavailable}
+              </button>
+            )}
+            <p className="mt-4 flex items-center gap-2 text-xs font-bold text-[#aaa0b5]">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#a855f7] shadow-[0_0_14px_#a855f7]" />
+              {labels.inStockText ?? copy.en.inStockText}
+            </p>
+          </div>
           )}
         </div>
       </section>

@@ -246,8 +246,6 @@ function TeamCard({
 }
 
 export default function TeamShowcase() {
-  let cardIndex = 0;
-
   return (
     <section className="relative py-14">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-[2rem]">
@@ -267,8 +265,12 @@ export default function TeamShowcase() {
       </div>
 
       <div className="space-y-10">
-        {teamGroups.map((group) => (
-          <div key={group.title}>
+        {teamGroups.map((group, groupIndex) => {
+          const groupOffset = teamGroups
+            .slice(0, groupIndex)
+            .reduce((total, item) => total + item.members.length, 0);
+
+          return <div key={group.title}>
             <div className="mb-5 flex items-center gap-4">
               <h3 className="shrink-0 text-sm font-black uppercase tracking-[0.24em] text-[#d8c8ef]">
                 {group.title}
@@ -276,14 +278,16 @@ export default function TeamShowcase() {
               <div className="h-px flex-1 bg-gradient-to-r from-[#a855f7]/70 via-[#20e8f2]/35 to-transparent" />
             </div>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {group.members.map((member) => {
-                const index = cardIndex;
-                cardIndex += 1;
-                return <TeamCard key={member.name} member={member} index={index} />;
-              })}
+              {group.members.map((member, memberIndex) => (
+                <TeamCard
+                  key={member.name}
+                  member={member}
+                  index={groupOffset + memberIndex}
+                />
+              ))}
             </div>
           </div>
-        ))}
+        })}
       </div>
     </section>
   );
