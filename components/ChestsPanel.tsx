@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ChestOpeningReel } from "./ChestOpeningReel";
+import { chestOutcomes, getChestOutcome, type ChestResult } from "./chestData";
 
 const licenseApiUrl = (
   process.env.NEXT_PUBLIC_LICENSE_API_URL ??
@@ -12,25 +14,6 @@ const chestPackages = [
   { id: "chest-3", count: 3, price: "$9.99", label: "3 Zentux Chests", featured: true },
   { id: "chest-5", count: 5, price: "$14.99", label: "5 Zentux Chests", featured: false },
 ] as const;
-
-const outcomes = [
-  { id: "try_again", label: "0 días", probability: "34.9%", rarity: "Try Again", color: "#ec4899", position: "0% 0%" },
-  { id: "common_15d", label: "15 días", probability: "40.1%", rarity: "Common", color: "#4f7cff", position: "50% 0%" },
-  { id: "rare_30d", label: "30 días", probability: "17%", rarity: "Rare", color: "#22d3ee", position: "100% 0%" },
-  { id: "epic_2m", label: "2 meses", probability: "6%", rarity: "Epic", color: "#b94cff", position: "0% 100%" },
-  { id: "legendary_7m", label: "7 meses", probability: "1.5%", rarity: "Legendary", color: "#ff9d1c", position: "50% 100%" },
-  { id: "jackpot_lifetime", label: "Lifetime", probability: "0.5%", rarity: "Jackpot", color: "#ffd21c", position: "100% 100%" },
-] as const;
-
-type ChestResult = {
-  id: string;
-  prizeId: string;
-  label: string;
-  rarity: string;
-  probability: number;
-  licenseKey: string | null;
-  paidUntil: string | null;
-};
 
 type OrderResult = {
   status: string;
@@ -51,6 +34,8 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
   const [results, setResults] = useState<ChestResult[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [openingIndex, setOpeningIndex] = useState(0);
+  const [animationComplete, setAnimationComplete] = useState(false);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -67,6 +52,8 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
         const data = (await response.json()) as OrderResult & { error?: string };
         if (response.ok && data.status === "fulfilled" && data.results) {
           setResults(data.results);
+          setOpeningIndex(0);
+          setAnimationComplete(data.results.length === 0);
           setOpenState("ready");
           return;
         }
@@ -116,6 +103,14 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
     window.setTimeout(() => setCopiedKey(null), 1800);
   };
 
+  const continueOpening = () => {
+    if (openingIndex < results.length - 1) {
+      setOpeningIndex((current) => current + 1);
+      return;
+    }
+    setAnimationComplete(true);
+  };
+
   return (
     <section className="relative py-10">
       <div className="pointer-events-none absolute left-1/2 top-24 h-72 w-72 -translate-x-1/2 rounded-full bg-[#a855f7]/20 blur-[120px]" />
@@ -159,6 +154,16 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
 
       {openState === "ready" && (
         <div className="zentux-results-in mt-8 rounded-[30px] border border-[#22d3ee]/35 bg-[#061522]/85 p-6 shadow-[0_0_80px_rgba(34,211,238,.14)] sm:p-8">
+          {!animationComplete && results[openingIndex] ? (
+            <ChestOpeningReel
+              key={results[openingIndex].id}
+              result={results[openingIndex]}
+              current={openingIndex + 1}
+              total={results.length}
+              onContinue={continueOpening}
+            />
+          ) : (
+          <>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-xs font-black uppercase tracking-[.24em] text-[#67e8f9]">Purchase complete</p>
@@ -170,7 +175,7 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
           </div>
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {results.map((result) => {
-              const outcome = outcomes.find((item) => item.id === result.prizeId) ?? outcomes[0];
+              const outcome = getChestOutcome(result.prizeId);
               return (
                 <article key={result.id} className="relative overflow-hidden rounded-3xl border border-white/10 bg-black/35 p-5">
                   <div className="absolute inset-x-0 top-0 h-1" style={{ background: outcome.color }} />
@@ -196,6 +201,8 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
               );
             })}
           </div>
+          </>
+          )}
         </div>
       )}
 
@@ -237,7 +244,7 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
           <p className="max-w-xl text-sm font-semibold leading-6 text-[#9f94ad]">Cada caja realiza una tirada independiente. Las probabilidades suman exactamente 100%.</p>
         </div>
         <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-          {outcomes.map((outcome) => (
+          {chestOutcomes.map((outcome) => (
             <article key={outcome.id} className="group relative overflow-hidden rounded-[26px] border border-white/10 bg-[#0c1026]/80 p-4 text-center transition hover:-translate-y-1" style={{ boxShadow: `inset 0 -3px 0 ${outcome.color}, 0 0 35px ${outcome.color}18` }}>
               <span className="absolute right-3 top-3 rounded-lg px-2.5 py-1 text-xs font-black text-white" style={{ background: outcome.color }}>{outcome.probability}</span>
               <KeySprite position={outcome.position} color={outcome.color} />

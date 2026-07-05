@@ -353,6 +353,135 @@ body {
   animation: zentuxResultsIn 520ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
 }
 
+.zentux-reel-shell {
+  position: relative;
+  overflow: hidden;
+}
+
+.zentux-reel-viewport {
+  position: relative;
+  height: 214px;
+  overflow: hidden;
+  border: 1px solid rgba(192, 132, 252, 0.28);
+  border-radius: 24px;
+  background:
+    linear-gradient(90deg, rgba(3, 4, 15, 0.96), transparent 16%, transparent 84%, rgba(3, 4, 15, 0.96)),
+    radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.15), transparent 42%),
+    #050711;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.78);
+}
+
+.zentux-reel-viewport::before,
+.zentux-reel-viewport::after {
+  content: "";
+  position: absolute;
+  z-index: 7;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  filter: drop-shadow(0 0 8px #f472b6);
+}
+
+.zentux-reel-viewport::before {
+  top: 0;
+  border-top: 15px solid #f472b6;
+}
+
+.zentux-reel-viewport::after {
+  bottom: 0;
+  border-bottom: 15px solid #f472b6;
+}
+
+.zentux-reel-center-line {
+  position: absolute;
+  z-index: 6;
+  top: 12px;
+  bottom: 12px;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(transparent, #f472b6 18%, #fff 50%, #f472b6 82%, transparent);
+  box-shadow: 0 0 16px #f472b6, 0 0 34px rgba(244, 114, 182, 0.55);
+  pointer-events: none;
+}
+
+.zentux-reel-track {
+  display: flex;
+  width: max-content;
+  gap: 12px;
+  padding: 17px 0;
+  will-change: transform;
+}
+
+.zentux-reel-card {
+  position: relative;
+  display: flex;
+  height: 180px;
+  width: 142px;
+  flex: 0 0 142px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid;
+  border-radius: 18px;
+  background: linear-gradient(165deg, rgba(24, 29, 61, 0.96), rgba(7, 8, 23, 0.98));
+  padding: 13px 10px 14px;
+  color: white;
+}
+
+.zentux-reel-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.09), transparent 68%);
+  transform: translateX(-100%);
+  animation: zentuxReelShine 1.8s linear infinite;
+}
+
+.zentux-reel-rarity {
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.zentux-reel-key {
+  height: 104px;
+  width: 104px;
+  background-size: 300% 200%;
+}
+
+.zentux-reel-card strong {
+  font-size: 14px;
+  font-weight: 1000;
+}
+
+.zentux-reel-card-winner {
+  z-index: 3;
+  animation: zentuxReelWinner 900ms ease-in-out infinite alternate;
+}
+
+.zentux-reel-spinner {
+  height: 17px;
+  width: 17px;
+  border: 2px solid rgba(192, 132, 252, 0.25);
+  border-top-color: #c084fc;
+  border-radius: 50%;
+  animation: zentuxSpinner 700ms linear infinite;
+}
+
+.zentux-reel-reveal {
+  border: 1px solid;
+  border-radius: 24px;
+  background: rgba(4, 5, 18, 0.76);
+  padding: 24px;
+  animation: zentuxResultsIn 500ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
 @keyframes zentuxSnowFall {
   from {
     transform: translate3d(0, -50%, 0);
@@ -514,6 +643,19 @@ body {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+@keyframes zentuxReelShine {
+  to { transform: translateX(100%); }
+}
+
+@keyframes zentuxReelWinner {
+  from { transform: scale(1); filter: brightness(1); }
+  to { transform: scale(1.035); filter: brightness(1.28); }
+}
+
+@keyframes zentuxSpinner {
+  to { transform: rotate(1turn); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .zentux-snow-slow,
   .zentux-snow-medium,
@@ -533,7 +675,11 @@ body {
   .zentux-chest-opening .zentux-chest-lid,
   .zentux-chest-opening .zentux-chest-body,
   .zentux-chest-opening::after,
-  .zentux-results-in {
+  .zentux-results-in,
+  .zentux-reel-card::before,
+  .zentux-reel-card-winner,
+  .zentux-reel-spinner,
+  .zentux-reel-reveal {
     animation: none;
   }
 
