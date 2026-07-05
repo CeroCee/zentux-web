@@ -4,6 +4,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import TeamShowcase from "@/components/TeamShowcase";
+import { ChestsPanel } from "@/components/ChestsPanel";
 
 const BRAND_NAME = "Zentux";
 const OPTIMIZER_NAME = "Zentux Optimizer Pro";
@@ -45,10 +46,10 @@ const pricingPlans = [
 const supportUrl = "https://guns.lol/cerocee";
 const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
-const tabs = ["Home", "Products", "Reviews", "Status", "FAQ", "Meet The Team"] as const;
+const tabs = ["Home", "Products", "Chests", "Reviews", "Status", "FAQ", "Meet The Team"] as const;
 type Tab = (typeof tabs)[number];
 type LegalPanel = "privacy" | "terms";
-const desktopTabs: Tab[] = ["Home", "Products", "Reviews"];
+const desktopTabs: Tab[] = ["Home", "Products", "Chests", "Reviews"];
 const moreTabs: Tab[] = ["Status", "FAQ", "Meet The Team"];
 
 const languages = [
@@ -63,12 +64,12 @@ const languages = [
 type LanguageCode = (typeof languages)[number]["code"];
 
 const tabLabels: Record<LanguageCode, Record<Tab, string>> = {
-  es: { Home: "Home", Products: "Productos", Reviews: "Reviews", Status: "Estado", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  en: { Home: "Home", Products: "Products", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  de: { Home: "Home", Products: "Produkte", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  fr: { Home: "Accueil", Products: "Produits", Reviews: "Reviews", Status: "Statut", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  it: { Home: "Home", Products: "Prodotti", Reviews: "Reviews", Status: "Stato", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
-  pt: { Home: "Home", Products: "Produtos", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  es: { Home: "Home", Products: "Productos", Chests: "Cajas", Reviews: "Reviews", Status: "Estado", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  en: { Home: "Home", Products: "Products", Chests: "Chests", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  de: { Home: "Home", Products: "Produkte", Chests: "Chests", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  fr: { Home: "Accueil", Products: "Produits", Chests: "Coffres", Reviews: "Reviews", Status: "Statut", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  it: { Home: "Home", Products: "Prodotti", Chests: "Casse", Reviews: "Reviews", Status: "Stato", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
+  pt: { Home: "Home", Products: "Produtos", Chests: "Baús", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team" },
 };
 
 const copy = {
@@ -526,9 +527,23 @@ export default function Home() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [legalPanel, setLegalPanel] = useState<LegalPanel | null>(null);
+  const [chestSessionId, setChestSessionId] = useState<string | null>(null);
+  const [chestCheckoutCancelled, setChestCheckoutCancelled] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<
     (typeof products)[number] | null
   >(null);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const search = new URLSearchParams(window.location.search);
+      const sessionId = search.get("chest_session");
+      const shouldOpenChests = search.get("tab") === "chests" || Boolean(sessionId);
+      if (sessionId) setChestSessionId(sessionId);
+      if (search.get("chest_cancelled") === "1") setChestCheckoutCancelled(true);
+      if (shouldOpenChests) setActiveTab("Chests");
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (showDiscordBubble) {
@@ -710,6 +725,12 @@ export default function Home() {
         )}
         {activeTab === "Products" && (
           <ProductsPanel labels={labels} onSelectProduct={setSelectedProduct} />
+        )}
+        {activeTab === "Chests" && (
+          <ChestsPanel
+            sessionId={chestSessionId}
+            cancelled={chestCheckoutCancelled}
+          />
         )}
         {activeTab === "Reviews" && <ReviewsPanel />}
         {activeTab === "Status" && <StatusPanel />}
@@ -1005,6 +1026,7 @@ function LegalFooter({
         <FooterColumn title="Navigation">
           <button onClick={() => setActiveTab("Home")}>Home</button>
           <button onClick={() => setActiveTab("Products")}>Products</button>
+          <button onClick={() => setActiveTab("Chests")}>Chests</button>
           <button onClick={() => setActiveTab("Reviews")}>Reviews</button>
           <button onClick={() => setActiveTab("Status")}>Status</button>
           <button onClick={() => setActiveTab("FAQ")}>FAQ</button>

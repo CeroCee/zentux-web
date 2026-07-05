@@ -215,6 +215,144 @@ body {
   transform: translateY(-2px);
 }
 
+.zentux-chest-stage {
+  position: relative;
+  display: flex;
+  min-height: 340px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 28px 40px rgba(0, 0, 0, 0.5));
+}
+
+.zentux-chest-stage::before {
+  content: "";
+  position: absolute;
+  height: 250px;
+  width: 250px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(192, 132, 252, 0.34), transparent 68%);
+  animation: zentuxChestAura 3.4s ease-in-out infinite;
+}
+
+.zentux-chest-lid,
+.zentux-chest-body {
+  position: relative;
+  z-index: 2;
+  width: 230px;
+  border: 4px solid #f6a53a;
+  background:
+    linear-gradient(90deg, transparent 44%, rgba(255, 224, 153, 0.55) 48%, transparent 54%),
+    linear-gradient(145deg, #ff9734, #b84516 72%);
+  box-shadow:
+    inset 0 0 0 5px rgba(89, 28, 9, 0.48),
+    0 0 38px rgba(255, 112, 35, 0.28);
+}
+
+.zentux-chest-lid {
+  height: 76px;
+  margin-bottom: -4px;
+  transform-origin: 18px 100%;
+  border-radius: 72px 72px 10px 10px;
+  transition: transform 700ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.zentux-chest-lid span,
+.zentux-chest-body::before,
+.zentux-chest-body::after {
+  content: "";
+  position: absolute;
+  background: linear-gradient(#ffe7a6, #e69b22);
+  box-shadow: inset 0 0 0 2px #8f4512;
+}
+
+.zentux-chest-lid span {
+  inset: 22px -8px auto;
+  height: 17px;
+  border-radius: 5px;
+}
+
+.zentux-chest-body {
+  height: 138px;
+  border-radius: 8px 8px 24px 24px;
+}
+
+.zentux-chest-body::before,
+.zentux-chest-body::after {
+  top: -2px;
+  bottom: -2px;
+  width: 20px;
+}
+
+.zentux-chest-body::before { left: 25px; }
+.zentux-chest-body::after { right: 25px; }
+
+.zentux-chest-lock {
+  position: absolute;
+  left: 50%;
+  top: 24px;
+  z-index: 4;
+  display: grid;
+  height: 58px;
+  width: 52px;
+  transform: translateX(-50%);
+  place-items: center;
+  border: 4px solid #7c3aed;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #d8b4fe, #7c3aed);
+  color: #2e1065;
+  font-size: 24px;
+  font-weight: 1000;
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.7);
+}
+
+.zentux-chest-question {
+  position: absolute;
+  z-index: 5;
+  top: 2px;
+  color: white;
+  font-size: 76px;
+  font-weight: 1000;
+  line-height: 1;
+  text-shadow: 0 0 18px #c084fc, 0 0 42px #7c3aed;
+  animation: zentuxQuestionFloat 2.4s ease-in-out infinite;
+}
+
+.zentux-chest-floor {
+  position: relative;
+  z-index: 1;
+  margin-top: -8px;
+  height: 22px;
+  width: 260px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.72);
+  filter: blur(8px);
+}
+
+.zentux-chest-opening .zentux-chest-lid {
+  animation: zentuxChestLidOpen 1.25s ease-in-out infinite;
+}
+
+.zentux-chest-opening .zentux-chest-body {
+  animation: zentuxChestShake 400ms ease-in-out infinite;
+}
+
+.zentux-chest-opening::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 88px;
+  height: 180px;
+  width: 180px;
+  background: conic-gradient(from 20deg, transparent, #fef08a, transparent, #c084fc, transparent, #67e8f9, transparent);
+  filter: blur(12px);
+  animation: zentuxChestBurst 1.2s linear infinite;
+}
+
+.zentux-results-in {
+  animation: zentuxResultsIn 520ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
 @keyframes zentuxSnowFall {
   from {
     transform: translate3d(0, -50%, 0);
@@ -346,6 +484,36 @@ body {
   }
 }
 
+@keyframes zentuxChestAura {
+  0%, 100% { opacity: 0.5; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes zentuxQuestionFloat {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-12px) rotate(5deg); }
+}
+
+@keyframes zentuxChestShake {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  25% { transform: translateX(-5px) rotate(-1.5deg); }
+  75% { transform: translateX(5px) rotate(1.5deg); }
+}
+
+@keyframes zentuxChestLidOpen {
+  0%, 30%, 100% { transform: translateY(0) rotate(0); }
+  55%, 75% { transform: translateY(-28px) rotate(-11deg); }
+}
+
+@keyframes zentuxChestBurst {
+  to { transform: rotate(1turn) scale(1.15); }
+}
+
+@keyframes zentuxResultsIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .zentux-snow-slow,
   .zentux-snow-medium,
@@ -357,6 +525,15 @@ body {
   .team-card::before,
   .team-avatar-glow,
   .team-particle {
+    animation: none;
+  }
+
+  .zentux-chest-stage::before,
+  .zentux-chest-question,
+  .zentux-chest-opening .zentux-chest-lid,
+  .zentux-chest-opening .zentux-chest-body,
+  .zentux-chest-opening::after,
+  .zentux-results-in {
     animation: none;
   }
 
