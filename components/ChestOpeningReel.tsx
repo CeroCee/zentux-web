@@ -129,8 +129,8 @@ export function ChestOpeningReel({ result, current, total, onContinue }: ChestOp
           <h3 className="mt-2 text-4xl font-black text-white">{result.label}</h3>
           <p className="mt-2 text-lg font-black" style={{ color: winner.color }}>{result.rarity}</p>
           <p className="mx-auto mt-3 max-w-xl text-sm font-semibold leading-6 text-[#a99fb6]">
-            {result.licenseKey
-              ? "¡Ganaste acceso! Tu key aparecerá en el resumen final y también fue enviada por email."
+            {winner.days !== 0
+              ? "¡Ganaste acceso! Este tiempo se sumará a tu única key, visible en el resumen final y en tu email."
               : "Esta vez salió Try Again. La siguiente caja puede ser la buena."}
           </p>
           <button

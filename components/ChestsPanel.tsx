@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { ChestOpeningReel } from "./ChestOpeningReel";
-import { chestOutcomes, getChestOutcome, type ChestResult } from "./chestData";
+import { ChestResultsSummary } from "./ChestResultsSummary";
+import { chestOutcomes, type ChestResult } from "./chestData";
 
 const licenseApiUrl = (
   process.env.NEXT_PUBLIC_LICENSE_API_URL ??
@@ -33,7 +34,6 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
   );
   const [results, setResults] = useState<ChestResult[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [openingIndex, setOpeningIndex] = useState(0);
   const [animationComplete, setAnimationComplete] = useState(false);
 
@@ -97,12 +97,6 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
     }
   };
 
-  const copyKey = async (key: string) => {
-    await navigator.clipboard.writeText(key);
-    setCopiedKey(key);
-    window.setTimeout(() => setCopiedKey(null), 1800);
-  };
-
   const continueOpening = () => {
     if (openingIndex < results.length - 1) {
       setOpeningIndex((current) => current + 1);
@@ -125,7 +119,7 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
               Zentux <span className="bg-gradient-to-r from-[#f472b6] via-[#c084fc] to-[#22d3ee] bg-clip-text text-transparent">Chests.</span>
             </h1>
             <p className="mt-5 max-w-2xl text-base font-semibold leading-7 text-[#bbb2c8] sm:text-lg">
-              Abre cajas y gana acceso desde 15 días hasta Lifetime. El resultado se calcula en el servidor después de confirmar el pago y las keys se entregan aquí y por email.
+              Abre cajas y gana acceso desde 15 días hasta Lifetime. Todos los premios de una compra se suman en una sola key, entregada aquí y por email.
             </p>
             <div className="mt-6 flex flex-wrap gap-3 text-xs font-black uppercase tracking-[.14em] text-[#a69bb3]">
               <span className="rounded-full border border-white/10 bg-white/[.04] px-4 py-2">100% transparente</span>
@@ -163,45 +157,7 @@ export function ChestsPanel({ sessionId, cancelled }: ChestsPanelProps) {
               onContinue={continueOpening}
             />
           ) : (
-          <>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[.24em] text-[#67e8f9]">Purchase complete</p>
-              <h2 className="mt-2 text-3xl font-black text-white">Tus cajas están abiertas</h2>
-            </div>
-            <span className="rounded-full border border-[#22d3ee]/30 bg-[#22d3ee]/10 px-4 py-2 text-xs font-black text-[#a5f3fc]">
-              {results.length} resultado{results.length === 1 ? "" : "s"}
-            </span>
-          </div>
-          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {results.map((result) => {
-              const outcome = getChestOutcome(result.prizeId);
-              return (
-                <article key={result.id} className="relative overflow-hidden rounded-3xl border border-white/10 bg-black/35 p-5">
-                  <div className="absolute inset-x-0 top-0 h-1" style={{ background: outcome.color }} />
-                  <div className="flex items-center gap-4">
-                    <KeySprite position={outcome.position} color={outcome.color} compact />
-                    <div>
-                      <p className="text-xs font-black uppercase tracking-[.18em]" style={{ color: outcome.color }}>{result.rarity}</p>
-                      <h3 className="mt-1 text-2xl font-black text-white">{result.label}</h3>
-                    </div>
-                  </div>
-                  {result.licenseKey ? (
-                    <button
-                      type="button"
-                      onClick={() => void copyKey(result.licenseKey!)}
-                      className="mt-5 w-full rounded-xl border border-white/10 bg-white/[.05] px-3 py-3 font-mono text-xs font-bold text-[#dffcff] transition hover:border-[#22d3ee]/60"
-                    >
-                      {copiedKey === result.licenseKey ? "✓ Key copiada" : result.licenseKey}
-                    </button>
-                  ) : (
-                    <p className="mt-5 rounded-xl border border-[#ec4899]/25 bg-[#ec4899]/10 px-4 py-3 text-sm font-bold text-[#f9a8d4]">Try again — esta caja no contiene una key.</p>
-                  )}
-                </article>
-              );
-            })}
-          </div>
-          </>
+            <ChestResultsSummary results={results} />
           )}
         </div>
       )}
