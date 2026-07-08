@@ -1,9 +1,16 @@
 import NextAuth from "next-auth";
 import Discord from "next-auth/providers/discord";
 
-const discordClientId = process.env.DISCORD_OAUTH_CLIENT_ID || process.env.AUTH_DISCORD_ID;
-const discordClientSecret = process.env.DISCORD_OAUTH_CLIENT_SECRET || process.env.AUTH_DISCORD_SECRET;
-const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+function cleanEnv(value?: string) {
+  return String(value || "")
+    .replace(/^\uFEFF/, "")
+    .replace(/[\u200B-\u200D\u2060]/g, "")
+    .trim();
+}
+
+const discordClientId = cleanEnv(process.env.DISCORD_OAUTH_CLIENT_ID || process.env.AUTH_DISCORD_ID);
+const discordClientSecret = cleanEnv(process.env.DISCORD_OAUTH_CLIENT_SECRET || process.env.AUTH_DISCORD_SECRET);
+const authSecret = cleanEnv(process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET);
 
 async function syncDiscordAccount(profile: { id: string; username?: string | null; global_name?: string | null; avatar?: string | null }) {
   const baseUrl = String(process.env.LICENSE_API_URL || process.env.NEXT_PUBLIC_LICENSE_API_URL || "").replace(/\/+$/, "");
