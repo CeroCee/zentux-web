@@ -1,8 +1,8 @@
 import NextAuth from "next-auth";
 import Discord from "next-auth/providers/discord";
 
-const discordClientId = process.env.AUTH_DISCORD_ID || process.env.DISCORD_OAUTH_CLIENT_ID;
-const discordClientSecret = process.env.AUTH_DISCORD_SECRET || process.env.DISCORD_OAUTH_CLIENT_SECRET;
+const discordClientId = process.env.DISCORD_OAUTH_CLIENT_ID || process.env.AUTH_DISCORD_ID;
+const discordClientSecret = process.env.DISCORD_OAUTH_CLIENT_SECRET || process.env.AUTH_DISCORD_SECRET;
 const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
 
 async function syncDiscordAccount(profile: { id: string; username?: string | null; global_name?: string | null; avatar?: string | null }) {
