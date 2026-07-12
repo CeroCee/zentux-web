@@ -53,8 +53,8 @@ const discordUrl = "https://discord.gg/KEWZHDQq6X";
 const tabs = ["Home", "Products", "Chests", "Zenitx", "Reviews", "Status", "FAQ", "Meet The Team", "Profile"] as const;
 type Tab = (typeof tabs)[number];
 type LegalPanel = "privacy" | "terms";
-const desktopTabs: Tab[] = ["Home", "Products", "Chests", "Zenitx", "Reviews"];
-const moreTabs: Tab[] = ["Status", "FAQ", "Meet The Team"];
+const desktopTabs: Tab[] = ["Home", "Products", "Chests", "Reviews"];
+const moreTabs: Tab[] = ["Zenitx", "Status", "FAQ", "Meet The Team"];
 
 const languages = [
   { code: "es", label: "Español", flag: "🇪🇸" },
@@ -524,7 +524,7 @@ function getSharedAppUsageCount() {
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("Home");
-  const [language, setLanguage] = useState<LanguageCode>("es");
+  const language: LanguageCode = "es";
   const labels = t(language);
   const [onlineCount, setOnlineCount] = useState<number | null>(null);
   const [showDiscordBubble, setShowDiscordBubble] = useState(true);
@@ -694,7 +694,6 @@ export default function Home() {
 
           <div className="hidden items-center gap-3 md:flex">
             <OnlineVisitors count={onlineCount} />
-            <LanguageMenu language={language} setLanguage={setLanguage} />
             <a
               href={supportUrl}
               target="_blank"
@@ -741,7 +740,6 @@ export default function Home() {
                   <span className="text-sm font-black text-white">
                     🟢 Online {onlineCount ?? "..."}
                   </span>
-                  <LanguageMenu language={language} setLanguage={setLanguage} />
                 </div>
                 <a
                   href={supportUrl}
