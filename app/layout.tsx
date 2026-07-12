@@ -25,9 +25,9 @@ export const metadata: Metadata = {
     "Gaming Automation Tools",
     "PC Gaming Tools",
   ],
-  metadataBase: new URL("https://zentux.gg"),
+  metadataBase: new URL("https://zentux.gg/"),
   alternates: {
-    canonical: "https://zentux.gg/",
+    canonical: "/",
   },
   openGraph: {
     title: "Zentux | Gaming Tools for Windows",
