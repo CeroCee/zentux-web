@@ -886,11 +886,59 @@ function HomePanel({
   setActiveTab: (tab: Tab) => void;
   onOpenLegal: (panel: LegalPanel) => void;
 }) {
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Zentux",
+      url: "https://zentux.gg",
+      logo: "https://zentux.gg/logo-web.png",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Zentux",
+      alternateName: "Zentux Gaming Tools",
+      url: "https://zentux.gg",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: "Zentux v7",
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "Windows",
+      url: "https://zentux.gg/products/zentux-v7",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: "Zentux Optimizer",
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "Windows",
+      url: "https://zentux.gg/products/zentux-optimizer",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: "Zentux Recorder",
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "Windows",
+      url: "https://zentux.gg/products/zentux-recorder",
+    },
+  ];
+
   return (
     <div className="space-y-10 sm:space-y-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <section className="grid min-h-[calc(100vh-8rem)] gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
         <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
-          <h1 className="text-5xl font-black leading-[0.95] tracking-tight text-white sm:text-7xl lg:text-8xl">
+          <h1
+            aria-label="Zentux Gaming Tools for Windows"
+            className="text-5xl font-black leading-[0.95] tracking-tight text-white sm:text-7xl lg:text-8xl"
+          >
             {labels.homeTitleA}
             <span className="block bg-gradient-to-r from-[#d85cff] to-[#7c6bff] bg-clip-text text-transparent">
               {labels.homeTitleB}
@@ -960,8 +1008,55 @@ function HomePanel({
         </div>
       </section>
 
+      <SeoContentSection setActiveTab={setActiveTab} />
+
       <LegalFooter setActiveTab={setActiveTab} onOpenLegal={onOpenLegal} />
     </div>
+  );
+}
+
+function SeoContentSection({ setActiveTab }: { setActiveTab: (tab: Tab) => void }) {
+  return (
+    <section className="rounded-[2rem] border border-white/10 bg-black/45 p-6 shadow-[0_0_80px_rgba(168,85,247,0.08)] backdrop-blur-2xl sm:p-8">
+      <p className="text-xs font-black uppercase tracking-[0.24em] text-[#b989ff]">
+        Zentux Gaming Tools
+      </p>
+      <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">
+        Gaming Tools Built for Windows
+      </h2>
+      <p className="mt-4 max-w-4xl text-sm font-semibold leading-7 text-[#c4b8ce] sm:text-base">
+        Zentux provides lightweight gaming tools for Windows focused on
+        performance, automation and control. Explore Zentux v7, Zentux
+        Optimizer and Zentux Recorder from the official Zentux platform.
+      </p>
+      <div className="mt-6 flex flex-wrap gap-3 text-sm font-black">
+        <a
+          href="/products/zentux-v7"
+          className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-white transition hover:border-[#a855f7]"
+        >
+          Zentux v7
+        </a>
+        <a
+          href="/products/zentux-optimizer"
+          className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-white transition hover:border-[#a855f7]"
+        >
+          Zentux Optimizer
+        </a>
+        <a
+          href="/products/zentux-recorder"
+          className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-white transition hover:border-[#a855f7]"
+        >
+          Zentux Recorder
+        </a>
+        <button
+          type="button"
+          onClick={() => setActiveTab("Products")}
+          className="rounded-full border border-[#a855f7]/40 bg-[#a855f7]/10 px-4 py-2 text-[#d8c8ef] transition hover:border-[#c75cff]"
+        >
+          View all products
+        </button>
+      </div>
+    </section>
   );
 }
 
@@ -1016,9 +1111,9 @@ function ProductPreviewCluster() {
                 <p className="text-xs font-black uppercase tracking-[0.18em] text-[#b989ff]">
                   {preview.meta}
                 </p>
-                <h3 className="mt-1 text-xl font-black leading-tight text-white">
+                <h2 className="mt-1 text-xl font-black leading-tight text-white">
                   {preview.name}
-                </h3>
+                </h2>
               </div>
             </div>
           </article>

@@ -2,33 +2,37 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
 
-const siteUrl = "https://www.zentux.gg";
+const siteUrl = "https://zentux.gg";
 const logoUrl = `${siteUrl}/logo-web.png?v=20260620`;
 
 export const metadata: Metadata = {
   title: {
-    default: "Zentux",
+    default: "Zentux | Gaming Tools for Windows",
     template: "%s | Zentux",
   },
   description:
-    "Zentux Optimizer Pro is a premium Windows optimizer for gamers with cleanup, RAM tools, FPS diagnostics, game boosting, and online license activation.",
+    "Zentux is a gaming tools platform for Windows. Explore Zentux v7, Zentux Optimizer and Zentux Recorder — lightweight tools built for performance, automation and control.",
   applicationName: "Zentux",
   keywords: [
-    "Zentux Optimizer",
     "Zentux",
-    "Windows optimizer",
-    "gaming optimizer",
-    "FPS booster",
-    "RAM optimizer",
-    "PC cleaner",
-    "game booster",
+    "Zentux Gaming",
+    "Zentux Gaming Tools",
+    "Zentux v7",
+    "Zentux Optimizer",
+    "Zentux Recorder",
+    "Windows Gaming Tools",
+    "Gaming Performance Tools",
+    "Gaming Automation Tools",
+    "PC Gaming Tools",
   ],
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL("https://zentux.gg"),
+  alternates: {
+    canonical: "https://zentux.gg/",
+  },
   openGraph: {
-    title: "Zentux",
-    description:
-      "Premium Windows performance tools for gamers. Cleanup, RAM optimizer, game booster, FPS diagnostics, and license activation.",
-    url: siteUrl,
+    title: "Zentux | Gaming Tools for Windows",
+    description: "Gaming tools built for performance, automation and control.",
+    url: "https://zentux.gg/",
     siteName: "Zentux",
     locale: "en_US",
     type: "website",
@@ -43,9 +47,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Zentux",
-    description:
-      "Premium Windows performance tools for gamers with online license activation.",
+    title: "Zentux | Gaming Tools for Windows",
+    description: "Gaming tools built for performance, automation and control.",
     images: [logoUrl],
   },
   icons: {
@@ -60,6 +63,10 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
   },
 };
 
