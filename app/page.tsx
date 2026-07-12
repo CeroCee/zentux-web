@@ -50,11 +50,11 @@ const pricingPlans = [
 const supportUrl = "https://guns.lol/cerocee";
 const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
-const tabs = ["Home", "Products", "Chests", "Zenitx", "Reviews", "Status", "FAQ", "Meet The Team", "Profile"] as const;
+const tabs = ["Home", "Products", "Chests", "Zenitx", "Reviews", "FAQ", "Meet The Team", "Profile"] as const;
 type Tab = (typeof tabs)[number];
 type LegalPanel = "privacy" | "terms";
 const desktopTabs: Tab[] = ["Home", "Products", "Chests", "Reviews"];
-const moreTabs: Tab[] = ["Zenitx", "Status", "FAQ", "Meet The Team"];
+const moreTabs: Tab[] = ["Zenitx", "FAQ", "Meet The Team"];
 
 const languages = [
   { code: "es", label: "Español", flag: "🇪🇸" },
@@ -68,12 +68,12 @@ const languages = [
 type LanguageCode = (typeof languages)[number]["code"];
 
 const tabLabels: Record<LanguageCode, Record<Tab, string>> = {
-  es: { Home: "Home", Products: "Productos", Chests: "Cajas", Zenitx: "Zenitx", Reviews: "Reviews", Status: "Estado", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Mi Perfil" },
-  en: { Home: "Home", Products: "Products", Chests: "Chests", Zenitx: "Zenitx", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "My Profile" },
-  de: { Home: "Home", Products: "Produkte", Chests: "Chests", Zenitx: "Zenitx", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profil" },
-  fr: { Home: "Accueil", Products: "Produits", Chests: "Coffres", Zenitx: "Zenitx", Reviews: "Reviews", Status: "Statut", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profil" },
-  it: { Home: "Home", Products: "Prodotti", Chests: "Casse", Zenitx: "Zenitx", Reviews: "Reviews", Status: "Stato", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profilo" },
-  pt: { Home: "Home", Products: "Produtos", Chests: "Baús", Zenitx: "Zenitx", Reviews: "Reviews", Status: "Status", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Perfil" },
+  es: { Home: "Home", Products: "Productos", Chests: "Cajas", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Mi Perfil" },
+  en: { Home: "Home", Products: "Products", Chests: "Chests", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "My Profile" },
+  de: { Home: "Home", Products: "Produkte", Chests: "Chests", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profil" },
+  fr: { Home: "Accueil", Products: "Produits", Chests: "Coffres", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profil" },
+  it: { Home: "Home", Products: "Prodotti", Chests: "Casse", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profilo" },
+  pt: { Home: "Home", Products: "Produtos", Chests: "Baús", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Perfil" },
 };
 
 const copy = {
@@ -775,7 +775,6 @@ export default function Home() {
         {activeTab === "Zenitx" && <ZenitxPanel sessionId={zenitxSessionId} cancelled={zenitxCheckoutCancelled} />}
         {activeTab === "Profile" && <ProfilePanel />}
         {activeTab === "Reviews" && <ReviewsPanel />}
-        {activeTab === "Status" && <StatusPanel />}
         {activeTab === "FAQ" && <FaqPanel />}
         {activeTab === "Meet The Team" && <TeamShowcase />}
       </div>
@@ -1070,7 +1069,6 @@ function LegalFooter({
           <button onClick={() => setActiveTab("Products")}>Products</button>
           <button onClick={() => setActiveTab("Chests")}>Chests</button>
           <button onClick={() => setActiveTab("Reviews")}>Reviews</button>
-          <button onClick={() => setActiveTab("Status")}>Status</button>
           <button onClick={() => setActiveTab("FAQ")}>FAQ</button>
         </FooterColumn>
 
@@ -1094,7 +1092,6 @@ function LegalFooter({
             Buy License
           </AuthenticatedCheckoutLink>
           <button onClick={() => setActiveTab("Products")}>Downloads</button>
-          <button onClick={() => setActiveTab("Status")}>Status</button>
           <button onClick={() => setActiveTab("Products")}>Features</button>
         </FooterColumn>
 
@@ -2087,28 +2084,6 @@ function ReviewsPanel() {
     </section>
   );
 }
-function StatusPanel() {
-  return (
-    <section className="py-10">
-      <PanelTitle
-        label="Status"
-        title="Product Status"
-        text="Current availability for Zentux products and online services."
-      />
-
-      <div className="mt-10 space-y-3 rounded-[28px] border border-white/10 bg-black/38 p-5 backdrop-blur-xl">
-        <StatusRow name={OPTIMIZER_NAME} price="Included" status="No disponible" />
-        <StatusRow name={AUTOCLICKER_NAME} price="Included" status="Download Active" />
-        <StatusRow name={MACRO_NAME} price="Included" status="No disponible" />
-        <StatusRow name={CURSOR_NAME} price="Free" status="Download Active" />
-        <StatusRow name="License Validation" price="Included" status="Online" />
-        <StatusRow name="Email License Delivery" price="Included" status="Online" />
-        <StatusRow name="Support Page" price="Included" status="Online" />
-      </div>
-    </section>
-  );
-}
-
 function FaqPanel() {
   return (
     <section className="py-10">
@@ -2260,29 +2235,6 @@ function Metric({
           style={{ width, backgroundColor: danger ? "#c51f35" : "#a855f7" }}
         />
       </div>
-    </div>
-  );
-}
-
-function StatusRow({
-  name,
-  price,
-  status,
-}: {
-  name: string;
-  price: string;
-  status: string;
-}) {
-  return (
-    <div className="grid gap-3 rounded-2xl border border-white/10 bg-black/35 p-4 sm:grid-cols-[1fr_auto_auto] sm:items-center">
-      <span className="font-black text-white">{name}</span>
-      <span className="w-fit rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-black text-white">
-        {price}
-      </span>
-      <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#1f8e5a] bg-[#042015] px-4 py-1.5 text-xs font-black uppercase tracking-wide text-[#64ffb1]">
-        <span className="h-2 w-2 rounded-full bg-[#64ffb1]" />
-        {status}
-      </span>
     </div>
   );
 }
