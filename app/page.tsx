@@ -17,6 +17,9 @@ const FREE_AUTOCLICKER_NAME = "Zentux v6";
 const MACRO_NAME = "Zentux Macro";
 const CURSOR_NAME = "Zentux Cursor";
 const checkoutUrl = "https://buy.stripe.com/8x29ALdMMeKmcSs60q1wY01";
+const licenseApiBaseUrl = (
+  process.env.NEXT_PUBLIC_LICENSE_API_URL ?? "https://zentuxlicenseserver2.onrender.com"
+).replace(/\/+$/, "");
 const optimizerDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxOptimizer.exe";
 const autoclickerDownloadUrl =
@@ -32,19 +35,16 @@ const pricingPlans = [
     id: "15-days",
     label: "15 dias",
     price: "$1.79 USD",
-    checkoutUrl: process.env.NEXT_PUBLIC_STRIPE_15_DAY_URL ?? "",
   },
   {
     id: "30-days",
     label: "30 dias",
     price: "$3.58 USD",
-    checkoutUrl: process.env.NEXT_PUBLIC_STRIPE_30_DAY_URL ?? "",
   },
   {
     id: "7-months",
     label: "7 meses",
     price: "$25 USD",
-    checkoutUrl: process.env.NEXT_PUBLIC_STRIPE_7_MONTH_URL ?? "",
   },
 ] as const;
 const supportUrl = "https://guns.lol/cerocee";
@@ -582,6 +582,37 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("license_session");
+    if (!sessionId) return;
+
+    const storageKey = `zentux-license-result:${sessionId}`;
+    if (window.sessionStorage.getItem(storageKey)) return;
+    window.sessionStorage.setItem(storageKey, "1");
+
+    const verifyLicenseCheckout = async () => {
+      for (let attempt = 0; attempt < 5; attempt += 1) {
+        try {
+          const response = await fetch(`${licenseApiBaseUrl}/api/web/license/result`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sessionId }),
+          });
+          if (response.ok) {
+            const data = await response.json().catch(() => null);
+            if (data?.status === "fulfilled") break;
+          }
+        } catch (error) {
+          console.warn("License checkout verification failed:", error);
+        }
+        await new Promise((resolve) => window.setTimeout(resolve, 1500));
+      }
+    };
+
+    void verifyLicenseCheckout();
+  }, []);
+
   const selectTab = (tab: Tab) => {
     setActiveTab(tab);
     setMoreOpen(false);
@@ -1061,7 +1092,7 @@ function LegalFooter({
         </FooterColumn>
 
         <FooterColumn title="Products">
-          <AuthenticatedCheckoutLink href={checkoutUrl}>
+          <AuthenticatedCheckoutLink href={checkoutUrl} planId="30-days">
             Buy License
           </AuthenticatedCheckoutLink>
           <button onClick={() => setActiveTab("Products")}>Downloads</button>
@@ -1476,6 +1507,7 @@ function ProductsPanel({
             </p>
             <AuthenticatedCheckoutLink
               href={checkoutUrl}
+              planId="30-days"
               className="rounded-full bg-white px-5 py-2 text-xs font-black text-black transition hover:scale-[1.03]"
             >
               {labels.buyPackage}
@@ -1907,22 +1939,13 @@ function ProductDetailsModal({
               ) : null}
             </div>
 
-            {selectedPlan.checkoutUrl ? (
-              <AuthenticatedCheckoutLink
-                href={selectedPlan.checkoutUrl}
-                className="mt-6 block w-full rounded-full bg-white px-7 py-4 text-center text-sm font-black text-black shadow-[0_0_36px_rgba(196,112,255,0.5)] transition hover:scale-[1.01]"
-              >
-                {labels.purchaseNow ?? copy.en.purchaseNow}
-              </AuthenticatedCheckoutLink>
-            ) : (
-              <button
-                type="button"
-                disabled
-                className="mt-6 w-full cursor-not-allowed rounded-full border border-white/10 bg-white/10 px-7 py-4 text-sm font-black text-[#a99daf]"
-              >
-                {labels.paymentLinkPending ?? copy.en.paymentLinkPending}
-              </button>
-            )}
+            <AuthenticatedCheckoutLink
+              href={checkoutUrl}
+              planId={selectedPlan.id}
+              className="mt-6 block w-full rounded-full bg-white px-7 py-4 text-center text-sm font-black text-black shadow-[0_0_36px_rgba(196,112,255,0.5)] transition hover:scale-[1.01]"
+            >
+              {labels.purchaseNow ?? copy.en.purchaseNow}
+            </AuthenticatedCheckoutLink>
 
             {canDownload ? (
               <a
