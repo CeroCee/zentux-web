@@ -141,7 +141,10 @@ export function RewardsPanel({
       window.location.assign(data.lootLabsUrl);
     } catch (startError) {
       setStep("error");
-      setError(startError instanceof Error ? startError.message : "No pudimos iniciar Rewards.");
+      const message = startError instanceof Error ? startError.message : "No pudimos iniciar Rewards.";
+      setError(message.includes("Rewards")
+        ? message
+        : "Ya tienes una licencia activa de Rewards. Espera a que expire antes de reclamar otra.");
     }
   };
 
