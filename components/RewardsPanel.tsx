@@ -90,7 +90,7 @@ export function RewardsPanel({
           setError(
             data.status === "expired"
               ? "Esta sesion de Rewards expiro. Inicia una nueva desde /rewards."
-              : "LootLabs confirmo la sesion, pero Zentux no pudo activar el acceso. Contacta soporte."
+              : "La verificacion confirmo la sesion, pero Zentux no pudo activar el acceso. Contacta soporte."
           );
           return;
         }
@@ -179,13 +179,13 @@ export function RewardsPanel({
               Gana 24 horas de acceso gratis.
             </h1>
             <p className="mt-5 max-w-2xl text-base font-semibold leading-8 text-[#c8bed3] sm:text-lg">
-              Completa tareas patrocinadas con proveedores verificados y activa acceso temporal a Zentux sin pagar.
-              Por ahora el proveedor recomendado es LootLabs.
+              Completa misiones rapidas de verificacion y activa acceso temporal a Zentux sin pagar.
+              Tu progreso se valida automaticamente al terminar.
             </p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
               {[
-                ["01", "Elegir proveedor"],
+                ["01", "Iniciar misiones"],
                 ["02", "Completar y verificar"],
                 ["03", "Activar acceso"],
               ].map(([number, label]) => (
@@ -208,7 +208,7 @@ export function RewardsPanel({
 
       {!standalone && (
         <p className="mx-auto mt-7 max-w-3xl text-center text-xs font-semibold leading-6 text-[#8f84a0]">
-          Las recompensas gratuitas usan proveedores externos. Nunca compartas tu key y completa las tareas unicamente
+          Las recompensas gratuitas se validan automaticamente. Nunca compartas tu key y completa las misiones unicamente
           desde el enlace oficial abierto por esta pagina.
         </p>
       )}
@@ -236,19 +236,19 @@ function ProviderCard({
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-2xl font-black text-white">LootLabs</h2>
+            <h2 className="text-2xl font-black text-white">Zentux Access</h2>
             <span className="rounded-full border border-[#a855f7]/45 bg-[#7c3aed]/25 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#e9d5ff]">
-              Recommended
+              Verificado
             </span>
           </div>
           <p className="mt-3 text-sm font-semibold leading-7 text-[#c8bed3]">
-            Completa tareas patrocinadas en LootLabs. Zentux activara tu acceso solo cuando LootLabs confirme la sesion.
+            Completa las misiones de acceso. Zentux activara tu recompensa cuando la verificacion termine correctamente.
           </p>
         </div>
       </div>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
-        <RewardMetric label="Tareas aproximadas" value="3 tasks" />
+        <RewardMetric label="Misiones requeridas" value="3 pasos" />
         <RewardMetric label="Tiempo estimado" value="2-5 min" />
         <RewardMetric label="Recompensa" value="24h Zentux" />
         <RewardMetric label="Verificacion" value="Postback real" />
@@ -260,7 +260,7 @@ function ProviderCard({
         disabled={disabled}
         className="mt-6 w-full rounded-2xl bg-gradient-to-r from-[#d946ef] to-[#6366f1] px-5 py-4 text-sm font-black uppercase tracking-[0.16em] text-white shadow-[0_0_36px_rgba(168,85,247,0.35)] transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? "Creando sesion..." : signedIn ? "Abrir LootLabs" : "Inicia sesion para continuar"}
+        {loading ? "Creando sesion..." : signedIn ? "Empezar misiones" : "Inicia sesion para continuar"}
       </button>
     </div>
   );
@@ -277,10 +277,10 @@ function WaitingCard({ error, reward }: { error: string; reward: RewardStatus | 
         ⏳
       </div>
       <h2 className="mt-5 text-3xl font-black text-white">
-        Verificando LootLabs
+        Verificando progreso
       </h2>
       <p className="mx-auto mt-3 max-w-md text-sm font-semibold leading-7 text-[#c8bed3]">
-        Esperando la confirmacion real del proveedor. Zentux necesita {requiredTasks} tareas verificadas para activar el acceso.
+        Esperando la confirmacion de progreso. Zentux necesita {requiredTasks} misiones verificadas para activar el acceso.
       </p>
       <div className="mt-5 rounded-2xl border border-[#a855f7]/25 bg-white/[0.04] p-4">
         <div className="flex items-center justify-between text-xs font-black uppercase tracking-[0.18em] text-[#c8bed3]">
@@ -296,7 +296,7 @@ function WaitingCard({ error, reward }: { error: string; reward: RewardStatus | 
       </div>
       <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-left text-sm font-bold leading-7 text-[#d8d1e2]">
         <div>✓ No se activa acceso solo por abrir esta pagina.</div>
-        <div>✓ El acceso se entrega al completar {requiredTasks} tareas verificadas.</div>
+        <div>✓ El acceso se entrega al completar {requiredTasks} misiones verificadas.</div>
         <div>✓ Cada sesion usa un codigo unico para evitar duplicados.</div>
       </div>
       {completedTasks < requiredTasks && lootLabsUrl && (
@@ -304,12 +304,12 @@ function WaitingCard({ error, reward }: { error: string; reward: RewardStatus | 
           href={lootLabsUrl}
           className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-[#d946ef] to-[#6366f1] px-5 py-4 text-sm font-black uppercase tracking-[0.16em] text-white shadow-[0_0_36px_rgba(168,85,247,0.3)] transition hover:scale-[1.01]"
         >
-          Continuar tareas en LootLabs
+          Continuar misiones
         </a>
       )}
       {completedTasks < requiredTasks && (
         <p className="mt-3 text-xs font-semibold leading-5 text-[#9f94ad]">
-          Completa una tarea, vuelve aqui, y presiona el boton para continuar hasta llegar a {requiredTasks}/{requiredTasks}.
+          Completa una mision, vuelve aqui, y presiona el boton para continuar hasta llegar a {requiredTasks}/{requiredTasks}.
         </p>
       )}
       {error && (
