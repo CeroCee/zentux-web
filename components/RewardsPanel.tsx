@@ -345,7 +345,7 @@ function SuccessCard({ reward }: { reward: RewardStatus | null }) {
       </div>
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
         <a
-          href="/downloads"
+          href="/?tab=products"
           className="rounded-2xl bg-gradient-to-r from-[#22c55e] to-[#22d3ee] px-5 py-4 text-sm font-black uppercase tracking-[0.16em] text-black"
         >
           Abrir Zentux
