@@ -29,12 +29,12 @@ export function ProfilePanel() {
     return <section className="py-24 text-center text-[#c4b5fd]">Cargando tu perfil…</section>;
   }
 
-  const license = profile.license;
-  const memberLabel = license?.active ? "★ Premium Member" : "No Member";
+  const license = profile.license?.active ? profile.license : null;
+  const memberLabel = license ? "★ Premium Member" : "No Member";
   const expires = license?.paidUntil
     ? new Date(license.paidUntil).toLocaleString("es-ES")
     : "Sin licencia activa";
-  const key = license?.licenseKey || "No tienes una key vinculada";
+  const key = license?.licenseKey || "No tienes una licencia activa";
   const masked = license?.licenseKey ? "•".repeat(Math.min(22, license.licenseKey.length)) : key;
 
   return (
@@ -101,7 +101,7 @@ export function ProfilePanel() {
           </div>
           <h3 className="mt-6 font-black">Resumen de actividad</h3>
           <div className="mt-4 grid grid-cols-2 gap-3">
-            <Stat value={license?.active ? "1" : "0"} label="Licencia activa" />
+            <Stat value={license ? "1" : "0"} label="Licencia activa" />
             <Stat value={String(profile.purchases)} label="Compras totales" />
             <Stat value={profile.account.zcoins.toLocaleString("es-ES")} label="Z-Coins" />
           </div>
