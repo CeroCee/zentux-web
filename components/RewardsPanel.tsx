@@ -4,15 +4,29 @@ import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-const lootLabsUrl = "https://links.lootlabs.gg/s?uvW5eHU8";
-
 type RewardsPanelProps = {
   completed?: boolean;
   standalone?: boolean;
   onBackHome?: () => void;
 };
 
-type RewardStep = "choose" | "waiting";
+type RewardStep = "choose" | "starting" | "waiting" | "success" | "error";
+
+type RewardStatus = {
+  success?: boolean;
+  sessionId?: string;
+  lootLabsUrl?: string;
+  status?: "pending" | "completed" | "claimed" | "expired" | "failed";
+  rewardHours?: number;
+  expiresAt?: string;
+  licenseExpiresAt?: string | null;
+  completedAt?: string | null;
+  claimedAt?: string | null;
+  licenseKey?: string | null;
+  error?: string;
+};
+
+const storageKey = "zentux_rewards_session_id";
 
 export function RewardsPanel({
   completed = false,
@@ -20,19 +34,130 @@ export function RewardsPanel({
 }: RewardsPanelProps) {
   const { status } = useSession();
   const [step, setStep] = useState<RewardStep>(completed ? "waiting" : "choose");
+  const [reward, setReward] = useState<RewardStatus | null>(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (completed) setStep("waiting");
-  }, [completed]);
+    if (!completed) return;
+    if (status === "loading") return;
+
+    if (status !== "authenticated") {
+      void signIn("discord", { callbackUrl: "/rewards/complete" });
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const sessionId =
+      params.get("reward_session") ||
+      params.get("puid") ||
+      window.localStorage.getItem(storageKey) ||
+      "";
+
+    if (!sessionId) {
+      setStep("error");
+      setError("No encontramos una sesion de Rewards en este navegador. Vuelve a iniciar desde /rewards.");
+      return;
+    }
+
+    let stopped = false;
+    let attempts = 0;
+
+    async function pollStatus() {
+      attempts += 1;
+      try {
+        const response = await fetch("/api/account/rewards/status", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ sessionId }),
+        });
+        const data: RewardStatus = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data.error || "No pudimos verificar tu recompensa todavia.");
+        }
+        if (stopped) return;
+        setReward(data);
+
+        if (data.status === "claimed") {
+          window.localStorage.removeItem(storageKey);
+          setStep("success");
+          return;
+        }
+
+        if (data.status === "expired" || data.status === "failed") {
+          setStep("error");
+          setError(
+            data.status === "expired"
+              ? "Esta sesion de Rewards expiro. Inicia una nueva desde /rewards."
+              : "LootLabs confirmo la sesion, pero Zentux no pudo activar el acceso. Contacta soporte."
+          );
+          return;
+        }
+
+        if (attempts < 60) {
+          window.setTimeout(pollStatus, 3000);
+        }
+      } catch (pollError) {
+        if (stopped) return;
+        setError(pollError instanceof Error ? pollError.message : "No pudimos verificar tu recompensa todavia.");
+        if (attempts < 60) {
+          window.setTimeout(pollStatus, 3000);
+        } else {
+          setStep("error");
+        }
+      }
+    }
+
+    setStep("waiting");
+    void pollStatus();
+
+    return () => {
+      stopped = true;
+    };
+  }, [completed, status]);
 
   const startReward = async () => {
-    if (status === "loading") return;
+    if (status === "loading" || step === "starting") return;
     if (status !== "authenticated") {
       await signIn("discord", { callbackUrl: "/rewards" });
       return;
     }
-    setStep("waiting");
-    window.location.assign(lootLabsUrl);
+
+    setStep("starting");
+    setError("");
+
+    try {
+      const response = await fetch("/api/account/rewards/start", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+      });
+      const data: RewardStatus = await response.json().catch(() => ({}));
+      if (!response.ok || !data.lootLabsUrl || !data.sessionId) {
+        throw new Error(data.error || "No pudimos iniciar Rewards.");
+      }
+
+      window.localStorage.setItem(storageKey, data.sessionId);
+      window.location.assign(data.lootLabsUrl);
+    } catch (startError) {
+      setStep("error");
+      setError(startError instanceof Error ? startError.message : "No pudimos iniciar Rewards.");
+    }
+  };
+
+  const renderRightCard = () => {
+    if (step === "choose" || step === "starting") {
+      return (
+        <ProviderCard
+          disabled={status === "loading" || step === "starting"}
+          loading={step === "starting"}
+          signedIn={status === "authenticated"}
+          onContinue={startReward}
+        />
+      );
+    }
+
+    if (step === "success") return <SuccessCard reward={reward} />;
+    if (step === "error") return <ErrorCard message={error} />;
+    return <WaitingCard error={error} />;
   };
 
   return (
@@ -72,22 +197,14 @@ export function RewardsPanel({
         </div>
 
         <div className="rounded-[2.2rem] border border-white/10 bg-black/45 p-5 shadow-[0_0_80px_rgba(168,85,247,0.14)] backdrop-blur-2xl sm:p-6">
-          {step === "choose" ? (
-            <ProviderCard
-              disabled={status === "loading"}
-              signedIn={status === "authenticated"}
-              onContinue={startReward}
-            />
-          ) : (
-            <WaitingCard completed={completed} />
-          )}
+          {renderRightCard()}
         </div>
       </div>
 
       {!standalone && (
         <p className="mx-auto mt-7 max-w-3xl text-center text-xs font-semibold leading-6 text-[#8f84a0]">
-          Las recompensas gratuitas usan proveedores externos. Nunca compartas tu key y completa las tareas únicamente
-          desde el enlace oficial abierto por esta página.
+          Las recompensas gratuitas usan proveedores externos. Nunca compartas tu key y completa las tareas unicamente
+          desde el enlace oficial abierto por esta pagina.
         </p>
       )}
     </section>
@@ -96,10 +213,12 @@ export function RewardsPanel({
 
 function ProviderCard({
   disabled,
+  loading,
   signedIn,
   onContinue,
 }: {
   disabled: boolean;
+  loading: boolean;
   signedIn: boolean;
   onContinue: () => void;
 }) {
@@ -118,7 +237,7 @@ function ProviderCard({
             </span>
           </div>
           <p className="mt-3 text-sm font-semibold leading-7 text-[#c8bed3]">
-            Completa tareas patrocinadas en LootLabs. La activación automática está pausada hasta conectar una verificación real del proveedor.
+            Completa tareas patrocinadas en LootLabs. Zentux activara tu acceso solo cuando LootLabs confirme la sesion.
           </p>
         </div>
       </div>
@@ -127,7 +246,7 @@ function ProviderCard({
         <RewardMetric label="Tareas aproximadas" value="3 tasks" />
         <RewardMetric label="Tiempo estimado" value="2-5 min" />
         <RewardMetric label="Recompensa" value="24h Zentux" />
-        <RewardMetric label="Estado" value="Verificación pausada" />
+        <RewardMetric label="Verificacion" value="Postback real" />
       </div>
 
       <button
@@ -136,31 +255,97 @@ function ProviderCard({
         disabled={disabled}
         className="mt-6 w-full rounded-2xl bg-gradient-to-r from-[#d946ef] to-[#6366f1] px-5 py-4 text-sm font-black uppercase tracking-[0.16em] text-white shadow-[0_0_36px_rgba(168,85,247,0.35)] transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {signedIn ? "Abrir LootLabs" : "Inicia sesión para continuar"}
+        {loading ? "Creando sesion..." : signedIn ? "Abrir LootLabs" : "Inicia sesion para continuar"}
       </button>
     </div>
   );
 }
 
-function WaitingCard({ completed }: { completed?: boolean }) {
+function WaitingCard({ error }: { error: string }) {
   return (
     <div className="rounded-[1.8rem] border border-[#a855f7]/35 bg-[#090313]/90 p-6 text-center">
       <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-[#a855f7]/35 bg-[#7c3aed]/20 text-4xl shadow-[0_0_40px_rgba(168,85,247,0.2)]">
         ⏳
       </div>
       <h2 className="mt-5 text-3xl font-black text-white">
-        {completed ? "Verificación pendiente" : "Completa LootLabs"}
+        Verificando LootLabs
       </h2>
       <p className="mx-auto mt-3 max-w-md text-sm font-semibold leading-7 text-[#c8bed3]">
-        {completed
-          ? "Por seguridad, Zentux no activará acceso solo por abrir esta página. Falta conectar una verificación real de LootLabs."
-          : "Completa LootLabs en la pestaña que abrimos. No se entregará acceso hasta que conectemos una verificación real del proveedor."}
+        Esperando la confirmacion real del proveedor. Si terminaste las tareas, esto puede tardar unos segundos.
       </p>
       <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-left text-sm font-bold leading-7 text-[#d8d1e2]">
-        <div>✓ No se activará acceso sin prueba real del proveedor.</div>
-        <div>✓ La página de retorno ya no crea keys automáticamente.</div>
-        <div>✓ Cuando LootLabs esté conectado por API/webhook, volverá la activación de 24 horas.</div>
+        <div>✓ No se activa acceso solo por abrir esta pagina.</div>
+        <div>✓ El acceso se entrega cuando llega el postback de LootLabs.</div>
+        <div>✓ Cada sesion usa un codigo unico para evitar duplicados.</div>
       </div>
+      {error && (
+        <p className="mt-4 text-sm font-bold text-[#fbbf24]">{error}</p>
+      )}
+    </div>
+  );
+}
+
+function SuccessCard({ reward }: { reward: RewardStatus | null }) {
+  const expiresAt = reward?.licenseExpiresAt || reward?.expiresAt
+    ? new Intl.DateTimeFormat("es", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(new Date((reward?.licenseExpiresAt || reward?.expiresAt) as string))
+    : "24 horas desde la activacion";
+
+  return (
+    <div className="rounded-[1.8rem] border border-[#22c55e]/35 bg-[#03160f]/90 p-6 text-center shadow-[0_0_50px_rgba(34,197,94,0.12)]">
+      <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-[#22c55e]/35 bg-[#16a34a]/20 text-4xl">
+        ✅
+      </div>
+      <h2 className="mt-5 text-3xl font-black text-white">Acceso activado</h2>
+      <p className="mx-auto mt-3 max-w-md text-sm font-semibold leading-7 text-[#c8bed3]">
+        Recibiste 24 horas de acceso a Zentux desde Zentux Rewards.
+      </p>
+      <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <RewardMetric label="Tiempo restante" value="24h" />
+        <RewardMetric label="Expira" value={expiresAt} />
+      </div>
+      <div className="mt-4 rounded-2xl border border-[#22c55e]/20 bg-[#22c55e]/10 p-4 text-left">
+        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-[#86efac]">Key vinculada</div>
+        <div className="mt-2 break-all font-mono text-sm font-black text-white">
+          {reward?.licenseKey || "ZENTUX-REWARD-********"}
+        </div>
+      </div>
+      <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <a
+          href="/downloads"
+          className="rounded-2xl bg-gradient-to-r from-[#22c55e] to-[#22d3ee] px-5 py-4 text-sm font-black uppercase tracking-[0.16em] text-black"
+        >
+          Abrir Zentux
+        </a>
+        <a
+          href="/"
+          className="rounded-2xl border border-white/15 px-5 py-4 text-sm font-black uppercase tracking-[0.16em] text-white"
+        >
+          Volver al inicio
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function ErrorCard({ message }: { message: string }) {
+  return (
+    <div className="rounded-[1.8rem] border border-[#ef4444]/35 bg-[#19060a]/90 p-6 text-center">
+      <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-[#ef4444]/35 bg-[#ef4444]/15 text-4xl">
+        ⚠️
+      </div>
+      <h2 className="mt-5 text-3xl font-black text-white">No se pudo activar</h2>
+      <p className="mx-auto mt-3 max-w-md text-sm font-semibold leading-7 text-[#f3c4c4]">
+        {message || "No pudimos verificar esta recompensa. Intenta crear una nueva sesion."}
+      </p>
+      <a
+        href="/rewards"
+        className="mt-6 inline-flex rounded-2xl bg-gradient-to-r from-[#d946ef] to-[#6366f1] px-5 py-4 text-sm font-black uppercase tracking-[0.16em] text-white"
+      >
+        Volver a Rewards
+      </a>
     </div>
   );
 }
