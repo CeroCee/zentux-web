@@ -4,7 +4,7 @@ import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-const lootLabsUrl = "https://links.lootlabs.gg/s?uwV5eHU8";
+const lootLabsUrl = "https://links.lootlabs.gg/s?uvW5eHU8";
 
 type RewardsPanelProps = {
   completed?: boolean;
