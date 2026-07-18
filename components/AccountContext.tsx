@@ -10,7 +10,6 @@ export type AccountProfile = {
     discordAvatarUrl: string | null;
     zcoins: number;
     bank: number;
-    zenitx: number;
     memberSince: string;
   };
   license: null | {
@@ -21,7 +20,7 @@ export type AccountProfile = {
     source?: string;
   };
   activity: Array<{
-    currency: "zcoins" | "zenitx";
+    currency: "zcoins";
     bucket: "pocket" | "bank";
     amount: number;
     reason: string;
