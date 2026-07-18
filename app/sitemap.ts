@@ -17,6 +17,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    {
+      url: `${siteUrl}/rewards`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
     ...seoProducts.map((product) => ({
       url: getProductUrl(product.slug),
       lastModified,

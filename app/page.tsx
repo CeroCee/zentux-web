@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import TeamShowcase from "@/components/TeamShowcase";
 import { ChestsPanel } from "@/components/ChestsPanel";
 import { ZenitxPanel } from "@/components/ZenitxPanel";
+import { RewardsPanel } from "@/components/RewardsPanel";
 import { ProfileMenu } from "@/components/ProfileMenu";
 import { ProfilePanel } from "@/components/ProfilePanel";
 import { AuthenticatedCheckoutLink } from "@/components/AuthenticatedCheckoutLink";
@@ -50,10 +51,10 @@ const pricingPlans = [
 const supportUrl = "https://guns.lol/cerocee";
 const discordUrl = "https://discord.gg/KEWZHDQq6X";
 
-const tabs = ["Home", "Products", "Chests", "Zenitx", "Reviews", "FAQ", "Meet The Team", "Profile"] as const;
+const tabs = ["Home", "Products", "Chests", "Rewards", "Zenitx", "Reviews", "FAQ", "Meet The Team", "Profile"] as const;
 type Tab = (typeof tabs)[number];
 type LegalPanel = "privacy" | "terms";
-const desktopTabs: Tab[] = ["Home", "Products", "Chests", "Reviews"];
+const desktopTabs: Tab[] = ["Home", "Products", "Chests", "Rewards", "Reviews"];
 const moreTabs: Tab[] = ["Zenitx", "FAQ", "Meet The Team"];
 
 const languages = [
@@ -68,12 +69,12 @@ const languages = [
 type LanguageCode = (typeof languages)[number]["code"];
 
 const tabLabels: Record<LanguageCode, Record<Tab, string>> = {
-  es: { Home: "Home", Products: "Productos", Chests: "Cajas", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Mi Perfil" },
-  en: { Home: "Home", Products: "Products", Chests: "Chests", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "My Profile" },
-  de: { Home: "Home", Products: "Produkte", Chests: "Chests", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profil" },
-  fr: { Home: "Accueil", Products: "Produits", Chests: "Coffres", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profil" },
-  it: { Home: "Home", Products: "Prodotti", Chests: "Casse", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profilo" },
-  pt: { Home: "Home", Products: "Produtos", Chests: "Baús", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Perfil" },
+  es: { Home: "Home", Products: "Productos", Chests: "Cajas", Rewards: "Rewards", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Mi Perfil" },
+  en: { Home: "Home", Products: "Products", Chests: "Chests", Rewards: "Rewards", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "My Profile" },
+  de: { Home: "Home", Products: "Produkte", Chests: "Chests", Rewards: "Rewards", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profil" },
+  fr: { Home: "Accueil", Products: "Produits", Chests: "Coffres", Rewards: "Rewards", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profil" },
+  it: { Home: "Home", Products: "Prodotti", Chests: "Casse", Rewards: "Rewards", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Profilo" },
+  pt: { Home: "Home", Products: "Produtos", Chests: "Baús", Rewards: "Rewards", Zenitx: "Zenitx", Reviews: "Reviews", FAQ: "FAQ", "Meet The Team": "Meet The Team", Profile: "Perfil" },
 };
 
 const copy = {
@@ -549,6 +550,7 @@ export default function Home() {
       const zenitxSession = search.get("zenitx_session");
       if (zenitxSession) setZenitxSessionId(zenitxSession);
       if (search.get("zenitx_cancelled") === "1") setZenitxCheckoutCancelled(true);
+      if (search.get("tab") === "rewards") setActiveTab("Rewards");
       if (search.get("tab") === "zenitx" || zenitxSession) setActiveTab("Zenitx");
       if (shouldOpenChests) setActiveTab("Chests");
     }, 0);
@@ -773,6 +775,7 @@ export default function Home() {
           />
         )}
         {activeTab === "Zenitx" && <ZenitxPanel sessionId={zenitxSessionId} cancelled={zenitxCheckoutCancelled} />}
+        {activeTab === "Rewards" && <RewardsPanel onBackHome={() => selectTab("Home")} />}
         {activeTab === "Profile" && <ProfilePanel />}
         {activeTab === "Reviews" && <ReviewsPanel />}
         {activeTab === "FAQ" && <FaqPanel />}
@@ -1163,6 +1166,7 @@ function LegalFooter({
           <button onClick={() => setActiveTab("Home")}>Home</button>
           <button onClick={() => setActiveTab("Products")}>Products</button>
           <button onClick={() => setActiveTab("Chests")}>Chests</button>
+          <button onClick={() => setActiveTab("Rewards")}>Rewards</button>
           <button onClick={() => setActiveTab("Reviews")}>Reviews</button>
           <button onClick={() => setActiveTab("FAQ")}>FAQ</button>
         </FooterColumn>
