@@ -266,6 +266,7 @@ function ProviderCard({
 function WaitingCard({ error, reward }: { error: string; reward: RewardStatus | null }) {
   const completedTasks = Math.min(reward?.completedTasks || 0, reward?.requiredTasks || 3);
   const requiredTasks = reward?.requiredTasks || 3;
+  const lootLabsUrl = reward?.lootLabsUrl || "";
 
   return (
     <div className="rounded-[1.8rem] border border-[#a855f7]/35 bg-[#090313]/90 p-6 text-center">
@@ -295,6 +296,19 @@ function WaitingCard({ error, reward }: { error: string; reward: RewardStatus | 
         <div>✓ El acceso se entrega al completar {requiredTasks} tareas verificadas.</div>
         <div>✓ Cada sesion usa un codigo unico para evitar duplicados.</div>
       </div>
+      {completedTasks < requiredTasks && lootLabsUrl && (
+        <a
+          href={lootLabsUrl}
+          className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-[#d946ef] to-[#6366f1] px-5 py-4 text-sm font-black uppercase tracking-[0.16em] text-white shadow-[0_0_36px_rgba(168,85,247,0.3)] transition hover:scale-[1.01]"
+        >
+          Continuar tareas en LootLabs
+        </a>
+      )}
+      {completedTasks < requiredTasks && (
+        <p className="mt-3 text-xs font-semibold leading-5 text-[#9f94ad]">
+          Completa una tarea, vuelve aqui, y presiona el boton para continuar hasta llegar a {requiredTasks}/{requiredTasks}.
+        </p>
+      )}
       {error && (
         <p className="mt-4 text-sm font-bold text-[#fbbf24]">{error}</p>
       )}
