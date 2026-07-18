@@ -4,7 +4,7 @@ import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-const lootLabsUrl = "https://lootdest.org/s?uwV5eHU8";
+const lootLabsUrl = "https://links.lootlabs.gg/s?uwV5eHU8";
 
 type RewardsPanelProps = {
   completed?: boolean;
@@ -31,8 +31,8 @@ export function RewardsPanel({
       await signIn("discord", { callbackUrl: "/rewards" });
       return;
     }
-    window.open(lootLabsUrl, "_blank", "noopener,noreferrer");
     setStep("waiting");
+    window.location.assign(lootLabsUrl);
   };
 
   return (
