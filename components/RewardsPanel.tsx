@@ -18,6 +18,8 @@ type RewardStatus = {
   lootLabsUrl?: string;
   status?: "pending" | "completed" | "claimed" | "expired" | "failed";
   rewardHours?: number;
+  requiredTasks?: number;
+  completedTasks?: number;
   expiresAt?: string;
   licenseExpiresAt?: string | null;
   completedAt?: string | null;
@@ -157,7 +159,7 @@ export function RewardsPanel({
 
     if (step === "success") return <SuccessCard reward={reward} />;
     if (step === "error") return <ErrorCard message={error} />;
-    return <WaitingCard error={error} />;
+    return <WaitingCard error={error} reward={reward} />;
   };
 
   return (
@@ -261,7 +263,10 @@ function ProviderCard({
   );
 }
 
-function WaitingCard({ error }: { error: string }) {
+function WaitingCard({ error, reward }: { error: string; reward: RewardStatus | null }) {
+  const completedTasks = Math.min(reward?.completedTasks || 0, reward?.requiredTasks || 3);
+  const requiredTasks = reward?.requiredTasks || 3;
+
   return (
     <div className="rounded-[1.8rem] border border-[#a855f7]/35 bg-[#090313]/90 p-6 text-center">
       <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-[#a855f7]/35 bg-[#7c3aed]/20 text-4xl shadow-[0_0_40px_rgba(168,85,247,0.2)]">
@@ -271,11 +276,23 @@ function WaitingCard({ error }: { error: string }) {
         Verificando LootLabs
       </h2>
       <p className="mx-auto mt-3 max-w-md text-sm font-semibold leading-7 text-[#c8bed3]">
-        Esperando la confirmacion real del proveedor. Si terminaste las tareas, esto puede tardar unos segundos.
+        Esperando la confirmacion real del proveedor. Zentux necesita {requiredTasks} tareas verificadas para activar el acceso.
       </p>
+      <div className="mt-5 rounded-2xl border border-[#a855f7]/25 bg-white/[0.04] p-4">
+        <div className="flex items-center justify-between text-xs font-black uppercase tracking-[0.18em] text-[#c8bed3]">
+          <span>Progreso</span>
+          <span>{completedTasks}/{requiredTasks}</span>
+        </div>
+        <div className="mt-3 h-3 overflow-hidden rounded-full bg-white/10">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-[#d946ef] to-[#22d3ee] transition-all"
+            style={{ width: `${Math.max(5, (completedTasks / requiredTasks) * 100)}%` }}
+          />
+        </div>
+      </div>
       <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-left text-sm font-bold leading-7 text-[#d8d1e2]">
         <div>✓ No se activa acceso solo por abrir esta pagina.</div>
-        <div>✓ El acceso se entrega cuando llega el postback de LootLabs.</div>
+        <div>✓ El acceso se entrega al completar {requiredTasks} tareas verificadas.</div>
         <div>✓ Cada sesion usa un codigo unico para evitar duplicados.</div>
       </div>
       {error && (
