@@ -2,13 +2,16 @@
 
 import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useAccount } from "./AccountContext";
 
 export function ProfilePanel() {
   const { data: session, status } = useSession();
-  const { profile, loading } = useAccount();
+  const { profile, loading, refresh } = useAccount();
   const [reveal, setReveal] = useState(false);
+  const [redeemKey, setRedeemKey] = useState("");
+  const [redeemStatus, setRedeemStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [redeemMessage, setRedeemMessage] = useState("");
 
   if (status !== "authenticated") {
     return (
@@ -36,6 +39,38 @@ export function ProfilePanel() {
     : "Sin licencia activa";
   const key = license?.licenseKey || "No tienes una licencia activa";
   const masked = license?.licenseKey ? "•".repeat(Math.min(22, license.licenseKey.length)) : key;
+
+  async function handleRedeem(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const licenseKey = redeemKey.trim().toUpperCase();
+    if (!licenseKey) {
+      setRedeemStatus("error");
+      setRedeemMessage("Escribe una key válida para vincularla a tu Discord.");
+      return;
+    }
+
+    setRedeemStatus("loading");
+    setRedeemMessage("Verificando tu key…");
+    try {
+      const response = await fetch("/api/account/redeem", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ licenseKey }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(getRedeemErrorMessage(data.code, data.error));
+      }
+
+      setRedeemStatus("success");
+      setRedeemMessage("Key vinculada correctamente a tu cuenta de Discord.");
+      setRedeemKey("");
+      await refresh();
+    } catch (error) {
+      setRedeemStatus("error");
+      setRedeemMessage(error instanceof Error ? error.message : "No se pudo canjear la key.");
+    }
+  }
 
   return (
     <section className="overflow-hidden rounded-[32px] border border-[#7c3aed]/35 bg-[#07050d]/90 shadow-[0_0_100px_rgba(124,58,237,.15)]">
@@ -85,6 +120,44 @@ export function ProfilePanel() {
               value={new Date(profile.account.memberSince).toLocaleDateString("es-ES")}
             />
           </div>
+          {!license && (
+            <form
+              onSubmit={handleRedeem}
+              className="mt-6 rounded-2xl border border-[#a855f7]/30 bg-[#12071f]/70 p-4"
+            >
+              <h3 className="text-sm font-black uppercase tracking-[.22em] text-[#c084fc]">
+                Canjear key
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-[#aaa0b8]">
+                Si ya tienes una key, escríbela aquí para vincularla automáticamente a tu Discord.
+              </p>
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                <input
+                  value={redeemKey}
+                  onChange={(event) => setRedeemKey(event.target.value)}
+                  placeholder="ZENTUX-XXXX-XXXX"
+                  disabled={redeemStatus === "loading"}
+                  className="min-w-0 flex-1 rounded-xl border border-white/10 bg-black/45 px-4 py-3 text-sm font-bold uppercase text-white outline-none transition focus:border-[#c084fc]"
+                />
+                <button
+                  type="submit"
+                  disabled={redeemStatus === "loading"}
+                  className="rounded-xl bg-gradient-to-r from-[#c026d3] to-[#2563eb] px-5 py-3 text-sm font-black text-white transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {redeemStatus === "loading" ? "Verificando…" : "Canjear"}
+                </button>
+              </div>
+              {redeemMessage && (
+                <p
+                  className={`mt-3 text-sm font-bold ${
+                    redeemStatus === "success" ? "text-[#4ade80]" : redeemStatus === "error" ? "text-[#fb7185]" : "text-[#c4b5fd]"
+                  }`}
+                >
+                  {redeemMessage}
+                </p>
+              )}
+            </form>
+          )}
         </div>
 
         <div className="rounded-[24px] border border-white/10 bg-white/[.025] p-6">
@@ -104,6 +177,19 @@ export function ProfilePanel() {
       </div>
     </section>
   );
+}
+
+function getRedeemErrorMessage(code?: string, fallback?: string) {
+  const messages: Record<string, string> = {
+    not_found: "Esa key no existe. Revisa que esté escrita correctamente.",
+    inactive: "Esa key está inactiva o vencida.",
+    already_redeemed: "Esa key ya fue canjeada por otra cuenta de Discord.",
+    user_has_license: "Tu Discord ya tiene otra licencia activa vinculada.",
+    restricted_license: "Esa key pertenece a otra cuenta de Discord.",
+    invalid_request: "Escribe una key válida para continuar.",
+    unauthorized: "Inicia sesión con Discord para canjear una key.",
+  };
+  return messages[String(code || "")] || fallback || "No se pudo canjear la key.";
 }
 
 function Row({
