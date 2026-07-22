@@ -176,7 +176,7 @@ export function RewardsPanel({
               Zentux Rewards
             </p>
             <h1 className="mt-4 text-4xl font-black leading-tight text-white sm:text-6xl">
-              Gana 24 horas de acceso gratis.
+              Gana 1 hora de acceso gratis.
             </h1>
             <p className="mt-5 max-w-2xl text-base font-semibold leading-8 text-[#c8bed3] sm:text-lg">
               Completa misiones rapidas de verificacion y activa acceso temporal a Zentux sin pagar.
@@ -250,7 +250,7 @@ function ProviderCard({
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
         <RewardMetric label="Misiones requeridas" value="3 pasos" />
         <RewardMetric label="Tiempo estimado" value="2-5 min" />
-        <RewardMetric label="Recompensa" value="24h Zentux" />
+        <RewardMetric label="Recompensa" value="1h Zentux" />
         <RewardMetric label="Verificacion" value="Postback real" />
       </div>
 
@@ -325,7 +325,7 @@ function SuccessCard({ reward }: { reward: RewardStatus | null }) {
         dateStyle: "medium",
         timeStyle: "short",
       }).format(new Date((reward?.licenseExpiresAt || reward?.expiresAt) as string))
-    : "24 horas desde la activacion";
+    : "1 hora desde la activacion";
 
   return (
     <div className="rounded-[1.8rem] border border-[#22c55e]/35 bg-[#03160f]/90 p-6 text-center shadow-[0_0_50px_rgba(34,197,94,0.12)]">
@@ -334,10 +334,10 @@ function SuccessCard({ reward }: { reward: RewardStatus | null }) {
       </div>
       <h2 className="mt-5 text-3xl font-black text-white">Acceso activado</h2>
       <p className="mx-auto mt-3 max-w-md text-sm font-semibold leading-7 text-[#c8bed3]">
-        Recibiste 24 horas de acceso a Zentux desde Zentux Rewards.
+        Recibiste 1 hora de acceso a Zentux desde Zentux Rewards.
       </p>
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
-        <RewardMetric label="Tiempo restante" value="24h" />
+        <RewardMetric label="Tiempo restante" value="1h" />
         <RewardMetric label="Expira" value={expiresAt} />
       </div>
       <div className="mt-4 rounded-2xl border border-[#22c55e]/20 bg-[#22c55e]/10 p-4 text-left">
