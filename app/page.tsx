@@ -20,7 +20,7 @@ const licenseApiBaseUrl = (
   process.env.NEXT_PUBLIC_LICENSE_API_URL ?? "https://zentuxlicenseserver2.onrender.com"
 ).replace(/\/+$/, "");
 const optimizerDownloadUrl =
-  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/ZentuxOptimizer.exe";
+  "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/zentux.optimizer.exe";
 const autoclickerDownloadUrl =
   "https://github.com/CeroCee/CeroCee-zentuxoptimizer-releases/releases/latest/download/Zentux.v7.exe";
 const macroDownloadUrl =
@@ -379,9 +379,9 @@ const products = [
     description: "Windows performance optimizer",
     category: "Performance",
     price: "Included",
-    status: "- No disponible",
+    status: "- In Stock",
     downloadUrl: optimizerDownloadUrl,
-    downloadActive: false,
+    downloadActive: true,
     details:
       "Zentux Optimizer Pro helps prepare Windows for gaming with cleaner tools, RAM review, startup control, game preparation, diagnostics, and license-protected Pro access.",
   },
