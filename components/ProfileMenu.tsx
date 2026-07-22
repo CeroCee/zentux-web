@@ -33,7 +33,7 @@ export function ProfileMenu({ onOpenProfile }: { onOpenProfile: () => void }) {
             <div>
               <h3 className="text-xl font-black">Iniciar sesión con Discord</h3>
               <p className="mt-2 text-sm leading-6 text-[#aaa0b8]">
-                Accede a tu cuenta, balance y licencia vinculada.
+                Accede a tu cuenta y licencia vinculada.
               </p>
               <button
                 onClick={() => void signIn("discord")}
@@ -76,13 +76,8 @@ export function ProfileMenu({ onOpenProfile }: { onOpenProfile: () => void }) {
                 <span>♙ Mi Perfil</span>
                 <span>›</span>
               </button>
-              <div className="rounded-xl px-3 py-3 text-sm">
-                <div className="flex justify-between">
-                  <span>Z-Coins ganados</span>
-                  <strong className="text-[#facc15]">
-                    {loading ? "…" : (profile?.account.zcoins || 0).toLocaleString("es-ES")}
-                  </strong>
-                </div>
+              <div className="rounded-xl px-3 py-3 text-sm text-[#aaa0b8]">
+                {loading ? "Cargando licencia…" : active ? "Licencia activa vinculada" : "Sin licencia activa"}
               </div>
               <button
                 onClick={() => void signOut()}

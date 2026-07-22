@@ -8,8 +8,6 @@ export type AccountProfile = {
     discordUserId: string;
     discordUsername: string;
     discordAvatarUrl: string | null;
-    zcoins: number;
-    bank: number;
     memberSince: string;
   };
   license: null | {
@@ -19,13 +17,7 @@ export type AccountProfile = {
     paidUntil: string | null;
     source?: string;
   };
-  activity: Array<{
-    currency: "zcoins";
-    bucket: "pocket" | "bank";
-    amount: number;
-    reason: string;
-    createdAt: string;
-  }>;
+  activity: Array<Record<string, unknown>>;
   purchases: number;
 };
 

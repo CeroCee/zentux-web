@@ -14,7 +14,7 @@ export function ProfilePanel() {
     return (
       <section className="mx-auto max-w-xl py-24 text-center">
         <h1 className="text-4xl font-black">Tu cuenta Zentux</h1>
-        <p className="mt-4 text-[#aaa0b8]">Inicia sesión para ver tu licencia y balance.</p>
+        <p className="mt-4 text-[#aaa0b8]">Inicia sesión para ver tu licencia vinculada.</p>
         <button
           onClick={() => void signIn("discord")}
           className="mt-7 rounded-2xl bg-[#5865f2] px-8 py-4 font-black"
@@ -81,10 +81,6 @@ export function ProfilePanel() {
             />
             <Row label="Vencimiento" value={expires} />
             <Row
-              label="Z-Coins ganados"
-              value={`${(profile.account.zcoins + profile.account.bank).toLocaleString("es-ES")} Z-Coins`}
-            />
-            <Row
               label="Miembro desde"
               value={new Date(profile.account.memberSince).toLocaleDateString("es-ES")}
             />
@@ -103,7 +99,6 @@ export function ProfilePanel() {
           <div className="mt-4 grid grid-cols-2 gap-3">
             <Stat value={license ? "1" : "0"} label="Licencia activa" />
             <Stat value={String(profile.purchases)} label="Compras totales" />
-            <Stat value={profile.account.zcoins.toLocaleString("es-ES")} label="Z-Coins" />
           </div>
         </div>
       </div>
