@@ -1042,64 +1042,23 @@ function SeoContentSection({ setActiveTab }: { setActiveTab: (tab: Tab) => void 
 }
 
 function ProductPreviewCluster() {
-  const previews = [
-    {
-      name: "Zentux v7",
-      image: "/zentux-autoclicker.png",
-      meta: "Automation",
-      tone: "from-[#ff335f]/35 to-[#a855f7]/15",
-    },
-    {
-      name: "Zentux Optimizer",
-      image: "/producto.png",
-      meta: "Performance",
-      tone: "from-[#d85cff]/35 to-[#20e8f2]/15",
-    },
-    {
-      name: "Zentux Recorder",
-      image: "/zentux-macro.png",
-      meta: "Macro Tools",
-      tone: "from-[#20e8f2]/25 to-[#806bff]/20",
-    },
-  ];
-
   return (
-    <div className="relative min-h-[420px] overflow-hidden rounded-[32px] border border-white/10 bg-black/30 p-5 shadow-[0_0_100px_rgba(168,85,247,0.13)] backdrop-blur-xl sm:p-7 lg:min-h-[560px]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(168,85,247,0.24),transparent_42%)]" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#a855f7]/25 shadow-[0_0_120px_rgba(168,85,247,0.18)] sm:h-80 sm:w-80" />
-
-      <div className="relative grid gap-4 sm:grid-cols-2 lg:block">
-        {previews.map((preview, index) => (
-          <article
-            key={preview.name}
-            className={`rounded-[24px] border border-[#a855f7]/25 bg-gradient-to-br ${preview.tone} p-3 shadow-[0_0_50px_rgba(168,85,247,0.15)] backdrop-blur-2xl transition hover:-translate-y-1 hover:border-[#c75cff]/70 lg:absolute lg:w-[280px] ${
-              index === 0
-                ? "lg:left-4 lg:top-8"
-                : index === 1
-                  ? "lg:right-4 lg:top-36"
-                  : "sm:col-span-2 lg:left-24 lg:top-72"
-            }`}
-          >
-            <div className="flex items-center gap-4">
-              <Image
-                src={preview.image}
-                alt={preview.name}
-                width={84}
-                height={84}
-                className="h-20 w-20 rounded-2xl object-cover shadow-[0_0_30px_rgba(168,85,247,0.24)]"
-              />
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-[#b989ff]">
-                  {preview.meta}
-                </p>
-                <h2 className="mt-1 text-xl font-black leading-tight text-white">
-                  {preview.name}
-                </h2>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
+    <div className="relative min-h-[420px] overflow-hidden rounded-[32px] border border-white/10 bg-black/35 shadow-[0_0_100px_rgba(168,85,247,0.16)] backdrop-blur-xl lg:min-h-[560px]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(168,85,247,0.2),transparent_48%)]" />
+      <video
+        className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
+        src="/videos/zentux-optimizer-showcase.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        disablePictureInPicture
+        controlsList="nodownload noplaybackrate noremoteplayback"
+        aria-label="Zentux Optimizer product showcase"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-black/35" />
+      <div className="pointer-events-none absolute inset-0 rounded-[32px] ring-1 ring-inset ring-[#c75cff]/15" />
     </div>
   );
 }
