@@ -1043,10 +1043,11 @@ function SeoContentSection({ setActiveTab }: { setActiveTab: (tab: Tab) => void 
 
 function ProductPreviewCluster() {
   return (
-    <div className="relative min-h-[420px] overflow-hidden rounded-[32px] border border-white/10 bg-black/35 shadow-[0_0_100px_rgba(168,85,247,0.16)] backdrop-blur-xl lg:min-h-[560px]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(168,85,247,0.2),transparent_48%)]" />
+    <div className="relative min-h-[420px] overflow-hidden rounded-[32px] border border-white/10 bg-black/45 p-3 shadow-[0_0_100px_rgba(168,85,247,0.16)] backdrop-blur-xl sm:p-5 lg:min-h-[560px]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(168,85,247,0.26),transparent_50%)]" />
+      <div className="pointer-events-none absolute inset-x-10 bottom-0 h-28 rounded-full bg-[#a855f7]/25 blur-3xl" />
       <video
-        className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
+        className="pointer-events-none relative z-10 h-full min-h-[396px] w-full select-none rounded-[24px] object-contain shadow-[0_0_70px_rgba(168,85,247,0.22)] lg:min-h-[520px]"
         src="/videos/zentux-optimizer-showcase.mp4"
         autoPlay
         muted
@@ -1057,7 +1058,7 @@ function ProductPreviewCluster() {
         controlsList="nodownload noplaybackrate noremoteplayback"
         aria-label="Zentux Optimizer product showcase"
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-black/35" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-black/5 via-transparent to-black/25" />
       <div className="pointer-events-none absolute inset-0 rounded-[32px] ring-1 ring-inset ring-[#c75cff]/15" />
     </div>
   );
