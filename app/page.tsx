@@ -48,6 +48,9 @@ const pricingPlans = [
 ] as const;
 const supportUrl = "https://guns.lol/cerocee";
 const discordUrl = "https://discord.gg/KEWZHDQq6X";
+const licenseApiUrl = (
+  process.env.NEXT_PUBLIC_LICENSE_API_URL ?? "https://zentuxlicenseserver2.onrender.com"
+).replace(/\/+$/, "");
 
 const tabs = ["Home", "Products", "Rewards", "Reviews", "FAQ", "Meet The Team", "Profile"] as const;
 type Tab = (typeof tabs)[number];
@@ -482,43 +485,21 @@ const creatorVideos = [
   },
 ];
 
-function usageHash(value: number) {
-  let hash = value ^ 0x5f3759df;
-  hash = Math.imul(hash ^ (hash >>> 16), 0x45d9f3b);
-  hash ^= hash >>> 16;
-  return Math.abs(hash);
-}
+type DiscordOnlineResponse = {
+  success?: boolean;
+  onlineCount?: number | null;
+  fresh?: boolean;
+};
 
-function isUsageUpdateBlock(timeBlock: number) {
-  return timeBlock % 75 === 0 || usageHash(timeBlock) % 100 < 4;
-}
+async function fetchDiscordOnlineCount() {
+  const response = await fetch(`${licenseApiUrl}/api/site/discord-online`, {
+    cache: "no-store",
+  });
+  if (!response.ok) return null;
 
-function getLatestUsageUpdateBlock() {
-  const currentBlock = Math.floor(Date.now() / 4000);
-
-  for (let offset = 0; offset <= 75; offset += 1) {
-    const candidate = currentBlock - offset;
-    if (isUsageUpdateBlock(candidate)) {
-      return candidate;
-    }
-  }
-
-  return currentBlock;
-}
-
-function getSharedAppUsageCount() {
-  const timeBlock = getLatestUsageUpdateBlock();
-  const dailyActivity =
-    135 + ((Math.sin((timeBlock / 21600) * Math.PI * 2) + 1) / 2) * 120;
-  const naturalVariation =
-    Math.sin((timeBlock / 5400) * Math.PI * 2) * 18 +
-    Math.sin((timeBlock / 1800) * Math.PI * 2) * 5;
-  const smallChange = (usageHash(timeBlock + 17) % 3) - 1;
-
-  return Math.min(
-    697,
-    Math.max(96, Math.round(dailyActivity + naturalVariation + smallChange)),
-  );
+  const data = (await response.json()) as DiscordOnlineResponse;
+  if (data.success === false || data.fresh === false) return null;
+  return typeof data.onlineCount === "number" ? data.onlineCount : null;
 }
 
 export default function Home() {
@@ -555,16 +536,20 @@ export default function Home() {
   }, [showDiscordBubble]);
 
   useEffect(() => {
-    const initialTimer = window.setTimeout(() => {
-      setOnlineCount(getSharedAppUsageCount());
-    }, 0);
+    let cancelled = false;
 
+    const loadOnlineCount = async () => {
+      const count = await fetchDiscordOnlineCount().catch(() => null);
+      if (!cancelled) setOnlineCount(count);
+    };
+
+    void loadOnlineCount();
     const timer = window.setInterval(() => {
-      setOnlineCount(getSharedAppUsageCount());
-    }, 1000);
+      void loadOnlineCount();
+    }, 60000);
 
     return () => {
-      window.clearTimeout(initialTimer);
+      cancelled = true;
       window.clearInterval(timer);
     };
   }, []);
@@ -785,7 +770,7 @@ function OnlineVisitors({
   return (
     <div
       className="hidden items-center gap-2 rounded-full border border-[#a855f7]/50 bg-black/45 px-3 py-2.5 text-xs font-black text-white shadow-[0_0_28px_rgba(168,85,247,0.2)] backdrop-blur-xl lg:flex"
-      title="Estimated people online"
+      title="Discord members online"
     >
       <span>🟢 Online</span>
       <span className="min-w-6 text-right text-[#d684ff]">{count ?? "..."}</span>
