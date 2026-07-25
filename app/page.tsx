@@ -491,6 +491,8 @@ type DiscordOnlineResponse = {
   fresh?: boolean;
 };
 
+const DISCORD_ONLINE_REFRESH_MS = 15000;
+
 async function fetchDiscordOnlineCount() {
   const response = await fetch(`${licenseApiUrl}/api/site/discord-online`, {
     cache: "no-store",
@@ -546,7 +548,7 @@ export default function Home() {
     void loadOnlineCount();
     const timer = window.setInterval(() => {
       void loadOnlineCount();
-    }, 60000);
+    }, DISCORD_ONLINE_REFRESH_MS);
 
     return () => {
       cancelled = true;
