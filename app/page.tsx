@@ -1727,6 +1727,25 @@ function PremiumPackageCard({
         <div className={`mt-5 rounded-lg bg-gradient-to-r ${accents.button} px-4 py-2 text-center text-xs font-black uppercase tracking-wide text-white`}>
           ✓ Incluido con tu licencia
         </div>
+        {product.downloadActive ? (
+          <a
+            href={product.downloadUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-white/15 bg-black/45 px-4 py-3 text-sm font-black transition hover:border-white/35 hover:bg-white hover:text-black"
+          >
+            Descargar app
+            <span>↓</span>
+          </a>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="mt-3 flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-white/10 bg-black/35 px-4 py-3 text-sm font-black text-white/45"
+          >
+            En desarrollo
+          </button>
+        )}
       </div>
     </article>
   );
