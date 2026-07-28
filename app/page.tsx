@@ -1627,7 +1627,6 @@ function ProductsPanel({
             key={product.name}
             product={product}
             accent={index === 0 ? "pink" : index === 1 ? "red" : "blue"}
-            onSelect={() => onSelectProduct(product)}
           />
         ))}
       </div>
@@ -1667,11 +1666,9 @@ function ProductsPanel({
 function PremiumPackageCard({
   product,
   accent,
-  onSelect,
 }: {
   product: (typeof products)[number];
   accent: "pink" | "red" | "blue";
-  onSelect: () => void;
 }) {
   const accents = {
     pink: {
@@ -1730,14 +1727,6 @@ function PremiumPackageCard({
         <div className={`mt-5 rounded-lg bg-gradient-to-r ${accents.button} px-4 py-2 text-center text-xs font-black uppercase tracking-wide text-white`}>
           ✓ Incluido con tu licencia
         </div>
-        <button
-          type="button"
-          onClick={onSelect}
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-white/15 bg-black/45 px-4 py-3 text-sm font-black transition hover:border-white/35 hover:bg-white hover:text-black"
-        >
-          Ver características
-          <span>→</span>
-        </button>
       </div>
     </article>
   );
