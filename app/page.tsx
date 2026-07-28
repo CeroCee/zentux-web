@@ -1413,139 +1413,320 @@ function DiscordBubble({
 }
 
 function ProductsPanel({
-  labels,
   onSelectProduct,
 }: {
   labels: Record<string, string>;
   onSelectProduct: (product: (typeof products)[number]) => void;
 }) {
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<"All" | "Performance" | "Automation" | "Free">("All");
-  const [sort, setSort] = useState("Popular");
-  const visibleProducts = products
-    .filter((product) => category === "All" || product.category === category)
-    .filter((product) =>
-      `${product.name} ${product.description}`
-        .toLowerCase()
-        .includes(query.trim().toLowerCase()),
-    )
-    .sort((a, b) => {
-      if (sort === "Name") {
-        return a.name.localeCompare(b.name);
-      }
-
-      return products.indexOf(a) - products.indexOf(b);
-    });
+  const premiumProducts = products.filter((product) =>
+    [OPTIMIZER_NAME, AUTOCLICKER_NAME, MACRO_NAME].includes(product.name),
+  );
+  const freeProducts = products.filter((product) => product.price === "Free");
+  const heroProducts = [
+    products.find((product) => product.name === OPTIMIZER_NAME),
+    products.find((product) => product.name === AUTOCLICKER_NAME),
+    products.find((product) => product.name === MACRO_NAME),
+  ].filter(Boolean) as (typeof products)[number][];
 
   return (
-    <section className="py-10">
-      <PanelTitle
-        label={labels.productsTitle}
-        title={labels.productsTitle}
-        text={labels.productsText}
-      />
+    <section className="py-10 text-white">
+      <div className="overflow-hidden rounded-[2rem] border border-[#a855f7]/55 bg-[#05030a]/80 shadow-[0_0_80px_rgba(168,85,247,0.16)]">
+        <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.02fr_1fr] lg:p-10">
+          <div className="relative min-h-[320px] overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_50%_45%,rgba(168,85,247,0.32),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0))]">
+            <div className="absolute inset-x-8 bottom-8 h-20 rounded-[999px] bg-[#9d4edd]/30 blur-[38px]" />
+            <div className="absolute inset-x-6 bottom-5 h-px bg-gradient-to-r from-transparent via-[#d946ef]/70 to-transparent" />
+            {heroProducts.map((product, index) => {
+              const layouts = [
+                "left-[5%] top-[18%] w-[32%] rotate-[-5deg] opacity-95",
+                "left-[29%] top-[5%] z-10 w-[38%]",
+                "right-[6%] top-[22%] w-[31%] rotate-[4deg] opacity-95",
+              ];
+              return (
+                <div
+                  key={product.name}
+                  className={`absolute ${layouts[index]} aspect-[0.68] overflow-hidden rounded-xl border border-white/10 bg-black shadow-[0_18px_55px_rgba(0,0,0,0.65)]`}
+                >
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    priority={index === 1}
+                    quality={100}
+                    sizes="(min-width: 1024px) 260px, 33vw"
+                    className="object-cover object-center"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-white/5" />
+                </div>
+              );
+            })}
+          </div>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[280px_1fr]">
-        <aside className="space-y-4">
-          <div className="rounded-[24px] border border-white/10 bg-black/45 p-5 backdrop-blur-xl">
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#a69bb3]">
-              {labels.searchProducts}
+          <div className="flex flex-col justify-center py-2">
+            <p className="text-sm font-black uppercase tracking-[0.22em] text-[#d46bff]">
+              Paquete completo
             </p>
-            <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3">
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={labels.searchPlaceholder}
-                className="w-full bg-transparent text-sm font-bold text-white outline-none placeholder:text-[#756b80]"
-              />
+            <h2 className="mt-3 text-4xl font-black uppercase leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl">
+              Zentux{" "}
+              <span className="bg-gradient-to-r from-white via-[#e9c8ff] to-[#c45cff] bg-clip-text text-transparent">
+                Complete
+              </span>
+            </h2>
+            <p className="mt-4 text-lg font-black uppercase text-[#d9d2e4]">
+              Una licencia. Todos los productos premium.
+            </p>
+
+            <div className="mt-7 flex flex-wrap gap-4">
+              {premiumProducts.map((product) => (
+                <span
+                  key={product.name}
+                  className="inline-flex items-center gap-2 text-sm font-black text-white"
+                >
+                  <span className="grid size-6 place-items-center rounded-full border border-[#c45cff]/70 text-[#d46bff]">
+                    ✓
+                  </span>
+                  {product.name.replace("Zentux ", "")}
+                </span>
+              ))}
             </div>
-          </div>
 
-          <div className="rounded-[24px] border border-white/10 bg-black/45 p-5 backdrop-blur-xl">
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#a69bb3]">
-              {labels.category}
-            </p>
-            <div className="mt-4 space-y-2">
-              <CategoryButton
-                active={category === "All"}
-                label={labels.allProducts}
-                count={products.length}
-                onClick={() => setCategory("All")}
-              />
-              <CategoryButton
-                active={category === "Performance"}
-                label={labels.performance}
-                count={products.filter((product) => product.category === "Performance").length}
-                onClick={() => setCategory("Performance")}
-              />
-              <CategoryButton
-                active={category === "Automation"}
-                label={labels.automation}
-                count={products.filter((product) => product.category === "Automation").length}
-                onClick={() => setCategory("Automation")}
-              />
-              <CategoryButton
-                active={category === "Free"}
-                label="Free"
-                count={products.filter((product) => product.category === "Free").length}
-                onClick={() => setCategory("Free")}
-              />
+            <div className="mt-8 rounded-[1.35rem] border border-[#a855f7]/60 bg-[#12051e]/70 px-6 py-5 shadow-[inset_0_0_35px_rgba(168,85,247,0.12)]">
+              <div className="flex flex-wrap items-end gap-3">
+                <span className="text-5xl font-black tracking-tight">$1.79</span>
+                <span className="pb-2 text-sm font-black uppercase text-[#c45cff]">
+                  USD / 15 dias
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div className="rounded-[24px] border border-white/10 bg-black/45 p-5 backdrop-blur-xl">
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#a69bb3]">
-              {labels.sort}
-            </p>
-            <select
-              value={sort}
-              onChange={(event) => setSort(event.target.value)}
-              className="mt-4 w-full rounded-xl border border-white/10 bg-[#121018] px-4 py-3 text-sm font-black text-white outline-none"
-            >
-              <option>Popular</option>
-              <option>Name</option>
-            </select>
-          </div>
-
-          <div className="rounded-[24px] border border-[#a855f7]/20 bg-[#13071f]/70 p-5 backdrop-blur-xl">
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#b989ff]">
-              {labels.zentuxAccess}
-            </p>
-            <h3 className="mt-3 text-2xl font-black">6,800+ sold</h3>
-            <p className="mt-3 text-sm font-semibold leading-6 text-[#bfb5c9]">
-              {labels.accessText}
-            </p>
-          </div>
-        </aside>
-
-        <div>
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm font-bold text-[#a69bb3]">
-              {labels.showing} {visibleProducts.length} / {products.length}
-            </p>
             <AuthenticatedCheckoutLink
               href={checkoutUrl}
-              planId="30-days"
-              className="rounded-full bg-white px-5 py-2 text-xs font-black text-black transition hover:scale-[1.03]"
+              planId="15-days"
+              className="mt-3 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#7c3aed] via-[#b336ff] to-[#d46bff] px-6 py-4 text-sm font-black uppercase tracking-wide text-white shadow-[0_0_45px_rgba(168,85,247,0.36)] transition hover:scale-[1.01]"
             >
-              {labels.buyPackage}
+              <span>♛</span>
+              Desbloquear todo el paquete
             </AuthenticatedCheckoutLink>
-          </div>
 
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {visibleProducts.map((product, index) => (
-              <ProductCard
-                key={product.name}
-                product={product}
-                labels={labels}
-                priority={index === 0}
-                onSelect={() => onSelectProduct(product)}
-              />
-            ))}
+            <p className="mt-5 text-center text-sm font-semibold text-[#bfb5c9]">
+              🔒 Tu suscripcion activa funciona como un paquete completo de Zentux.
+            </p>
           </div>
         </div>
       </div>
+
+      <div className="mt-8 text-center">
+        <h3 className="text-2xl font-black uppercase tracking-tight">
+          ¿Qué incluye tu licencia?
+        </h3>
+        <p className="mt-2 text-sm font-semibold text-[#a99db6]">
+          Todo esto viene incluido con Zentux Complete
+        </p>
+      </div>
+
+      <div className="mt-6 grid gap-5 lg:grid-cols-3">
+        {premiumProducts.map((product, index) => (
+          <PremiumPackageCard
+            key={product.name}
+            product={product}
+            accent={index === 0 ? "pink" : index === 1 ? "red" : "blue"}
+            onSelect={() => onSelectProduct(product)}
+          />
+        ))}
+      </div>
+
+      <p className="mt-5 text-center text-sm font-semibold text-[#a99db6]">
+        ⓘ Estos productos solo funcionan con una suscripcion activa.
+      </p>
+
+      <div className="mt-6 text-center">
+        <h3 className="text-2xl font-black uppercase tracking-tight">
+          Productos gratuitos
+        </h3>
+        <p className="mt-1 text-sm font-semibold text-[#a99db6]">
+          Siempre disponibles sin necesidad de licencia
+        </p>
+      </div>
+
+      <div className="mt-5 grid gap-5 lg:grid-cols-2">
+        {freeProducts.map((product) => (
+          <FreeProductWideCard
+            key={product.name}
+            product={product}
+            onSelect={() => onSelectProduct(product)}
+          />
+        ))}
+      </div>
+
+      <div className="mt-10 grid gap-4 rounded-[1.5rem] border border-[#a855f7]/45 bg-[#0c0613]/82 p-5 shadow-[0_0_55px_rgba(168,85,247,0.14)] sm:grid-cols-2 lg:grid-cols-4">
+        <ProductBenefit icon="🛡️" title="Pago seguro" text="Procesado por Stripe. 100% seguro." />
+        <ProductBenefit icon="⚡" title="Activación instantánea" text="Tu licencia se activa después del pago." />
+        <ProductBenefit icon="↻" title="Funciona en Windows" text="Compatible con Windows 10 y 11." />
+        <ProductBenefit icon="🎧" title="Soporte por Discord" text="Soporte rápido y comunidad activa." />
+      </div>
     </section>
+  );
+}
+
+function PremiumPackageCard({
+  product,
+  accent,
+  onSelect,
+}: {
+  product: (typeof products)[number];
+  accent: "pink" | "red" | "blue";
+  onSelect: () => void;
+}) {
+  const accents = {
+    pink: {
+      border: "border-[#d946ef]/60",
+      glow: "from-[#d946ef]/30",
+      icon: "text-[#ff4dde] border-[#ff4dde]/55",
+      button: "from-[#581c87] to-[#a21caf]",
+      symbol: "◔",
+    },
+    red: {
+      border: "border-[#ef4444]/60",
+      glow: "from-[#ef4444]/30",
+      icon: "text-[#ff2d2d] border-[#ff2d2d]/55",
+      button: "from-[#5b1020] to-[#a11b34]",
+      symbol: "⌖",
+    },
+    blue: {
+      border: "border-[#3b82f6]/60",
+      glow: "from-[#2563eb]/30",
+      icon: "text-[#2f8cff] border-[#2f8cff]/55",
+      button: "from-[#172554] to-[#2563eb]",
+      symbol: "</>",
+    },
+  }[accent];
+
+  return (
+    <article
+      className={`group relative overflow-hidden rounded-[1.35rem] border ${accents.border} bg-[#07040b]/92 p-5 shadow-[0_0_45px_rgba(0,0,0,0.3)] transition hover:-translate-y-1 hover:shadow-[0_0_70px_rgba(168,85,247,0.22)]`}
+    >
+      <div className={`absolute inset-0 bg-gradient-to-br ${accents.glow} via-transparent to-transparent opacity-80`} />
+      <div className="absolute right-0 top-0 h-40 w-44 opacity-95 transition duration-500 group-hover:scale-105">
+        <Image
+          src={product.image}
+          alt={product.name}
+          fill
+          quality={100}
+          sizes="180px"
+          className="object-cover object-top"
+        />
+        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-[#07040b]/15 to-[#07040b]" />
+      </div>
+      <div className="relative z-10">
+        <span className="rounded-md bg-[#7c3aed] px-3 py-2 text-xs font-black uppercase text-white">
+          Incluido
+        </span>
+        <div className={`mt-8 grid size-20 place-items-center rounded-xl border bg-black/35 text-4xl font-black ${accents.icon}`}>
+          {accents.symbol}
+        </div>
+        <h4 className="mt-6 text-2xl font-black">{product.name}</h4>
+        <p className="mt-1 text-sm font-bold text-[#c9c2d0]">
+          {product.description}
+        </p>
+        <p className="mt-4 min-h-[72px] max-w-[86%] text-sm font-semibold leading-6 text-[#bfb5c9]">
+          {product.details.split(".")[0]}.
+        </p>
+        <div className={`mt-5 rounded-lg bg-gradient-to-r ${accents.button} px-4 py-2 text-center text-xs font-black uppercase tracking-wide text-white`}>
+          ✓ Incluido con tu licencia
+        </div>
+        <button
+          type="button"
+          onClick={onSelect}
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-white/15 bg-black/45 px-4 py-3 text-sm font-black transition hover:border-white/35 hover:bg-white hover:text-black"
+        >
+          Ver características
+          <span>→</span>
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function FreeProductWideCard({
+  product,
+  onSelect,
+}: {
+  product: (typeof products)[number];
+  onSelect: () => void;
+}) {
+  return (
+    <article className="group relative min-h-[190px] overflow-hidden rounded-[1.35rem] border border-[#4ade80]/55 bg-[#041006]/90 p-5 shadow-[0_0_45px_rgba(74,222,128,0.1)]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_30%,rgba(74,222,128,0.22),transparent_42%)]" />
+      <div className="absolute bottom-0 left-[18%] top-1 w-[34%] opacity-95 transition duration-500 group-hover:scale-105">
+        <Image
+          src={product.image}
+          alt={product.name}
+          fill
+          quality={100}
+          sizes="220px"
+          className="object-contain object-bottom"
+        />
+      </div>
+      <div className="relative z-10 grid gap-5 sm:grid-cols-[0.95fr_1.3fr]">
+        <div className="flex min-h-[150px] flex-col justify-between">
+          <div className="grid size-20 place-items-center rounded-xl border border-[#66ff28]/45 bg-black/35 text-4xl text-[#76ff32]">
+            {product.name === CURSOR_NAME ? "⌖" : "⌁"}
+          </div>
+          <span className="text-sm font-black uppercase tracking-wide text-[#76ff32]">
+            Free
+          </span>
+        </div>
+        <div className="flex flex-col justify-center sm:pl-8">
+          <h4 className="text-2xl font-black">{product.name}</h4>
+          <p className="mt-1 text-sm font-bold text-[#d7ead5]">
+            {product.description}
+          </p>
+          <p className="mt-3 max-w-md text-sm font-semibold leading-6 text-[#b8ccb6]">
+            {product.details.split(".")[0]}.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a
+              href={product.downloadUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg border border-[#76ff32]/50 bg-[#1d760d] px-7 py-3 text-sm font-black text-white transition hover:bg-[#2aa815]"
+            >
+              Descargar ↓
+            </a>
+            <button
+              type="button"
+              onClick={onSelect}
+              className="rounded-lg border border-white/15 bg-black/35 px-6 py-3 text-sm font-black text-white transition hover:bg-white hover:text-black"
+            >
+              Ver detalles
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function ProductBenefit({
+  icon,
+  title,
+  text,
+}: {
+  icon: string;
+  title: string;
+  text: string;
+}) {
+  return (
+    <div className="flex items-center gap-4 border-white/10 p-3 lg:border-r last:lg:border-r-0">
+      <div className="grid size-14 shrink-0 place-items-center rounded-xl bg-[#7c3aed]/15 text-3xl text-[#c45cff]">
+        {icon}
+      </div>
+      <div>
+        <h4 className="font-black">{title}</h4>
+        <p className="mt-1 text-sm font-semibold leading-5 text-[#bfb5c9]">
+          {text}
+        </p>
+      </div>
+    </div>
   );
 }
 
