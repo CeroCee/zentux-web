@@ -1427,6 +1427,11 @@ function ProductsPanel({
     products.find((product) => product.name === AUTOCLICKER_NAME),
     products.find((product) => product.name === MACRO_NAME),
   ].filter(Boolean) as (typeof products)[number][];
+  const [selectedPlanId, setSelectedPlanId] = useState<
+    (typeof pricingPlans)[number]["id"]
+  >(pricingPlans[0].id);
+  const selectedPlan =
+    pricingPlans.find((plan) => plan.id === selectedPlanId) ?? pricingPlans[0];
 
   return (
     <section className="py-10 text-white">
@@ -1437,14 +1442,14 @@ function ProductsPanel({
             <div className="absolute inset-x-6 bottom-5 h-px bg-gradient-to-r from-transparent via-[#d946ef]/70 to-transparent" />
             {heroProducts.map((product, index) => {
               const layouts = [
-                "left-[5%] top-[18%] w-[32%] rotate-[-5deg] opacity-95",
-                "left-[29%] top-[5%] z-10 w-[38%]",
-                "right-[6%] top-[22%] w-[31%] rotate-[4deg] opacity-95",
+                "left-[4%] top-[15%] w-[34%] rotate-[-5deg] opacity-95",
+                "left-[29%] top-[3%] z-10 w-[40%]",
+                "right-[4%] top-[16%] w-[34%] rotate-[4deg] opacity-95",
               ];
               return (
                 <div
                   key={product.name}
-                  className={`absolute ${layouts[index]} aspect-[0.68] overflow-hidden rounded-xl border border-white/10 bg-black shadow-[0_18px_55px_rgba(0,0,0,0.65)]`}
+                  className={`absolute ${layouts[index]} aspect-[0.74] overflow-hidden rounded-xl border border-white/10 bg-black/25 shadow-[0_18px_55px_rgba(0,0,0,0.65)]`}
                 >
                   <Image
                     src={product.image}
@@ -1453,7 +1458,7 @@ function ProductsPanel({
                     priority={index === 1}
                     quality={100}
                     sizes="(min-width: 1024px) 260px, 33vw"
-                    className="object-cover object-center"
+                    className="object-contain object-center"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-white/5" />
                 </div>
@@ -1489,18 +1494,58 @@ function ProductsPanel({
               ))}
             </div>
 
-            <div className="mt-8 rounded-[1.35rem] border border-[#a855f7]/60 bg-[#12051e]/70 px-6 py-5 shadow-[inset_0_0_35px_rgba(168,85,247,0.12)]">
-              <div className="flex flex-wrap items-end gap-3">
-                <span className="text-5xl font-black tracking-tight">$1.79</span>
-                <span className="pb-2 text-sm font-black uppercase text-[#c45cff]">
-                  USD / 15 dias
+            <div className="mt-8 rounded-[1.35rem] border border-[#a855f7]/60 bg-[#12051e]/70 p-5 shadow-[inset_0_0_35px_rgba(168,85,247,0.12)]">
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-[#d46bff]">
+                Precio inicial
+              </p>
+              <div className="mt-2 flex flex-wrap items-end gap-3">
+                <span className="text-5xl font-black tracking-tight">
+                  {selectedPlan.price.replace(" USD", "")}
                 </span>
+                <span className="pb-2 text-sm font-black uppercase text-[#c45cff]">
+                  USD / {selectedPlan.label}
+                </span>
+              </div>
+
+              <p className="mt-5 text-xs font-black uppercase tracking-[0.22em] text-[#d46bff]">
+                Opciones de licencia
+              </p>
+              <div className="mt-3 space-y-2">
+                {pricingPlans.map((plan) => {
+                  const active = plan.id === selectedPlan.id;
+                  return (
+                    <button
+                      key={plan.id}
+                      type="button"
+                      onClick={() => setSelectedPlanId(plan.id)}
+                      className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-black transition ${
+                        active
+                          ? "bg-[#7c2ed1]/55 text-white shadow-[0_0_24px_rgba(168,85,247,0.22)]"
+                          : "bg-black/25 text-[#d8cfe1] hover:bg-white/[0.07] hover:text-white"
+                      }`}
+                    >
+                      <span className="flex items-center gap-3">
+                        <span
+                          className={`grid size-6 place-items-center rounded-full text-xs ${
+                            active
+                              ? "bg-[#a855f7] text-white"
+                              : "border border-white/18"
+                          }`}
+                        >
+                          {active ? "✓" : ""}
+                        </span>
+                        {plan.label}
+                      </span>
+                      <span>{plan.price}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             <AuthenticatedCheckoutLink
               href={checkoutUrl}
-              planId="15-days"
+              planId={selectedPlan.id}
               className="mt-3 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#7c3aed] via-[#b336ff] to-[#d46bff] px-6 py-4 text-sm font-black uppercase tracking-wide text-white shadow-[0_0_45px_rgba(168,85,247,0.36)] transition hover:scale-[1.01]"
             >
               <span>♛</span>
@@ -1552,7 +1597,6 @@ function ProductsPanel({
           <FreeProductWideCard
             key={product.name}
             product={product}
-            onSelect={() => onSelectProduct(product)}
           />
         ))}
       </div>
@@ -1648,34 +1692,32 @@ function PremiumPackageCard({
 
 function FreeProductWideCard({
   product,
-  onSelect,
 }: {
   product: (typeof products)[number];
-  onSelect: () => void;
 }) {
   return (
-    <article className="group relative min-h-[190px] overflow-hidden rounded-[1.35rem] border border-[#4ade80]/55 bg-[#041006]/90 p-5 shadow-[0_0_45px_rgba(74,222,128,0.1)]">
+    <article className="group relative overflow-hidden rounded-[1.35rem] border border-[#4ade80]/55 bg-[#041006]/90 p-5 shadow-[0_0_45px_rgba(74,222,128,0.1)]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_30%,rgba(74,222,128,0.22),transparent_42%)]" />
-      <div className="absolute bottom-0 left-[18%] top-1 w-[34%] opacity-95 transition duration-500 group-hover:scale-105">
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          quality={100}
-          sizes="220px"
-          className="object-contain object-bottom"
-        />
-      </div>
-      <div className="relative z-10 grid gap-5 sm:grid-cols-[0.95fr_1.3fr]">
-        <div className="flex min-h-[150px] flex-col justify-between">
+      <div className="relative z-10 grid gap-5 sm:grid-cols-[150px_1fr] md:grid-cols-[210px_1fr]">
+        <div className="grid gap-3">
           <div className="grid size-20 place-items-center rounded-xl border border-[#66ff28]/45 bg-black/35 text-4xl text-[#76ff32]">
             {product.name === CURSOR_NAME ? "⌖" : "⌁"}
           </div>
-          <span className="text-sm font-black uppercase tracking-wide text-[#76ff32]">
+          <div className="relative h-[170px] w-full transition duration-500 group-hover:scale-105 md:h-[210px]">
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              quality={100}
+              sizes="(min-width: 768px) 210px, 150px"
+              className="object-contain object-center"
+            />
+          </div>
+        </div>
+        <div className="flex flex-col justify-center">
+          <span className="w-fit rounded-md bg-[#1d760d]/80 px-3 py-1 text-xs font-black uppercase tracking-wide text-[#8cff4f]">
             Free
           </span>
-        </div>
-        <div className="flex flex-col justify-center sm:pl-8">
           <h4 className="text-2xl font-black">{product.name}</h4>
           <p className="mt-1 text-sm font-bold text-[#d7ead5]">
             {product.description}
@@ -1692,13 +1734,6 @@ function FreeProductWideCard({
             >
               Descargar ↓
             </a>
-            <button
-              type="button"
-              onClick={onSelect}
-              className="rounded-lg border border-white/15 bg-black/35 px-6 py-3 text-sm font-black text-white transition hover:bg-white hover:text-black"
-            >
-              Ver detalles
-            </button>
           </div>
         </div>
       </div>
