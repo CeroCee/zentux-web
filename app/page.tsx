@@ -1430,6 +1430,7 @@ function ProductsPanel({
   const [selectedPlanId, setSelectedPlanId] = useState<
     (typeof pricingPlans)[number]["id"]
   >(pricingPlans[0].id);
+  const [isPlanMenuOpen, setIsPlanMenuOpen] = useState(false);
   const selectedPlan =
     pricingPlans.find((plan) => plan.id === selectedPlanId) ?? pricingPlans[0];
 
@@ -1508,16 +1509,38 @@ function ProductsPanel({
               </div>
 
               <p className="mt-5 text-xs font-black uppercase tracking-[0.22em] text-[#d46bff]">
-                Opciones de licencia
+                Opcion
               </p>
-              <div className="mt-3 space-y-2">
+              <button
+                type="button"
+                onClick={() => setIsPlanMenuOpen((open) => !open)}
+                aria-expanded={isPlanMenuOpen}
+                className={`mt-3 flex w-full items-center justify-between rounded-full border px-5 py-4 text-left text-sm font-black transition ${
+                  isPlanMenuOpen
+                    ? "border-white bg-[#07020f] text-white"
+                    : "border-[#a855f7]/70 bg-[#090314] text-white hover:border-white/75"
+                }`}
+              >
+                <span>{selectedPlan.label}</span>
+                <span className="text-xs text-white">
+                  {isPlanMenuOpen ? "⌃" : "⌄"}
+                </span>
+              </button>
+              <div
+                className={`mt-2 overflow-hidden rounded-[1.35rem] border border-[#a855f7]/75 bg-[#090314]/98 p-2 shadow-[0_24px_55px_rgba(0,0,0,0.35),0_0_35px_rgba(168,85,247,0.18)] transition ${
+                  isPlanMenuOpen ? "block" : "hidden"
+                }`}
+              >
                 {pricingPlans.map((plan) => {
                   const active = plan.id === selectedPlan.id;
                   return (
                     <button
                       key={plan.id}
                       type="button"
-                      onClick={() => setSelectedPlanId(plan.id)}
+                      onClick={() => {
+                        setSelectedPlanId(plan.id);
+                        setIsPlanMenuOpen(false);
+                      }}
                       className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-black transition ${
                         active
                           ? "bg-[#7c2ed1]/55 text-white shadow-[0_0_24px_rgba(168,85,247,0.22)]"
