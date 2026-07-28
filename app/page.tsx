@@ -1698,18 +1698,15 @@ function FreeProductWideCard({
   return (
     <article className="group relative overflow-hidden rounded-[1.35rem] border border-[#4ade80]/55 bg-[#041006]/90 p-5 shadow-[0_0_45px_rgba(74,222,128,0.1)]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_30%,rgba(74,222,128,0.22),transparent_42%)]" />
-      <div className="relative z-10 grid gap-5 sm:grid-cols-[150px_1fr] md:grid-cols-[210px_1fr]">
-        <div className="grid gap-3">
-          <div className="grid size-20 place-items-center rounded-xl border border-[#66ff28]/45 bg-black/35 text-4xl text-[#76ff32]">
-            {product.name === CURSOR_NAME ? "⌖" : "⌁"}
-          </div>
-          <div className="relative h-[170px] w-full transition duration-500 group-hover:scale-105 md:h-[210px]">
+      <div className="relative z-10 grid gap-5 sm:grid-cols-[210px_1fr] md:grid-cols-[240px_1fr]">
+        <div className="flex min-h-[220px] items-center justify-center">
+          <div className="relative h-[220px] w-full max-w-[235px] transition duration-500 group-hover:scale-105 md:h-[235px] md:max-w-[250px]">
             <Image
               src={product.image}
               alt={product.name}
               fill
               quality={100}
-              sizes="(min-width: 768px) 210px, 150px"
+              sizes="(min-width: 768px) 250px, 235px"
               className="object-contain object-center"
             />
           </div>
