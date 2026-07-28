@@ -346,12 +346,83 @@ body {
   }
 }
 
+.zentux-bundle-card-left {
+  animation: zentuxBundleLeftIn 900ms cubic-bezier(0.2, 0.9, 0.2, 1) both,
+    zentuxBundleFloat 7.5s ease-in-out 950ms infinite;
+}
+
+.zentux-bundle-card-center {
+  animation: zentuxBundleCenterIn 950ms cubic-bezier(0.2, 0.9, 0.2, 1) both,
+    zentuxBundleFloat 7s ease-in-out 1s infinite;
+}
+
+.zentux-bundle-card-right {
+  animation: zentuxBundleRightIn 900ms cubic-bezier(0.2, 0.9, 0.2, 1) both,
+    zentuxBundleFloat 7.8s ease-in-out 950ms infinite;
+}
+
+@keyframes zentuxBundleLeftIn {
+  from {
+    opacity: 0;
+    translate: -34px 18px;
+    scale: 0.96;
+  }
+
+  to {
+    opacity: 0.95;
+    translate: 0 0;
+    scale: 1;
+  }
+}
+
+@keyframes zentuxBundleCenterIn {
+  from {
+    opacity: 0;
+    translate: 0 34px;
+    scale: 0.9;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+}
+
+@keyframes zentuxBundleRightIn {
+  from {
+    opacity: 0;
+    translate: 34px 18px;
+    scale: 0.96;
+  }
+
+  to {
+    opacity: 0.95;
+    translate: 0 0;
+    scale: 1;
+  }
+}
+
+@keyframes zentuxBundleFloat {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: 0 -7px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .zentux-snow-slow,
   .zentux-snow-medium,
   .zentux-snow-fast,
   .zentux-discord-bubble,
   .zentux-mobile-menu,
+  .zentux-bundle-card-left,
+  .zentux-bundle-card-center,
+  .zentux-bundle-card-right,
   .team-star-field,
   .team-card,
   .team-card::before,

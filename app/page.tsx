@@ -1433,19 +1433,29 @@ function ProductsPanel({
   const [isPlanMenuOpen, setIsPlanMenuOpen] = useState(false);
   const selectedPlan =
     pricingPlans.find((plan) => plan.id === selectedPlanId) ?? pricingPlans[0];
+  const bundleFeatures = [
+    "1 licencia",
+    "3 aplicaciones premium",
+    "Activacion instantanea",
+    "Actualizaciones incluidas",
+    "Windows 10 y 11",
+  ];
 
   return (
     <section className="py-10 text-white">
       <div className="overflow-hidden rounded-[2rem] border border-[#a855f7]/55 bg-[#05030a]/80 shadow-[0_0_80px_rgba(168,85,247,0.16)]">
         <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.02fr_1fr] lg:p-10">
-          <div className="relative min-h-[320px] overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_50%_45%,rgba(168,85,247,0.32),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0))]">
+          <div className="relative min-h-[390px] overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_50%_45%,rgba(168,85,247,0.32),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0))]">
             <div className="absolute inset-x-8 bottom-8 h-20 rounded-[999px] bg-[#9d4edd]/30 blur-[38px]" />
             <div className="absolute inset-x-6 bottom-5 h-px bg-gradient-to-r from-transparent via-[#d946ef]/70 to-transparent" />
+            <div className="absolute left-5 top-5 z-20 rounded-full border border-[#c45cff]/55 bg-[#140820]/80 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-[#e4b6ff] shadow-[0_0_25px_rgba(168,85,247,0.22)]">
+              Complete Bundle
+            </div>
             {heroProducts.map((product, index) => {
               const layouts = [
-                "left-[4%] top-[15%] w-[34%] rotate-[-5deg] opacity-95",
-                "left-[29%] top-[3%] z-10 w-[40%]",
-                "right-[4%] top-[16%] w-[34%] rotate-[4deg] opacity-95",
+                "left-[4%] top-[18%] w-[34%] rotate-[-5deg] opacity-95 zentux-bundle-card-left",
+                "left-[29%] top-[8%] z-10 w-[40%] zentux-bundle-card-center",
+                "right-[4%] top-[19%] w-[34%] rotate-[4deg] opacity-95 zentux-bundle-card-right",
               ];
               return (
                 <div
@@ -1465,6 +1475,17 @@ function ProductsPanel({
                 </div>
               );
             })}
+            <div className="absolute inset-x-5 bottom-5 z-20 grid gap-2 rounded-2xl border border-white/10 bg-black/35 p-3 backdrop-blur-md sm:grid-cols-2 xl:grid-cols-3">
+              {bundleFeatures.map((feature) => (
+                <span
+                  key={feature}
+                  className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-wide text-[#eadcff]"
+                >
+                  <span className="size-1.5 rounded-full bg-[#d46bff] shadow-[0_0_10px_rgba(212,107,255,0.8)]" />
+                  {feature}
+                </span>
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-col justify-center py-2">
@@ -1480,14 +1501,17 @@ function ProductsPanel({
             <p className="mt-4 text-lg font-black uppercase text-[#d9d2e4]">
               Una licencia. Todos los productos premium.
             </p>
+            <p className="mt-2 text-sm font-bold text-[#bfb5c9]">
+              Una sola suscripcion desbloquea las 3 aplicaciones premium.
+            </p>
 
-            <div className="mt-7 flex flex-wrap gap-4">
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
               {premiumProducts.map((product) => (
                 <span
                   key={product.name}
-                  className="inline-flex items-center gap-2 text-sm font-black text-white"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[#a855f7]/45 bg-[#12051e]/75 px-3 py-2 text-sm font-black text-white shadow-[0_0_20px_rgba(168,85,247,0.12)]"
                 >
-                  <span className="grid size-6 place-items-center rounded-full border border-[#c45cff]/70 text-[#d46bff]">
+                  <span className="grid size-6 shrink-0 place-items-center rounded-full bg-[#7c3aed] text-white shadow-[0_0_18px_rgba(168,85,247,0.45)]">
                     ✓
                   </span>
                   {product.name.replace("Zentux ", "")}
@@ -1497,7 +1521,7 @@ function ProductsPanel({
 
             <div className="mt-8 rounded-[1.35rem] border border-[#a855f7]/60 bg-[#12051e]/70 p-5 shadow-[inset_0_0_35px_rgba(168,85,247,0.12)]">
               <p className="text-xs font-black uppercase tracking-[0.22em] text-[#d46bff]">
-                Precio inicial
+                Elige tu plan
               </p>
               <div className="mt-2 flex flex-wrap items-end gap-3">
                 <span className="text-5xl font-black tracking-tight">
@@ -1522,6 +1546,9 @@ function ProductsPanel({
                 }`}
               >
                 <span>{selectedPlan.label}</span>
+                <span className="ml-auto mr-4 text-[#e8d5ff]">
+                  {selectedPlan.price}
+                </span>
                 <span className="text-xs text-white">
                   {isPlanMenuOpen ? "⌃" : "⌄"}
                 </span>
@@ -1569,10 +1596,13 @@ function ProductsPanel({
             <AuthenticatedCheckoutLink
               href={checkoutUrl}
               planId={selectedPlan.id}
-              className="mt-3 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-[#7c3aed] via-[#b336ff] to-[#d46bff] px-6 py-4 text-sm font-black uppercase tracking-wide text-white shadow-[0_0_45px_rgba(168,85,247,0.36)] transition hover:scale-[1.01]"
+              className="mt-3 inline-flex w-full flex-col items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-[#7c3aed] via-[#b336ff] to-[#d46bff] px-6 py-4 text-center text-sm font-black uppercase tracking-wide text-white shadow-[0_0_45px_rgba(168,85,247,0.36)] transition hover:scale-[1.01]"
             >
               <span>♛</span>
-              Desbloquear todo el paquete
+              Desbloquear Zentux Complete
+              <span className="text-[11px] font-black tracking-normal text-white/85">
+                {selectedPlan.price} / {selectedPlan.label}
+              </span>
             </AuthenticatedCheckoutLink>
 
             <p className="mt-5 text-center text-sm font-semibold text-[#bfb5c9]">
