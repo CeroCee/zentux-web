@@ -587,6 +587,42 @@ export default function Home() {
     void verifyLicenseCheckout();
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("paypal_success") !== "1") return;
+
+    const subscriptionId = window.sessionStorage.getItem("zentux-paypal-subscription-id");
+    if (!subscriptionId) return;
+
+    const storageKey = `zentux-paypal-result:${subscriptionId}`;
+    if (window.sessionStorage.getItem(storageKey)) return;
+    window.sessionStorage.setItem(storageKey, "1");
+
+    const verifyPayPalCheckout = async () => {
+      for (let attempt = 0; attempt < 8; attempt += 1) {
+        try {
+          const response = await fetch(`${licenseApiBaseUrl}/api/web/license/paypal/result`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ subscriptionId }),
+          });
+          if (response.ok) {
+            const data = await response.json().catch(() => null);
+            if (data?.status === "fulfilled") {
+              window.sessionStorage.removeItem("zentux-paypal-subscription-id");
+              break;
+            }
+          }
+        } catch (error) {
+          console.warn("PayPal license checkout verification failed:", error);
+        }
+        await new Promise((resolve) => window.setTimeout(resolve, 1500));
+      }
+    };
+
+    void verifyPayPalCheckout();
+  }, []);
+
   const selectTab = (tab: Tab) => {
     setActiveTab(tab);
     setMoreOpen(false);
@@ -1605,6 +1641,16 @@ function ProductsPanel({
               </span>
             </AuthenticatedCheckoutLink>
 
+            <AuthenticatedCheckoutLink
+              href="#paypal"
+              planId={selectedPlan.id}
+              provider="paypal"
+              className="mt-3 inline-flex w-full items-center justify-center gap-3 rounded-xl border border-[#ffd166]/45 bg-gradient-to-r from-[#ffc439] to-[#ffdf75] px-6 py-4 text-center text-sm font-black uppercase tracking-wide text-[#111827] shadow-[0_0_32px_rgba(255,196,57,0.22)] transition hover:scale-[1.01]"
+            >
+              <span className="rounded-md bg-[#003087] px-2 py-1 text-white">PayPal</span>
+              Pagar con PayPal
+            </AuthenticatedCheckoutLink>
+
             <p className="mt-5 text-center text-sm font-semibold text-[#bfb5c9]">
               🔒 Tu suscripcion activa funciona como un paquete completo de Zentux.
             </p>
@@ -1654,7 +1700,7 @@ function ProductsPanel({
       </div>
 
       <div className="mt-10 grid gap-4 rounded-[1.5rem] border border-[#a855f7]/45 bg-[#0c0613]/82 p-5 shadow-[0_0_55px_rgba(168,85,247,0.14)] sm:grid-cols-2 lg:grid-cols-4">
-        <ProductBenefit icon="🛡️" title="Pago seguro" text="Procesado por Stripe. 100% seguro." />
+        <ProductBenefit icon="🛡️" title="Pago seguro" text="Procesado por Stripe o PayPal. 100% seguro." />
         <ProductBenefit icon="⚡" title="Activación instantánea" text="Tu licencia se activa después del pago." />
         <ProductBenefit icon="↻" title="Funciona en Windows" text="Compatible con Windows 10 y 11." />
         <ProductBenefit icon="🎧" title="Soporte por Discord" text="Soporte rápido y comunidad activa." />
