@@ -623,6 +623,42 @@ export default function Home() {
     void verifyPayPalCheckout();
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("paypal_order_success") !== "1") return;
+
+    const orderId = window.sessionStorage.getItem("zentux-paypal-order-id") || params.get("token");
+    if (!orderId) return;
+
+    const storageKey = `zentux-paypal-order-result:${orderId}`;
+    if (window.sessionStorage.getItem(storageKey)) return;
+    window.sessionStorage.setItem(storageKey, "1");
+
+    const capturePayPalOrder = async () => {
+      for (let attempt = 0; attempt < 8; attempt += 1) {
+        try {
+          const response = await fetch(`${licenseApiBaseUrl}/api/web/license/paypal/order/capture`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId }),
+          });
+          if (response.ok) {
+            const data = await response.json().catch(() => null);
+            if (data?.status === "fulfilled") {
+              window.sessionStorage.removeItem("zentux-paypal-order-id");
+              break;
+            }
+          }
+        } catch (error) {
+          console.warn("PayPal one-time license checkout verification failed:", error);
+        }
+        await new Promise((resolve) => window.setTimeout(resolve, 1500));
+      }
+    };
+
+    void capturePayPalOrder();
+  }, []);
+
   const selectTab = (tab: Tab) => {
     setActiveTab(tab);
     setMoreOpen(false);
@@ -1648,7 +1684,7 @@ function ProductsPanel({
               className="mt-3 inline-flex w-full items-center justify-center gap-3 rounded-xl border border-[#ffd166]/45 bg-gradient-to-r from-[#ffc439] to-[#ffdf75] px-6 py-4 text-center text-sm font-black uppercase tracking-wide text-[#111827] shadow-[0_0_32px_rgba(255,196,57,0.22)] transition hover:scale-[1.01]"
             >
               <span className="rounded-md bg-[#003087] px-2 py-1 text-white">PayPal</span>
-              Pagar con PayPal
+              Pagar una vez con PayPal
             </AuthenticatedCheckoutLink>
 
             <p className="mt-5 text-center text-sm font-semibold text-[#bfb5c9]">

@@ -16,7 +16,7 @@ export function AuthenticatedCheckoutLink({
 }: {
   href: string;
   planId?: string;
-  provider?: "stripe" | "paypal";
+  provider?: "stripe" | "paypal" | "paypal-subscription";
   className?: string;
   children: React.ReactNode;
 }) {
@@ -30,6 +30,8 @@ export function AuthenticatedCheckoutLink({
     setLoading(true);
     try {
       const endpoint = provider === "paypal"
+        ? "/api/web/license/paypal/order/checkout"
+        : provider === "paypal-subscription"
         ? "/api/web/license/paypal/checkout"
         : "/api/web/license/checkout";
       const response = await fetch(`${licenseApiBaseUrl}${endpoint}`, {
@@ -45,13 +47,16 @@ export function AuthenticatedCheckoutLink({
       if (!response.ok || !data?.checkoutUrl) {
         throw new Error(data?.error || "Could not create checkout.");
       }
-      if (provider === "paypal" && data.subscriptionId) {
+      if (provider === "paypal-subscription" && data.subscriptionId) {
         window.sessionStorage.setItem("zentux-paypal-subscription-id", data.subscriptionId);
+      }
+      if (provider === "paypal" && data.orderId) {
+        window.sessionStorage.setItem("zentux-paypal-order-id", data.orderId);
       }
       window.location.href = data.checkoutUrl;
     } catch (error) {
       console.error("License checkout failed:", error);
-      window.alert(`No se pudo abrir ${provider === "paypal" ? "PayPal" : "Stripe"}. Intenta de nuevo o contacta soporte.`);
+      window.alert(`No se pudo abrir ${provider === "stripe" ? "Stripe" : "PayPal"}. Intenta de nuevo o contacta soporte.`);
     } finally {
       setLoading(false);
     }
@@ -74,7 +79,7 @@ export function AuthenticatedCheckoutLink({
         if (!loading) void startServerCheckout();
       }}
     >
-      {loading ? `Abriendo ${provider === "paypal" ? "PayPal" : "Stripe"}...` : children}
+      {loading ? `Abriendo ${provider === "stripe" ? "Stripe" : "PayPal"}...` : children}
     </a>
   );
 }
