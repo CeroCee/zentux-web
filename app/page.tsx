@@ -54,7 +54,7 @@ const licenseApiUrl = (
 
 const tabs = ["Home", "Products", "Rewards", "Reviews", "FAQ", "Meet The Team", "Profile"] as const;
 type Tab = (typeof tabs)[number];
-type LegalPanel = "privacy" | "terms";
+type LegalPanel = "privacy" | "terms" | "refunds";
 const desktopTabs: Tab[] = ["Home", "Products", "Rewards", "Reviews"];
 const moreTabs: Tab[] = ["FAQ", "Meet The Team"];
 
@@ -1177,6 +1177,9 @@ function LegalFooter({
           <button onClick={() => onOpenLegal("privacy")}>
             Privacy Policy
           </button>
+          <button onClick={() => onOpenLegal("refunds")}>
+            No Refund Policy
+          </button>
           <button onClick={() => onOpenLegal("terms")}>
             Terms of Service
           </button>
@@ -1254,7 +1257,12 @@ function LegalModal({
     return null;
   }
 
-  const isPrivacy = activePanel === "privacy";
+  const legalTitle =
+    activePanel === "privacy"
+      ? "Privacy Policy"
+      : activePanel === "refunds"
+        ? "No Refund Policy"
+        : "Terms of Service";
 
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/75 px-4 py-6 backdrop-blur-sm">
@@ -1265,7 +1273,7 @@ function LegalModal({
               Zentux Legal
             </p>
             <h2 className="mt-2 text-3xl font-black text-white">
-              {isPrivacy ? "Privacy Policy" : "Terms of Service"}
+              {legalTitle}
             </h2>
           </div>
           <button
@@ -1278,7 +1286,9 @@ function LegalModal({
         </div>
 
         <div className="max-h-[65vh] overflow-y-auto px-6 py-6 sm:px-8">
-          {isPrivacy ? <PrivacyPolicyText /> : <TermsOfServiceText />}
+          {activePanel === "privacy" && <PrivacyPolicyText />}
+          {activePanel === "refunds" && <NoRefundPolicyText />}
+          {activePanel === "terms" && <TermsOfServiceText />}
         </div>
       </section>
     </div>
@@ -1408,6 +1418,54 @@ function PrivacyPolicyText() {
         <p>
           For privacy, license, or support questions, use the official help
           links on this website.
+        </p>
+      </LegalSection>
+    </>
+  );
+}
+
+function NoRefundPolicyText() {
+  return (
+    <>
+      <LegalSection title="1. All sales are final">
+        <p>
+          Zentux sells digital license access. Because license keys and access
+          are delivered digitally and can be used immediately after purchase,
+          all completed purchases are final and non-refundable.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="2. Subscription renewals">
+        <p>
+          Subscription payments that have already been processed are not
+          refundable. You may cancel your subscription to stop future renewals,
+          but cancellation does not refund previous charges.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="3. Download or compatibility issues">
+        <p>
+          Refunds are not provided for issues caused by device compatibility,
+          antivirus settings, Windows configuration, user setup, or failure to
+          read product requirements. Support is available to help with
+          installation, activation, and license access.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="4. Duplicate charges or delivery errors">
+        <p>
+          If you believe you were charged twice by mistake, paid but did not
+          receive a license, or your license was not activated correctly,
+          contact support with your payment email and receipt. Zentux may verify
+          the payment and correct the license delivery or access issue.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="5. Chargebacks and abuse">
+        <p>
+          Filing a chargeback after receiving or using a license may result in
+          the license being deactivated and access being restricted. Sharing,
+          reselling, or abusing licenses can also lead to removal of access.
         </p>
       </LegalSection>
     </>
