@@ -356,12 +356,16 @@ body {
 }
 
 
-/* Static atmosphere: gradients only, without background animation or blur filters. */
+/* CSS and SVG atmosphere; decorative layers never receive pointer input. */
 .zentux-background {
-  background:
-    radial-gradient(ellipse 42% 52% at 79% 43%, rgba(116, 66, 192, 0.14), transparent 78%),
-    radial-gradient(ellipse 48% 48% at 0% 100%, rgba(47, 99, 171, 0.09), transparent 80%),
-    #08080D;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20200%22%3E%3Cg%20%20fill%3D%22none%22%20stroke%3D%22%23957199%22%20stroke-opacity%3D%22.24%22%20stroke-width%3D%22.7%22%3E%3Cpath%20d%3D%22M0%200L198%2018M0%200L181%2064M0%200L145%20119M0%200L101%20162M0%200L49%20190M0%200L9%20200%22%2F%3E%3Cpath%20d%3D%22M38%203Q30%209%2035%2012Q25%2016%2028%2023Q17%2026%2020%2032Q9%2033%2010%2038Q2%2036%202%2040M76%207Q61%2020%2069%2025Q50%2034%2055%2046Q34%2053%2039%2065Q19%2067%2019%2076Q4%2073%204%2080M114%2010Q91%2028%20104%2037Q73%2050%2083%2069Q50%2078%2059%2098Q26%20101%2029%20114Q5%20111%205%20120M152%2014Q122%2036%20138%2049Q98%2066%20111%2092Q66%20104%2078%20130Q35%20135%2038%20152Q7%20148%207%20160M190%2017Q153%2045%20173%2061Q122%2083%20138%20114Q84%20128%2098%20163Q44%20169%2048%20190Q10%20183%209%20200%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20200%22%3E%3Cg%20transform%3D%22translate(200%200)%20scale(-1%201)%22%20fill%3D%22none%22%20stroke%3D%22%23957199%22%20stroke-opacity%3D%22.24%22%20stroke-width%3D%22.7%22%3E%3Cpath%20d%3D%22M0%200L198%2018M0%200L181%2064M0%200L145%20119M0%200L101%20162M0%200L49%20190M0%200L9%20200%22%2F%3E%3Cpath%20d%3D%22M38%203Q30%209%2035%2012Q25%2016%2028%2023Q17%2026%2020%2032Q9%2033%2010%2038Q2%2036%202%2040M76%207Q61%2020%2069%2025Q50%2034%2055%2046Q34%2053%2039%2065Q19%2067%2019%2076Q4%2073%204%2080M114%2010Q91%2028%20104%2037Q73%2050%2083%2069Q50%2078%2059%2098Q26%20101%2029%20114Q5%20111%205%20120M152%2014Q122%2036%20138%2049Q98%2066%20111%2092Q66%20104%2078%20130Q35%20135%2038%20152Q7%20148%207%20160M190%2017Q153%2045%20173%2061Q122%2083%20138%20114Q84%20128%2098%20163Q44%20169%2048%20190Q10%20183%209%20200%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%2048%22%3E%3Cpath%20fill%3D%22%23030207%22%20stroke%3D%22%23755579%22%20stroke-opacity%3D%22.18%22%20d%3D%22M50%2024l-5-10%201%209-7-4C25%205%209%207%202%202c5%208%206%2013%205%2019%209-4%2015-2%2018%207%208-2%2013%200%2019%207l6%2010%206-10c6-7%2011-9%2019-7%203-9%209-11%2018-7-1-6%200-11%205-19-7%205-23%203-37%2017l-7%204%201-9z%22%2F%3E%3C%2Fsvg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%2048%22%3E%3Cpath%20fill%3D%22%23030207%22%20stroke%3D%22%23755579%22%20stroke-opacity%3D%22.18%22%20d%3D%22M50%2024l-5-10%201%209-7-4C25%205%209%207%202%202c5%208%206%2013%205%2019%209-4%2015-2%2018%207%208-2%2013%200%2019%207l6%2010%206-10c6-7%2011-9%2019-7%203-9%209-11%2018-7-1-6%200-11%205-19-7%205-23%203-37%2017l-7%204%201-9z%22%2F%3E%3C%2Fsvg%3E"),
+    radial-gradient(ellipse 43% 53% at 78% 47%, rgba(173, 66, 17, .22), transparent 78%),
+    radial-gradient(ellipse 32% 75% at 0% 65%, rgba(102, 51, 151, .13), transparent 85%),
+    radial-gradient(ellipse 26% 65% at 100% 65%, rgba(102, 51, 151, .11), transparent 85%);
+  background-size: 180px 180px, 180px 180px, 45px 24px, 36px 20px, auto, auto, auto;
+  background-position: top left, top right, 57% 19%, 93% 24%, center, center, center;
+  background-repeat: no-repeat;
+  background-color: #08080D;
 }
 
 .zentux-background::after {
@@ -377,8 +381,8 @@ body {
 
 .zentux-product-preview {
   isolation: isolate;
-  border-color: rgba(166, 158, 190, 0.12);
-  background: radial-gradient(ellipse at 62% 45%, rgba(122, 72, 194, 0.065), transparent 75%), rgba(8, 8, 13, 0.35);
+  border-color: rgba(204, 105, 48, 0.28);
+  background: radial-gradient(ellipse at 62% 45%, rgba(174, 67, 18, 0.12), transparent 75%), rgba(8, 8, 13, 0.45);
   box-shadow: 0 22px 65px rgba(0, 0, 0, 0.22);
 }
 
@@ -412,13 +416,77 @@ body {
 
 @media (max-width: 767px) {
   .zentux-background {
-    background:
-      radial-gradient(ellipse 85% 46% at 90% 68%, rgba(116, 66, 192, 0.11), transparent 80%),
-      radial-gradient(ellipse 65% 35% at 0% 100%, rgba(47, 99, 171, 0.065), transparent 80%),
-      #08080D;
+    background-size: 95px 95px, 95px 95px, 30px 17px, 24px 14px, auto, auto, auto;
+    background-position: top left, top right, 84% 15%, 12% 88%, center, center, center;
   }
 
   .zentux-product-preview::before {
     background-size: 36px 36px;
   }
+}
+
+.zentux-background::before {
+  content: "";
+  position: absolute;
+  inset: auto -5% -6% -5%;
+  height: 32%;
+  background: radial-gradient(ellipse 65% 70% at 15% 80%, rgba(112, 69, 153, .15), transparent 75%), radial-gradient(ellipse 60% 55% at 85% 75%, rgba(155, 80, 38, .09), transparent 75%);
+  animation: zentuxFogDrift 56s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.zentux-product-preview::after {
+  content: "";
+  position: absolute;
+  bottom: 12px;
+  right: 14px;
+  width: 54px;
+  height: 58px;
+  z-index: 20;
+  background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2090%2095%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22p%22%3E%3Cstop%20stop-color%3D%22%23d76b1c%22%2F%3E%3Cstop%20offset%3D%22.75%22%20stop-color%3D%22%238c310d%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2342190d%22%2F%3E%3C%2FradialGradient%3E%3CradialGradient%20id%3D%22l%22%3E%3Cstop%20stop-color%3D%22%23ffe7a3%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23ff780c%22%2F%3E%3C%2FradialGradient%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M42%2025Q36%2011%2049%206l6%204Q42%2016%2048%2025%22%20fill%3D%22%23483629%22%2F%3E%3Cellipse%20cx%3D%2245%22%20cy%3D%2258%22%20rx%3D%2240%22%20ry%3D%2233%22%20fill%3D%22url(%23p)%22%2F%3E%3Cpath%20d%3D%22M33%2028Q18%2056%2033%2087M45%2026Q34%2057%2045%2089M57%2028Q72%2056%2057%2087%22%20fill%3D%22none%22%20stroke%3D%22%2355220e%22%20stroke-opacity%3D%22.5%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M20%2047l17%207-12%207zM70%2047l-17%207%2012%207zM45%2058l-5%2010h10zM21%2070l12%204%204-3%208%207%208-7%204%203%2012-4-9%2013-8-1-7%204-7-4-8%201z%22%20fill%3D%22url(%23l)%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
+  filter: drop-shadow(0 0 8px rgba(244, 102, 22, .28));
+  pointer-events: none;
+}
+
+.zentux-halloween-title {
+  background-image: linear-gradient(100deg, #ef982e 5%, #e98459 32%, #c25dea 70%, #9471f6);
+}
+
+.zentux-site .zentux-primary {
+  background-image: linear-gradient(110deg, #b64110, #97331c);
+  box-shadow: 0 0 24px rgba(206, 85, 22, .2);
+}
+
+.zentux-site .zentux-primary:hover {
+  background-image: linear-gradient(110deg, #c14b15, #8d3b78);
+  box-shadow: 0 0 28px rgba(164, 83, 216, .22);
+}
+
+.zentux-site .zentux-nav-active {
+  border-color: rgba(230, 132, 53, .65);
+  background: rgba(57, 25, 14, .45);
+  box-shadow: 0 0 18px rgba(210, 97, 28, .16);
+}
+
+.zentux-site :where(article, .zentux-surface):hover {
+  border-color: rgba(188, 107, 66, .35);
+}
+
+.zentux-site .zentux-primary:focus-visible {
+  outline: 2px solid #eaa65b;
+  outline-offset: 4px;
+}
+
+@keyframes zentuxFogDrift {
+  from { transform: translate3d(-2%, 0, 0); opacity: .7; }
+  to { transform: translate3d(2%, -3%, 0); opacity: 1; }
+}
+
+@media (max-width: 767px) {
+  .zentux-product-preview::after { width: 30px; height: 34px; right: 5px; bottom: 6px; }
+  .zentux-background::before { height: 23%; opacity: .65; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zentux-background::before { animation: none; transform: none; opacity: .75; }
 }
