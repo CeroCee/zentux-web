@@ -699,7 +699,7 @@ export default function Home() {
                 onClick={() => selectTab(tab)}
                 className={`rounded-full px-4 py-2 transition lg:px-5 ${
                   activeTab === tab
-                    ? "border border-[#a855f7]/70 bg-[#160821]/80 text-white shadow-[0_0_24px_rgba(168,85,247,0.28)]"
+                    ? "zentux-nav-active border border-[#a855f7]/70 bg-[#160821]/80 text-white shadow-[0_0_24px_rgba(168,85,247,0.28)]"
                     : "hover:bg-white/10 hover:text-white"
                 }`}
               >
@@ -712,7 +712,7 @@ export default function Home() {
                 onClick={() => setMoreOpen((open) => !open)}
                 className={`rounded-full px-4 py-2 transition lg:px-5 ${
                   moreTabs.includes(activeTab)
-                    ? "border border-[#a855f7]/70 bg-[#160821]/80 text-white shadow-[0_0_24px_rgba(168,85,247,0.28)]"
+                    ? "zentux-nav-active border border-[#a855f7]/70 bg-[#160821]/80 text-white shadow-[0_0_24px_rgba(168,85,247,0.28)]"
                     : "hover:bg-white/10 hover:text-white"
                 }`}
               >
@@ -981,7 +981,7 @@ function HomePanel({
             className="text-5xl font-black leading-[0.95] tracking-tight text-white sm:text-7xl lg:text-8xl"
           >
             {labels.homeTitleA}
-            <span className="block bg-gradient-to-r from-[#d85cff] to-[#7c6bff] bg-clip-text text-transparent">
+            <span className="zentux-halloween-title block bg-gradient-to-r from-[#d85cff] to-[#7c6bff] bg-clip-text text-transparent">
               {labels.homeTitleB}
             </span>
           </h1>
@@ -1004,7 +1004,7 @@ function HomePanel({
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
             <button
               onClick={() => setActiveTab("Products")}
-              className="rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-8 py-4 text-sm font-black text-white shadow-[0_0_45px_rgba(168,85,247,0.35)] transition hover:scale-[1.02]"
+              className="zentux-primary rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-8 py-4 text-sm font-black text-white shadow-[0_0_45px_rgba(168,85,247,0.35)] transition hover:scale-[1.02]"
             >
               {labels.browseProducts}
             </button>
@@ -1724,7 +1724,7 @@ function ProductsPanel({
             <AuthenticatedCheckoutLink
               href={checkoutUrl}
               planId={selectedPlan.id}
-              className="mt-3 inline-flex w-full flex-col items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-[#7c3aed] via-[#b336ff] to-[#d46bff] px-6 py-4 text-center text-sm font-black uppercase tracking-wide text-white shadow-[0_0_45px_rgba(168,85,247,0.36)] transition hover:scale-[1.01]"
+              className="zentux-primary mt-3 inline-flex w-full flex-col items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-[#7c3aed] via-[#b336ff] to-[#d46bff] px-6 py-4 text-center text-sm font-black uppercase tracking-wide text-white shadow-[0_0_45px_rgba(168,85,247,0.36)] transition hover:scale-[1.01]"
             >
               <span>♛</span>
               Desbloquear Zentux Complete
@@ -2472,7 +2472,7 @@ function ReviewsPanel() {
                   href={video.videoUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-4 py-3 text-xs font-black text-white shadow-[0_0_34px_rgba(168,85,247,0.22)] transition hover:scale-[1.02]"
+                  className="zentux-primary rounded-xl bg-gradient-to-r from-[#c75cff] to-[#806bff] px-4 py-3 text-xs font-black text-white shadow-[0_0_34px_rgba(168,85,247,0.22)] transition hover:scale-[1.02]"
                 >
                   Watch Full Video
                 </a>
