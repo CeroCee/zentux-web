@@ -521,6 +521,7 @@ export default function Home() {
     const timer = window.setTimeout(() => {
       const search = new URLSearchParams(window.location.search);
       if (search.get("tab") === "rewards") setActiveTab("Rewards");
+      if (search.get("tab") === "profile") setActiveTab("Profile");
     }, 0);
     return () => window.clearTimeout(timer);
   }, []);
