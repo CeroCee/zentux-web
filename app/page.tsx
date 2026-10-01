@@ -667,7 +667,7 @@ export default function Home() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#05010b] text-white">
+    <main className="zentux-site relative min-h-screen overflow-hidden bg-[#08080D] text-white">
       <SiteBackground />
 
       <header className="fixed inset-x-0 top-0 z-50 px-4 py-4">
@@ -1103,9 +1103,7 @@ function SeoContentSection({ setActiveTab }: { setActiveTab: (tab: Tab) => void 
 
 function ProductPreviewCluster() {
   return (
-    <div className="relative mx-auto flex min-h-[420px] w-full items-center justify-center overflow-hidden rounded-[32px] border border-white/10 bg-black/45 p-5 shadow-[0_0_100px_rgba(168,85,247,0.16)] backdrop-blur-xl lg:min-h-[560px]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(168,85,247,0.26),transparent_50%)]" />
-      <div className="pointer-events-none absolute inset-x-10 bottom-0 h-28 rounded-full bg-[#a855f7]/25 blur-3xl" />
+    <div className="zentux-product-preview relative mx-auto flex min-h-[420px] w-full items-center justify-center overflow-hidden rounded-[32px] border border-white/10 bg-black/25 p-5 lg:min-h-[560px]">
       <video
         className="pointer-events-none relative z-10 h-[380px] max-h-[72vh] w-auto select-none rounded-[24px] object-contain shadow-[0_0_70px_rgba(168,85,247,0.22)] sm:h-[440px] lg:h-[500px]"
         src="/videos/zentux-optimizer-showcase.mp4"
@@ -1119,7 +1117,6 @@ function ProductPreviewCluster() {
         aria-label="Zentux Optimizer product showcase"
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-black/5 via-transparent to-black/25" />
-      <div className="pointer-events-none absolute inset-0 rounded-[32px] ring-1 ring-inset ring-[#c75cff]/15" />
     </div>
   );
 }
@@ -1574,7 +1571,7 @@ function ProductsPanel({
 
   return (
     <section className="py-10 text-white">
-      <div className="overflow-hidden rounded-[2rem] border border-[#a855f7]/55 bg-[#05030a]/80 shadow-[0_0_80px_rgba(168,85,247,0.16)]">
+      <div className="zentux-surface overflow-hidden rounded-[2rem] border border-[#a855f7]/55 bg-[#05030a]/80 shadow-[0_0_80px_rgba(168,85,247,0.16)]">
         <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.02fr_1fr] lg:p-10">
           <div className="relative min-h-[390px] overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_50%_45%,rgba(168,85,247,0.32),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0))]">
             <div className="absolute inset-x-8 bottom-8 h-20 rounded-[999px] bg-[#9d4edd]/30 blur-[38px]" />
@@ -2575,14 +2572,7 @@ function FaqPanel() {
 
 function SiteBackground() {
   return (
-    <div className="pointer-events-none fixed inset-0 z-0">
-      <div className="absolute inset-0 bg-[#05010b]" />
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:64px_64px] opacity-35" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_20%,rgba(168,85,247,0.25),transparent_32%),radial-gradient(circle_at_18%_45%,rgba(32,232,242,0.09),transparent_28%),linear-gradient(90deg,rgba(0,0,0,0.25),rgba(168,85,247,0.12),rgba(0,0,0,0.34))]" />
-      <div className="zentux-snow-layer zentux-snow-slow absolute -inset-y-full inset-x-0 opacity-45" />
-      <div className="zentux-snow-layer zentux-snow-medium absolute -inset-y-full inset-x-0 opacity-35" />
-      <div className="zentux-snow-layer zentux-snow-fast absolute -inset-y-full inset-x-0 opacity-25" />
-    </div>
+    <div aria-hidden="true" className="zentux-background pointer-events-none fixed inset-0 z-0" />
   );
 }
 
