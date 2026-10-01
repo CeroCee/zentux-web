@@ -4,6 +4,7 @@ import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
 import { FormEvent, useState } from "react";
 import { useAccount } from "./AccountContext";
+import { SubscriptionPanel } from "./SubscriptionPanel";
 
 export function ProfilePanel() {
   const { data: session, status } = useSession();
@@ -168,6 +169,7 @@ export function ProfilePanel() {
               Tu cuenta de Discord está conectada y protegida.
             </p>
           </div>
+          <SubscriptionPanel />
           <h3 className="mt-6 font-black">Resumen de actividad</h3>
           <div className="mt-4 grid grid-cols-2 gap-3">
             <Stat value={license ? "1" : "0"} label="Licencia activa" />
