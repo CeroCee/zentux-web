@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAccount } from "./AccountContext";
 
 type Subscription = {
   available: boolean;
@@ -11,6 +12,8 @@ type Subscription = {
 };
 
 export function SubscriptionPanel() {
+  const { profile } = useAccount();
+  const license = profile?.license;
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
   const [opening, setOpening] = useState(false);
@@ -22,7 +25,7 @@ export function SubscriptionPanel() {
       try {
         const response = await fetch("/api/account/subscription", { cache: "no-store", signal: controller.signal });
         const data = await response.json();
-        if (!response.ok) throw new Error("No se pudo consultar tu suscripción. Intenta de nuevo más tarde.");
+        if (!response.ok) throw new Error("No se pudo comprobar la renovación en Stripe. Intenta de nuevo más tarde.");
         setSubscription(data);
       } catch (cause) {
         if (!controller.signal.aborted) setError(cause instanceof Error ? cause.message : "No se pudo consultar tu suscripción.");
@@ -51,14 +54,16 @@ export function SubscriptionPanel() {
     }
   }
 
-  const date = subscription?.accessUntil
-    ? new Date(subscription.accessUntil).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })
+  const accessUntil = subscription?.accessUntil || license?.paidUntil;
+  const date = accessUntil
+    ? new Date(accessUntil).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })
     : null;
+  const paypalOneTime = Boolean(license?.paypalOrderId && !license.paypalSubscriptionId && !license.stripeSubscriptionId);
 
   return (
     <section aria-labelledby="subscription-title" className="mt-6 rounded-2xl border border-[#a855f7]/30 bg-[#12071f]/70 p-5">
-      <h3 id="subscription-title" className="font-black">Suscripción</h3>
-      {loading ? <p role="status" className="mt-3 text-sm text-[#aaa0b8]">Consultando tu suscripción…</p> : subscription?.available ? (
+      <h3 id="subscription-title" className="font-black">Licencia y renovación</h3>
+      {loading ? <p role="status" className="mt-3 text-sm text-[#aaa0b8]">Comprobando la renovación…</p> : subscription?.available ? (
         <>
           <p className="mt-3 text-sm font-bold text-[#c4b5fd]">
             {subscription.cancelScheduled ? "Cancelación programada" : subscription.status === "canceled" ? "Suscripción cancelada" : "Suscripción de Stripe vinculada"}
@@ -67,7 +72,7 @@ export function SubscriptionPanel() {
             {subscription.cancelScheduled
               ? `Tu suscripción no se renovará.${date ? ` Podrás seguir usando el producto hasta el ${date}.` : ""}`
               : subscription.canCancel
-                ? "Puedes cancelar la renovación. Confirmarás la cancelación en Stripe y conservarás el acceso hasta terminar el período pagado."
+                ? "Stripe renueva y cobra automáticamente cada período hasta que canceles. Confirmarás la cancelación en Stripe y conservarás el acceso hasta terminar el período pagado."
                 : "Esta suscripción no permite programar una cancelación desde aquí. Si necesitas ayuda, contacta soporte."}
           </p>
           {subscription.canCancel && <button type="button" onClick={() => void openCancellation()} disabled={opening}
@@ -75,7 +80,19 @@ export function SubscriptionPanel() {
             {opening ? "Abriendo Stripe…" : "Cancelar suscripción"}
           </button>}
         </>
-      ) : subscription && <p className="mt-3 text-sm text-[#aaa0b8]">No tienes una suscripción de Stripe vinculada a esta cuenta de Discord.</p>}
+      ) : subscription && (
+        <div className="mt-3 text-sm leading-6 text-[#aaa0b8]">
+          {paypalOneTime ? <>
+            <p className="font-bold text-[#c4b5fd]">Pago único con PayPal</p>
+            <p className="mt-2">Sin renovación automática ni cobros futuros por esta compra. No necesitas cancelar una suscripción.</p>
+            {date && <p className="mt-2">Vencimiento de tu licencia: {date}. Para ampliar el acceso, puedes realizar otra compra.</p>}
+          </> : <>
+            <p>No encontramos una suscripción recurrente de Stripe vinculada a esta cuenta.</p>
+            {license?.active && date && <p className="mt-2">Tu licencia está activa hasta el {date}.</p>}
+            <p className="mt-2">Stripe: suscripción con renovación automática. PayPal: pago único por el período elegido. Si tienes cobros recurrentes que no aparecen aquí, contacta soporte.</p>
+          </>}
+        </div>
+      )}
       {error && <p role="alert" className="mt-3 text-sm text-[#fda4af]">{error}</p>}
     </section>
   );
