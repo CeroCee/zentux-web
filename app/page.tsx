@@ -118,7 +118,7 @@ const copy = {
     oneLicense: "Una licencia desbloquea los productos premium Zentux compatibles.",
     included: "Incluido",
     modalLicenseText:
-      "Tu suscripcion activa funciona como un paquete completo de Zentux. La misma licencia puede validar Zentux Optimizer Pro, Zentux v7 y Zentux Macro mientras la suscripcion siga activa.",
+      "Una licencia activa desbloquea el paquete completo: Zentux Optimizer Pro, Zentux v7 y Zentux Macro. Stripe ofrece suscripción con renovación automática; PayPal, pago único por el período elegido.",
     delivery: "Entrega",
     validation: "Validacion",
     downloads: "Descargas",
@@ -179,7 +179,7 @@ const copy = {
     oneLicense: "One license unlocks supported premium Zentux products.",
     included: "Included",
     modalLicenseText:
-      "Your active subscription works as a full Zentux package. The same license can validate supported apps like Zentux Optimizer Pro, Zentux v7, and Zentux Macro, as long as the subscription is active.",
+      "One active license unlocks the full package: Zentux Optimizer Pro, Zentux v7, and Zentux Macro. Stripe subscriptions renew automatically; PayPal is a one-time payment for the selected period.",
     delivery: "Delivery",
     validation: "Validation",
     downloads: "Downloads",
@@ -1039,7 +1039,7 @@ function HomePanel({
             <HomeTrustCard
               value="Secure"
               title="Payments"
-              text="Stripe checkout with subscription billing and buyer protection."
+              text="Stripe subscriptions renew automatically. PayPal purchases are one-time payments."
             />
           </div>
         </div>
@@ -1196,11 +1196,12 @@ function LegalFooter({
             Payments
           </h3>
           <p className="mt-4 text-sm font-semibold leading-6 text-[#91879f]">
-            Secure subscription checkout is handled by Stripe. Card details are
-            processed by Stripe and are not stored by Zentux.
+            Stripe subscriptions renew automatically until canceled. PayPal purchases
+            are one-time payments with no automatic renewal. Payment credentials
+            are handled by the payment provider and are not stored by Zentux.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
-            {["Stripe", "Visa", "Mastercard", "Apple Pay"].map((item) => (
+            {["Stripe", "PayPal", "Visa", "Mastercard", "Apple Pay"].map((item) => (
               <span
                 key={item}
                 className="rounded-md border border-white/10 bg-white/90 px-3 py-1.5 text-xs font-black text-black"
@@ -1313,10 +1314,12 @@ function LegalSection({
 function TermsOfServiceText() {
   return (
     <>
-      <LegalSection title="1. Access and subscription">
+      <LegalSection title="1. License access">
         <p>
-          Zentux products require an active license subscription. If a
-          license is expired, invalid, refunded, canceled, or cannot be verified
+          Zentux premium products require an active license, obtained through a
+          recurring Stripe subscription or a one-time PayPal purchase. Canceling
+          a Stripe renewal preserves access until the paid period ends. If a
+          license is expired, invalid, refunded, or cannot be verified
           by the license server, Pro features in supported Zentux apps may be
           locked until the license is active again.
         </p>
@@ -1324,8 +1327,8 @@ function TermsOfServiceText() {
 
       <LegalSection title="2. License key use">
         <p>
-          Each license key is connected to the subscription created through
-          Stripe. You are responsible for keeping your license private. Sharing,
+          Each license key is connected to your license access, whether purchased
+          through Stripe or PayPal. You are responsible for keeping your license private. Sharing,
           reselling, leaking, or abusing license keys can lead to access being
           restricted.
         </p>
@@ -1343,10 +1346,13 @@ function TermsOfServiceText() {
 
       <LegalSection title="4. Payments, renewals, and cancellation">
         <p>
-          Payments and recurring billing are processed by Stripe. Subscription
-          pricing, renewal timing, taxes, and payment method details are shown
-          during checkout. You can contact support for help with cancellation or
-          billing questions.
+          Stripe processes recurring subscriptions, which renew automatically until
+          canceled. Use My Profile → License and renewal to open the Stripe
+          cancellation portal. Access continues until the paid period ends.
+          PayPal processes one-time payments for the selected access period,
+          with no automatic renewal and no subscription to cancel. Pricing,
+          taxes, and payment details are shown during checkout. Contact support
+          if a recurring Stripe subscription does not appear in your profile.
         </p>
       </LegalSection>
 
@@ -1383,7 +1389,7 @@ function PrivacyPolicyText() {
 
       <LegalSection title="2. Payments">
         <p>
-          Payment information is handled by Stripe. Zentux does not store your
+          Payment information is handled by Stripe or PayPal. Zentux does not store your
           full card number, bank details, or payment credentials.
         </p>
       </LegalSection>
@@ -1398,15 +1404,15 @@ function PrivacyPolicyText() {
 
       <LegalSection title="4. How information is used">
         <p>
-          Information is used to validate subscriptions, deliver licenses,
+          Information is used to validate license access, deliver licenses,
           provide support, protect against abuse, improve reliability, and keep
-          the app locked when a subscription is not active.
+          premium features locked when the license is not active.
         </p>
       </LegalSection>
 
       <LegalSection title="5. Service providers">
         <p>
-          Zentux may use third-party services such as Stripe for payments,
+          Zentux may use third-party services such as Stripe and PayPal for payments,
           Render for server hosting, Resend for email delivery, GitHub for
           downloads, and Discord or support pages for customer help.
         </p>
@@ -1435,9 +1441,11 @@ function NoRefundPolicyText() {
 
       <LegalSection title="2. Subscription renewals">
         <p>
-          Subscription payments that have already been processed are not
-          refundable. You may cancel your subscription to stop future renewals,
-          but cancellation does not refund previous charges.
+          Stripe subscription payments that have already been processed are not
+          refundable. You may cancel future renewals in My Profile; cancellation
+          does not refund previous charges, and access continues until the paid
+          period ends. PayPal purchases are one-time payments with no automatic
+          renewal, so there is no subscription to cancel.
         </p>
       </LegalSection>
 
@@ -1630,7 +1638,7 @@ function ProductsPanel({
               Una licencia. Todos los productos premium.
             </p>
             <p className="mt-2 text-sm font-bold text-[#bfb5c9]">
-              Una sola suscripcion desbloquea las 3 aplicaciones premium.
+              Una sola licencia activa desbloquea las 3 aplicaciones premium.
             </p>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -1727,11 +1735,15 @@ function ProductsPanel({
               className="zentux-primary mt-3 inline-flex w-full flex-col items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-[#7c3aed] via-[#b336ff] to-[#d46bff] px-6 py-4 text-center text-sm font-black uppercase tracking-wide text-white shadow-[0_0_45px_rgba(168,85,247,0.36)] transition hover:scale-[1.01]"
             >
               <span>♛</span>
-              Desbloquear Zentux Complete
+              Suscribirse con Stripe
               <span className="text-[11px] font-black tracking-normal text-white/85">
                 {selectedPlan.price} / {selectedPlan.label}
               </span>
             </AuthenticatedCheckoutLink>
+
+            <p className="mt-2 text-center text-xs leading-5 text-[#bfb5c9]">
+              Stripe: cobro cada {selectedPlan.label.toLowerCase()} y renovación automática. Puedes cancelar en Mi Perfil.
+            </p>
 
             <AuthenticatedCheckoutLink
               href="#paypal"
@@ -1742,9 +1754,12 @@ function ProductsPanel({
               <span className="rounded-md bg-[#003087] px-2 py-1 text-white">PayPal</span>
               Pagar una vez con PayPal
             </AuthenticatedCheckoutLink>
+            <p className="mt-2 text-center text-xs leading-5 text-[#bfb5c9]">
+              PayPal: {selectedPlan.price} por {selectedPlan.label.toLowerCase()}. Sin renovación automática.
+            </p>
 
             <p className="mt-5 text-center text-sm font-semibold text-[#bfb5c9]">
-              🔒 Tu suscripcion activa funciona como un paquete completo de Zentux.
+              🔒 Ambos métodos desbloquean el mismo paquete durante el período elegido.
             </p>
           </div>
         </div>
@@ -1770,7 +1785,7 @@ function ProductsPanel({
       </div>
 
       <p className="mt-5 text-center text-sm font-semibold text-[#a99db6]">
-        ⓘ Estos productos solo funcionan con una suscripcion activa.
+        ⓘ Estos productos necesitan una licencia activa, comprada con Stripe o PayPal.
       </p>
 
       <div className="mt-6 text-center">
@@ -2525,13 +2540,17 @@ function FaqPanel() {
       <PanelTitle
         label="FAQ"
         title="Before you buy."
-        text="Quick answers about subscription, license delivery, and app access."
+        text="Quick answers about payments, renewals, license delivery, and app access."
       />
 
       <div className="mt-10 grid gap-4 lg:grid-cols-2">
         <FaqItem
           q="💳 Is Zentux free?"
-          a="No. Zentux premium apps are subscription based. One active license unlocks supported Zentux products included in the package. Zentux Cursor and Zentux v6 are free."
+          a="Premium apps require an active license. Choose a recurring Stripe subscription or a one-time PayPal payment for the selected period. Both unlock the same premium package. Zentux Cursor and Zentux v6 are free."
+        />
+        <FaqItem
+          q="🔁 Will I be charged again?"
+          a="Stripe renews and charges automatically each billing period until you cancel through My Profile → License and renewal. PayPal is a one-time payment: access expires at the end of the selected period, with no automatic charge."
         />
         <FaqItem
           q="📩 How do I receive my license?"
