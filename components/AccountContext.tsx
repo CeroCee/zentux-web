@@ -16,6 +16,9 @@ export type AccountProfile = {
     status: string;
     paidUntil: string | null;
     source?: string;
+    stripeSubscriptionId?: string | null;
+    paypalOrderId?: string | null;
+    paypalSubscriptionId?: string | null;
   };
   activity: Array<Record<string, unknown>>;
   purchases: number;
