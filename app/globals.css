@@ -13,6 +13,13 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Compact desktop density, while retaining readable mobile sizes and browser zoom. */
+@media screen and (min-width: 1024px) {
+  html {
+    zoom: 0.75;
+  }
+}
+
 body {
   margin: 0;
   background: var(--background);
