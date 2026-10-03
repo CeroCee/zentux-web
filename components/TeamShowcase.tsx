@@ -50,21 +50,12 @@ const teamGroups: { title: string; members: TeamMember[] }[] = [
         ],
       },
       {
-        name: "TmozzCee",
-        role: "Zentux Director",
-        image: "/team-tmozz.png",
-        accent: "#ff335f",
-        bio:
-          "Helps direct the future of Zentux through product decisions, team coordination, and release planning. TmozzCee keeps the project grounded in quality, trust, and a sharper experience for every user.",
-        socials: [],
-      },
-      {
-        name: "PoloCee",
+        name: "BeltranCee",
         role: "Zentux Director",
         image: "/team-polocee.png",
         accent: "#d85cff",
         bio:
-          "Guides Zentux with leadership focused on structure, trust, and long-term growth. As a director, PoloCee helps shape priorities, support team decisions, and keep the brand moving with a professional standard.",
+          "Guides Zentux with leadership focused on structure, trust, and long-term growth. As a director, BeltranCee helps shape priorities, support team decisions, and keep the brand moving with a professional standard.",
         socials: [
           {
             label: "Roblox",
@@ -76,60 +67,15 @@ const teamGroups: { title: string; members: TeamMember[] }[] = [
     ],
   },
   {
-    title: "Design & Community",
-    members: [
-      {
-        name: "KJ_CEE",
-        role: "UI/UX Designer & Community Manager",
-        image: "/team-kj-cee.png",
-        accent: "#2f7bff",
-        bio:
-          "Shapes the visual feel and community experience of Zentux. KJ_CEE helps make the brand easier to use, cleaner to understand, and more connected to the people who support the project.",
-        socials: [
-          {
-            label: "TikTok",
-            href: "https://www.tiktok.com/@kjcee6?_r=1&_t=ZP-97HB5BtnFJ1",
-            icon: "/social-tt.png",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "PR & Partnerships",
-    members: [
-      {
-        name: "ZazaCee",
-        role: "PR & Partnerships",
-        image: "/team-zazacee.png",
-        accent: "#f5d0ff",
-        bio:
-          "Builds relationships around Zentux through outreach, creator connections, and partnership opportunities. PR & Partnerships keeps the brand visible, trusted, and connected with communities that can help Zentux grow.",
-        socials: [
-          {
-            label: "Instagram",
-            href: "https://www.instagram.com/z_r3ynoso?igsh=NTg2YTh1MDlhbHlw&utm_source=qr",
-            icon: "/social-ig.png",
-          },
-          {
-            label: "Roblox",
-            href: "https://www.roblox.com/es/users/10790940793/profile?friendshipSourceType=ProfileShare",
-            icon: "/social-roblox.png",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Staff",
+    title: "Moderation",
     members: [
       {
         name: "DorixmCee",
-        role: "Staff",
-        image: "/team-dorixm-durxngo.png",
+        role: "𝐙𝐞𝐧𝐭𝐮𝐱 | 𝐇𝐞𝐚𝐝 𝐌𝐨𝐝𝐞𝐫𝐚𝐭𝐨𝐫",
+        image: "/team-dorixm-head-moderator.png",
         accent: "#ff2f76",
         bio:
-          "Supports Zentux from the front line by helping keep the community organized, respectful, and informed. As Staff, DorixmCee helps users feel guided, watches for issues, and keeps the team connected to real community feedback.",
+          "Leads the Zentux moderation team, helps moderators support customers, and keeps the community organized, respectful, and informed. As Head Moderator, DorixmCee coordinates moderation and brings community feedback to the team.",
         socials: [
           {
             label: "TikTok",
