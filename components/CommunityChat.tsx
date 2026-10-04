@@ -5,6 +5,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./community-chat.css";
 import CommunityProfile, { ProfileSelection } from "./CommunityProfile";
+import CommunityRoleBadge from "./CommunityRoleBadge";
 
 type Message = { id: string; userId: string; name: string; avatar: string | null; role: "admin" | "moderator" | null; content: string; createdAt: string };
 type Snapshot = { revision: string; messages: Message[]; eventsUrl?: string };
@@ -192,7 +193,7 @@ export default function CommunityChat() {
           <button className="community-chat-avatar-button" data-profile-user={message.userId} aria-label={`Ver perfil de ${message.name}`} aria-haspopup="dialog" onPointerDown={event => { event.preventDefault(); event.currentTarget.focus({ preventScroll: true }); }} onClick={event => setSelectedProfile({ userId: message.userId, anchor: event.currentTarget, key: crypto.randomUUID() })}>{message.avatar ? <Image className="community-chat-avatar" src={message.avatar} alt="" width={36} height={36} unoptimized onError={event => { event.currentTarget.src = "/icon-48.png"; }} /> : <Image className="community-chat-avatar" src="/icon-48.png" alt="" width={36} height={36} />}</button>
           <div className="community-chat-message-body"><div className="community-chat-message-meta">
             <button className="community-chat-name" data-profile-user={message.userId} aria-label={`Ver perfil de ${message.name} por nombre`} aria-haspopup="dialog" onPointerDown={event => { event.preventDefault(); event.currentTarget.focus({ preventScroll: true }); }} onClick={event => setSelectedProfile({ userId: message.userId, anchor: event.currentTarget, key: crypto.randomUUID() })}>{message.name}</button>
-            {message.role && <span className="community-chat-badge" title={message.role === "admin" ? "Administrador autorizado" : "Moderador autorizado"}>{message.role === "admin" ? "♛" : "◆"}</span>}
+            <CommunityRoleBadge userId={message.userId} />
             <time dateTime={message.createdAt} title={new Date(message.createdAt).toLocaleString("es")}>{time(message.createdAt)}</time>
             {access.canModerate && <button className="community-chat-more" onClick={() => setTarget(target?.id === message.id ? null : message)} aria-label={`Moderar mensaje de ${message.name}`}>⋯</button>}
           </div><p>{message.content}</p>
