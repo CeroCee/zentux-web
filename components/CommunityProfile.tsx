@@ -4,22 +4,22 @@ import Image from "next/image";
 import { createPortal } from "react-dom";
 import { CSSProperties, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./community-profile.css";
+import { loadCommunityProfile, PublicCommunityProfile } from './community-public-profile';
+import { RoleBadgeIcon } from './CommunityRoleBadge';
 
-type Profile = { userId: string; name: string; username: string; avatar: string | null; banner: string | null; memberSince: string; staffRole: "admin" | "moderator" | null; roles: { name: string; color: string }[] };
-const cache = new Map<string, { profile: Profile; until: number }>();
 export type ProfileSelection = { userId: string; anchor: HTMLButtonElement; key: string };
 
 export default function CommunityProfile({ selection, onClose }: { selection: ProfileSelection; onClose: () => void }) {
   const dialog = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<PublicCommunityProfile | null>(null);
   const [error, setError] = useState("");
   const [attempt, setAttempt] = useState(0);
   const [closing, setClosing] = useState(false);
   const [position, setPosition] = useState<CSSProperties>({ visibility: "hidden" });
   const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
+  useLayoutEffect(() => { onCloseRef.current = onClose; }, [onClose]);
 
   const close = useCallback((restoreFocus = true) => {
     if (timer.current) return;
@@ -29,24 +29,16 @@ export default function CommunityProfile({ selection, onClose }: { selection: Pr
   }, [selection.anchor]);
 
   useEffect(() => {
-    const controller = new AbortController();
     let active = true;
-    const cached = cache.get(selection.userId);
-    if (!attempt && cached && cached.until > Date.now()) { setProfile(cached.profile); return; }
     setProfile(null); setError("");
     void (async () => {
       try {
-        const response = await fetch(`/api/community-chat/profiles/${selection.userId}`, { cache: "no-store", signal: controller.signal });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "No se pudo cargar el perfil.");
-        if (data.userId !== selection.userId) throw new Error("No se pudo verificar el perfil.");
+        const data = await loadCommunityProfile(selection.userId, attempt > 0);
         if (!active) return;
-        if (cache.size >= 100) cache.delete(cache.keys().next().value!);
-        cache.set(selection.userId, { profile: data, until: Date.now() + 30000 });
         setProfile(data);
-      } catch (failure) { if (active && !controller.signal.aborted) setError(failure instanceof Error ? failure.message : "No se pudo cargar el perfil."); }
+      } catch (failure) { if (active) setError(failure instanceof Error ? failure.message : "No se pudo cargar el perfil."); }
     })();
-    return () => { active = false; controller.abort(); };
+    return () => { active = false; };
   }, [selection.userId, attempt]);
 
   useLayoutEffect(() => {
@@ -106,7 +98,7 @@ export default function CommunityProfile({ selection, onClose }: { selection: Pr
       : error ? <div className="community-profile-error"><h3 id="community-profile-title">Perfil no disponible</h3><p role="alert">{error}</p><button onClick={() => { closeButton.current?.focus({ preventScroll: true }); setAttempt(value => value + 1); }}>Reintentar</button></div>
       : profile && <div className="community-profile-content">
         <Image className="community-profile-avatar" src={profile.avatar || "/icon-48.png"} alt="" width={80} height={80} unoptimized onError={event => { event.currentTarget.src = "/icon-48.png"; }} />
-        <h3 id="community-profile-title">{profile.name}{profile.staffRole && <span className="community-profile-staff" title={profile.staffRole === "admin" ? "Administrador de Zentux" : "Moderador de Zentux"}>{profile.staffRole === "admin" ? "♛" : "◆"}</span>}</h3>
+        <h3 id="community-profile-title">{profile.name}<RoleBadgeIcon badge={profile.badge} /></h3>
         <p className="community-profile-username">@{profile.username}</p>
         <section className="community-profile-info" aria-label="Información del perfil"><h4>Información del perfil</h4><dl><div><dt>Usuario</dt><dd>{profile.username}</dd></div>{date && <div><dt>Miembro desde</dt><dd>{date}</dd></div>}</dl></section>
         {profile.roles.length > 0 && <section className="community-profile-roles" aria-label="Roles de Zentux"><h4>Roles de Zentux</h4><div>{profile.roles.map((role, i) => <span key={`${role.name}-${i}`}><i style={{ backgroundColor: role.color }} />{role.name}</span>)}</div></section>}
