@@ -2,6 +2,7 @@ export type ProfileAppearance = {
   displayName: string; status: string; bio: string; accent: string;
   nameStyle: 'plain' | 'glow' | 'serif'; decoration: 'none' | 'ring' | 'halo'; frame: 'none' | 'outline' | 'gradient';
   avatar: string | null; banner: string | null;
+  premiumMedia?: boolean;
   links: { platform: string; url: string; public?: boolean }[];
 };
 export const defaultAppearance: ProfileAppearance = { displayName: '', status: '', bio: '', accent: '#a855f7', nameStyle: 'plain', decoration: 'none', frame: 'none', avatar: null, banner: null, links: [] };
@@ -15,7 +16,7 @@ export function publicAppearance(value: Partial<ProfileAppearance> | null | unde
   return { displayName: text(v.displayName,32), status: text(v.status,120), bio: text(v.bio,300), accent: /^#[0-9a-f]{6}$/i.test(v.accent || '') ? v.accent! : defaultAppearance.accent,
     nameStyle: ['plain','glow','serif'].includes(v.nameStyle || '') ? v.nameStyle! : 'plain',
     decoration: ['none','ring','halo'].includes(v.decoration || '') ? v.decoration! : 'none',
-    frame: ['none','outline','gradient'].includes(v.frame || '') ? v.frame! : 'none', avatar: image(v.avatar), banner: image(v.banner),
+    frame: ['none','outline','gradient'].includes(v.frame || '') ? v.frame! : 'none', avatar: image(v.avatar), banner: v.premiumMedia === true ? image(v.banner) : null, premiumMedia: v.premiumMedia === true,
     links: Array.isArray(v.links) ? v.links.slice(0,4).flatMap(link => {
       try { const url = new URL(link.url); return platformHosts[link.platform]?.includes(url.hostname) && url.protocol === 'https:' && !url.username && !url.password && !url.port && link.public !== false ? [{platform: link.platform,url:url.href}] : []; } catch { return []; }
     }) : [] };
