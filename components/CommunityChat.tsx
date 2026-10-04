@@ -4,6 +4,7 @@ import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./community-chat.css";
+import CommunityProfile, { ProfileSelection } from "./CommunityProfile";
 
 type Message = { id: string; userId: string; name: string; avatar: string | null; role: "admin" | "moderator" | null; content: string; createdAt: string };
 type Snapshot = { revision: string; messages: Message[]; eventsUrl?: string };
@@ -19,6 +20,7 @@ async function request(action: string, body: Record<string, unknown> = {}) {
 }
 
 export default function CommunityChat() {
+  const [selectedProfile, setSelectedProfile] = useState<ProfileSelection | null>(null);
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -142,6 +144,7 @@ export default function CommunityChat() {
   }, []);
 
   const toggle = () => {
+    setSelectedProfile(null);
     const next = !open;
     view.current.open = next;
     setOpen(next);
@@ -186,9 +189,9 @@ export default function CommunityChat() {
       }}>
         {loading ? <p className="community-chat-empty" role="status">Cargando conversación…</p> : messages.length === 0 && <p className="community-chat-empty">Todavía no hay mensajes.<br />Sé el primero en saludar a la comunidad.</p>}
         {messages.map(message => <article className={`community-chat-message role-${message.role || "member"}`} key={message.id} data-message-id={message.id}>
-          {message.avatar ? <Image className="community-chat-avatar" src={message.avatar} alt="" width={36} height={36} unoptimized onError={event => { event.currentTarget.src = "/icon-48.png"; }} /> : <Image className="community-chat-avatar" src="/icon-48.png" alt="" width={36} height={36} />}
+          <button className="community-chat-avatar-button" data-profile-user={message.userId} aria-label={`Ver perfil de ${message.name}`} aria-haspopup="dialog" onClick={event => setSelectedProfile({ userId: message.userId, anchor: event.currentTarget, key: crypto.randomUUID() })}>{message.avatar ? <Image className="community-chat-avatar" src={message.avatar} alt="" width={36} height={36} unoptimized onError={event => { event.currentTarget.src = "/icon-48.png"; }} /> : <Image className="community-chat-avatar" src="/icon-48.png" alt="" width={36} height={36} />}</button>
           <div className="community-chat-message-body"><div className="community-chat-message-meta">
-            <span className="community-chat-name">{message.name}</span>
+            <button className="community-chat-name" data-profile-user={message.userId} aria-label={`Ver perfil de ${message.name} por nombre`} aria-haspopup="dialog" onClick={event => setSelectedProfile({ userId: message.userId, anchor: event.currentTarget, key: crypto.randomUUID() })}>{message.name}</button>
             {message.role && <span className="community-chat-badge" title={message.role === "admin" ? "Administrador autorizado" : "Moderador autorizado"}>{message.role === "admin" ? "♛" : "◆"}</span>}
             <time dateTime={message.createdAt} title={new Date(message.createdAt).toLocaleString("es")}>{time(message.createdAt)}</time>
             {access.canModerate && <button className="community-chat-more" onClick={() => setTarget(target?.id === message.id ? null : message)} aria-label={`Moderar mensaje de ${message.name}`}>⋯</button>}
@@ -221,5 +224,6 @@ export default function CommunityChat() {
       {open ? "−" : <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H7l-5 2 2-5v-5.5a8.5 8.5 0 0 1 17 0Z"/><circle cx="8" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="16" cy="12" r="1"/></svg>}
       {!open && unread.length > 0 && <span className="community-chat-unread">{unread.length > 99 ? "99+" : unread.length}</span>}
     </button>
+    {open && selectedProfile && <CommunityProfile key={selectedProfile.key} selection={selectedProfile} onClose={() => setSelectedProfile(null)} />}
   </aside>;
 }

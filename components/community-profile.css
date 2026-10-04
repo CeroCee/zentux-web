@@ -1,0 +1,42 @@
+.community-profile { position: fixed; z-index: 120; overflow: auto; overscroll-behavior: contain; border: 1px solid #a56cee65; border-radius: 22px; background: #0e0b17; color: #eee9f7; font-family: Arial,Helvetica,sans-serif; box-shadow: 0 18px 70px #000b,0 0 35px #9333ea18; animation: communityProfileIn 200ms ease-out both; transform-origin: right center; scrollbar-width: thin; scrollbar-color: #49365b transparent; }
+.community-profile.is-closing { animation: communityProfileOut 150ms ease-in both; pointer-events: none; }
+.community-profile button { cursor: pointer; }
+.community-profile button:focus-visible,.community-profile a:focus-visible { outline: 2px solid #d8b4fe; outline-offset: 3px; }
+.community-profile-close { position: absolute; right: 12px; top: 12px; z-index: 2; width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ffffff30; background: #08080dcc; color: white; font-size: 24px; line-height: 24px; }
+.community-profile-banner { position: relative; height: 108px; background: radial-gradient(ellipse at 80% 20%,#7929aa70,transparent 70%),linear-gradient(135deg,#23112f,#111427); border-bottom: 1px solid #ad73d830; }
+.community-profile-banner img { object-fit: cover; }
+.community-profile-content { position: relative; padding: 0 22px 22px; }
+.community-profile-avatar { position: relative; display: block; margin-top: -40px; width: 80px; height: 80px; object-fit: cover; border: 5px solid #0e0b17; border-radius: 50%; background: #291b38; box-shadow: 0 0 0 1px #c084fc50; }
+.community-profile h3 { margin: 14px 0 4px; font-size: 22px; font-weight: 800; overflow-wrap: anywhere; line-height: 1.3; }
+.community-profile-staff { font-size: 17px; color: #d8b4fe; margin-left: 9px; }
+.community-profile-username { color: #b1a4c4; margin: 0 0 20px; font-size: 13px; overflow-wrap: anywhere; }
+.community-profile h4 { margin: 0 0 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.1px; color: #d3b4ed; }
+.community-profile-info { border: 1px solid #b98ad620; border-radius: 12px; background: #ffffff03; padding: 15px; }
+.community-profile dl { margin: 0; font-size: 12px; }
+.community-profile dl div { display: flex; justify-content: space-between; gap: 14px; padding: 8px 0; }
+.community-profile dl div+div { border-top: 1px solid #ffffff0c; }
+.community-profile dt { color: #a99bb9; flex-shrink: 0; }
+.community-profile dd { margin: 0; font-weight: 600; text-align: right; overflow-wrap: anywhere; }
+.community-profile-roles { margin-top: 18px; }
+.community-profile-roles>div { display: flex; flex-wrap: wrap; gap: 6px; }
+.community-profile-roles span { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #b9a4ce25; border-radius: 20px; background: #ffffff04; padding: 5px 8px; font-size: 11px; max-width: 100%; overflow-wrap: anywhere; }
+.community-profile-roles i { width: 7px; height: 7px; flex-shrink: 0; border-radius: 50%; }
+.community-profile-skeleton { padding: 0 22px 28px; }
+.community-profile-skeleton-avatar { display: block; width: 80px; height: 80px; border-radius: 50%; margin-top: -40px; position: relative; border: 5px solid #0e0b17; }
+.community-profile-skeleton>span,.community-profile-skeleton>div { background: #ffffff08; animation: communityProfilePulse 1.6s ease-in-out infinite; }
+.community-profile-skeleton>span:not(:first-child) { display: block; height: 13px; width: 65%; border-radius: 5px; margin-top: 12px; }
+.community-profile-skeleton>div { height: 90px; border-radius: 12px; margin-top: 22px; }
+.community-profile-skeleton h3 { font-size: 15px; color: #bcaccd; }
+.community-profile-error { padding: 20px 24px 28px; }
+.community-profile-error h3 { font-size: 18px; }
+.community-profile-error p { font-size: 13px; color: #b9abc8; line-height: 1.6; }
+.community-profile-error button { border: 1px solid #a56cee70; background: #522278; border-radius: 9px; color: white; padding: 9px 14px; }
+.community-chat-avatar-button { padding: 0; border: 0; background: none; flex: 0 0 36px; border-radius: 50%; }
+button.community-chat-name { padding: 0; border: 0; background: none; text-align: left; }
+button.community-chat-name:hover { text-decoration: underline; }
+.community-chat-avatar-button:hover { box-shadow: 0 0 0 2px #c084fc70; }
+@keyframes communityProfileIn { from { opacity: 0; transform: translateX(6px) scale(.97); } to { opacity: 1; transform: translateX(0) scale(1); } }
+@keyframes communityProfileOut { to { opacity: 0; transform: translateX(4px) scale(.98); } }
+@keyframes communityProfilePulse { 50% { opacity: .45; } }
+@media (max-width:600px) { .community-profile { transform-origin: bottom center; border-radius: 22px 22px 16px 16px; } }
+@media (prefers-reduced-motion:reduce) { .community-profile,.community-profile * { animation: none !important; transition: none !important; } }
