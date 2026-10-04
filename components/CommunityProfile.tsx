@@ -103,7 +103,7 @@ export default function CommunityProfile({ selection, onClose }: { selection: Pr
     <button ref={closeButton} className="community-profile-close" onClick={() => close()} aria-label="Cerrar perfil">×</button>
     <div className="community-profile-banner">{profile?.banner && <Image src={profile.banner} alt="" fill unoptimized sizes="360px" onError={event => { event.currentTarget.style.visibility = "hidden"; }} />}</div>
     {!profile && !error ? <div className="community-profile-skeleton" role="status"><span className="community-profile-skeleton-avatar" /><h3 id="community-profile-title">Cargando perfil…</h3><span /><span /><div /><span /></div>
-      : error ? <div className="community-profile-error"><h3 id="community-profile-title">Perfil no disponible</h3><p role="alert">{error}</p><button onClick={() => setAttempt(value => value + 1)}>Reintentar</button></div>
+      : error ? <div className="community-profile-error"><h3 id="community-profile-title">Perfil no disponible</h3><p role="alert">{error}</p><button onClick={() => { closeButton.current?.focus({ preventScroll: true }); setAttempt(value => value + 1); }}>Reintentar</button></div>
       : profile && <div className="community-profile-content">
         <Image className="community-profile-avatar" src={profile.avatar || "/icon-48.png"} alt="" width={80} height={80} unoptimized onError={event => { event.currentTarget.src = "/icon-48.png"; }} />
         <h3 id="community-profile-title">{profile.name}{profile.staffRole && <span className="community-profile-staff" title={profile.staffRole === "admin" ? "Administrador de Zentux" : "Moderador de Zentux"}>{profile.staffRole === "admin" ? "♛" : "◆"}</span>}</h3>
