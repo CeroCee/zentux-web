@@ -1,4 +1,4 @@
-type PublicProfile = { userId: string; name: string; username: string; avatar: string | null; banner: string | null; memberSince: string; staffRole: string | null; roles: { name: string; color: string }[] };
+type PublicProfile = { userId: string; name: string; username: string; avatar: string | null; banner: string | null; memberSince: string; staffRole: string | null; badge?: string | null; roles: { name: string; color: string }[] };
 function staticImage(value: string | null) {
   if (!value) return null;
   // Static Discord image variants avoid autoplay, including for reduced-motion users.
@@ -16,6 +16,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     // A second explicit boundary: no private account response is ever spread into this route.
     return Response.json({ userId: profile.userId, name: profile.name, username: profile.username, avatar: staticImage(profile.avatar),
       banner: staticImage(profile.banner), memberSince: profile.memberSince, staffRole: profile.staffRole,
+      badge: ['owner', 'staff', 'buyer'].includes(profile.badge || '') ? profile.badge : null,
       roles: profile.roles.map(role => ({ name: role.name, color: role.color })) }, { headers: { "Cache-Control": "no-store" } });
   } catch { return Response.json({ error: "No se pudo cargar el perfil. Inténtalo de nuevo." }, { status: 503 }); }
 }
