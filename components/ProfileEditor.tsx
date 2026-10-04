@@ -6,7 +6,7 @@ import { platformLabels, ProfileAppearance } from '@/lib/profile-appearance';
 
 async function prepareImage(file: File,kind: 'avatar'|'banner') {
   const animated=file.type==='image/gif';
-  if (!['image/jpeg','image/png','image/gif'].includes(file.type) || file.size > (animated ? 1048576 : 10 * 1024 * 1024)) throw new Error('JPG o PNG: hasta 10 MB. GIF animado: hasta 1 MB.');
+  if (!['image/jpeg','image/png','image/gif'].includes(file.type) || file.size > 10 * 1024 * 1024) throw new Error('JPG, PNG o GIF: hasta 10 MB por imagen.');
   const url = URL.createObjectURL(file);
   try {
     const image = new window.Image(); image.src = url; await image.decode();
@@ -41,6 +41,7 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
   const [posters,setPosters] = useState<Partial<Record<'avatar'|'banner',string|null>>>({});
   const [error,setError] = useState('');
   const [busy,setBusy] = useState(false);
+  const [progress,setProgress] = useState('');
   const [processing,setProcessing] = useState(false);
   const [previewExpanded,setPreviewExpanded] = useState(false);
   const dialog = useRef<HTMLDivElement>(null);
@@ -64,11 +65,30 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
     event.preventDefault();setBusy(true);setError('');
     try {
       const appearance = {displayName:draft.displayName,status:draft.status,bio:draft.bio,accent:draft.accent,nameStyle:draft.nameStyle,decoration:draft.decoration,frame:draft.frame,links:draft.links};
-      const response = await fetch('/api/account/appearance',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({appearance,images,posters}),signal:AbortSignal.timeout(20000)});
+      const prepared: Partial<Record<'avatar'|'banner',string|null|{uploadId:string}>>={...images};
+      for(const kind of ['avatar','banner'] as const){
+        const value=images[kind];
+        if(!value?.startsWith('data:image/gif;'))continue;
+        const encoded=value.slice(value.indexOf(',')+1),size=encoded.length/4*3-(encoded.endsWith('==')?2:encoded.endsWith('=')?1:0);
+        const send=async(body:Record<string,unknown>)=>{
+          const response=await fetch('/api/account/appearance/upload',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(30000)});
+          const data=await response.json();if(!response.ok)throw new Error(data.error||'No se pudo subir el GIF. Vuelve a guardar para reintentar.');
+          return data.appearance as {uploadId:string;offset:number};
+        };
+        const started=await send({action:'start',kind,size});let offset=0;
+        for(let position=0;position<encoded.length;position+=1048576){
+          setProgress(`Subiendo ${kind==='avatar'?'avatar':'banner'}… ${Math.round(position/encoded.length*100)} %`);
+          const result=await send({action:'chunk',kind,uploadId:started.uploadId,offset,chunk:encoded.slice(position,position+1048576)});
+          offset=result.offset;
+        }
+        prepared[kind]={uploadId:started.uploadId};
+      }
+      setProgress('Guardando…');
+      const response = await fetch('/api/account/appearance',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({appearance,images:prepared,posters}),signal:AbortSignal.timeout(30000)});
       const data = await response.json(); if (!response.ok) throw new Error(data.error || 'No se pudo guardar el perfil.');
       if (alive.current) onSaved(data.appearance);
     } catch (failure) {if (alive.current) setError(failure instanceof Error ? failure.message : 'No se pudo guardar el perfil.');}
-    finally {if (alive.current) setBusy(false);}
+    finally {if (alive.current) {setBusy(false);setProgress('');}}
   }
   const previewAvatar = draft.avatar || fallback.avatar || '/icon-48.png';
   return createPortal(<div className="profile-editor-overlay" onPointerDown={event => {if (event.target === event.currentTarget && !busy && !processing) onClose();}}>
@@ -105,7 +125,7 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
             <label className="profile-upload">{kind === 'avatar' ? 'Cambiar avatar' : 'Cambiar banner'}<input aria-label={kind === 'avatar' ? 'Subir avatar' : 'Subir banner'} type="file" accept="image/png,image/jpeg,image/gif" onChange={event => {void upload(event.target.files?.[0],kind);event.target.value='';}} /></label>
             <button type="button" className="profile-reset-image" onClick={() => {setImages(current => ({...current,[kind]:null}));update(kind,null);}}>{kind === 'avatar' ? 'Usar avatar de Discord' : 'Quitar banner personalizado'}</button>
           </div>)}</div>
-          <p className="profile-editor-note">JPG y PNG: hasta 10 MB, con recorte y optimización. GIF animados: hasta 1 MB; conservan su animación. Con movimiento reducido se muestra una imagen estática.</p>
+          <p className="profile-editor-note">JPG y PNG: hasta 10 MB, con recorte y optimización. GIF animados: hasta 10 MB por avatar o banner; conservan su animación. Con movimiento reducido se muestra una imagen estática.</p>
           <label>Nombre para mostrar<input maxLength={32} value={draft.displayName} placeholder={fallback.name} onChange={event => update('displayName',event.target.value)} /><small>{draft.displayName.length}/32 · No cambia tu usuario de Discord.</small></label>
           <label>Estado personalizado<input maxLength={120} value={draft.status} placeholder="Tu frase, con emojis si quieres" onChange={event => update('status',event.target.value)} /><small>{draft.status.length}/120</small></label>
           <label>Acerca de mí<textarea rows={3} maxLength={300} value={draft.bio} placeholder="Cuéntale algo a la comunidad" onChange={event => update('bio',event.target.value)} /><small>{draft.bio.length}/300</small></label>
@@ -126,7 +146,7 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
           })}
         </fieldset>
         {error && <p className="profile-editor-error" role="alert">{error}</p>}
-        <div className="profile-editor-actions"><button type="button" disabled={busy || processing} onClick={onClose}>Cancelar</button><button type="submit" disabled={busy || processing}>{processing ? 'Procesando imagen…' : busy ? 'Guardando…' : 'Guardar cambios'}</button></div>
+        <div className="profile-editor-actions"><button type="button" disabled={busy || processing} onClick={onClose}>Cancelar</button><button type="submit" disabled={busy || processing}>{processing ? 'Procesando imagen…' : busy ? progress || 'Guardando…' : 'Guardar cambios'}</button></div>
       </form>
     </div>
   </div>,document.body);
