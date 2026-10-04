@@ -73,10 +73,13 @@ export default function CommunityProfile({ selection, onClose }: { selection: Pr
     if (dialog.current) observer.observe(dialog.current);
     window.addEventListener("resize", update); window.addEventListener("scroll", update, true);
     window.visualViewport?.addEventListener("resize", update); window.visualViewport?.addEventListener("scroll", update);
-    closeButton.current?.focus({ preventScroll: true });
     return () => { observer.disconnect(); window.removeEventListener("resize", update); window.removeEventListener("scroll", update, true);
       window.visualViewport?.removeEventListener("resize", update); window.visualViewport?.removeEventListener("scroll", update); };
   }, [selection.anchor]);
+
+  useLayoutEffect(() => {
+    if (position.visibility === "visible") closeButton.current?.focus({ preventScroll: true });
+  }, [position.visibility]);
 
   useEffect(() => {
     const outside = (event: PointerEvent) => {
