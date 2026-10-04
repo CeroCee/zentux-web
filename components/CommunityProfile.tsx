@@ -6,6 +6,8 @@ import { CSSProperties, useCallback, useEffect, useLayoutEffect, useRef, useStat
 import "./community-profile.css";
 import { loadCommunityProfile, PublicCommunityProfile } from './community-public-profile';
 import { RoleBadgeIcon } from './CommunityRoleBadge';
+import { publicAppearance, platformLabels } from '@/lib/profile-appearance';
+import './profile-personalization.css';
 
 export type ProfileSelection = { userId: string; anchor: HTMLButtonElement; key: string };
 
@@ -83,7 +85,8 @@ export default function CommunityProfile({ selection, onClose }: { selection: Pr
   }, [close]);
 
   const date = profile?.memberSince && !Number.isNaN(Date.parse(profile.memberSince)) ? new Date(profile.memberSince).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }) : null;
-  return createPortal(<div ref={dialog} className={`community-profile${closing ? " is-closing" : ""}`} style={position} role="dialog" aria-labelledby="community-profile-title" aria-busy={!profile && !error} onKeyDown={event => {
+  const appearance = publicAppearance(profile?.appearance);
+  return createPortal(<div ref={dialog} className={`community-profile profile-frame-${appearance.frame}${closing ? " is-closing" : ""}`} style={{...position,'--profile-accent':appearance.accent} as CSSProperties} role="dialog" aria-labelledby="community-profile-title" aria-busy={!profile && !error} onKeyDown={event => {
     event.stopPropagation();
     if (event.key !== "Tab") return;
     const buttons = Array.from(dialog.current!.querySelectorAll<HTMLElement>("button:not([disabled]),a[href]"));
@@ -96,11 +99,14 @@ export default function CommunityProfile({ selection, onClose }: { selection: Pr
     {!profile && !error ? <div className="community-profile-skeleton" role="status"><span className="community-profile-skeleton-avatar" /><h3 id="community-profile-title">Cargando perfil…</h3><span /><span /><div /><span /></div>
       : error ? <div className="community-profile-error"><h3 id="community-profile-title">Perfil no disponible</h3><p role="alert">{error}</p><button onClick={() => { closeButton.current?.focus({ preventScroll: true }); setProfile(null); setError(''); setAttempt(value => value + 1); }}>Reintentar</button></div>
       : profile && <div className="community-profile-content">
-        <Image className="community-profile-avatar" src={profile.avatar || "/icon-48.png"} alt="" width={80} height={80} unoptimized onError={event => { event.currentTarget.src = "/icon-48.png"; }} />
-        <h3 id="community-profile-title">{profile.name}<RoleBadgeIcon badge={profile.badge} /></h3>
+        <Image className={`community-profile-avatar profile-decoration-${appearance.decoration}`} src={profile.avatar || "/icon-48.png"} alt="" width={80} height={80} unoptimized onError={event => { event.currentTarget.src = "/icon-48.png"; }} />
+        {appearance.status && <p className="profile-status">{appearance.status}</p>}
+        <h3 id="community-profile-title" className={`profile-name-${appearance.nameStyle}`}>{profile.name}<RoleBadgeIcon badge={profile.badge} /></h3>
         <p className="community-profile-username">@{profile.username}</p>
+        {appearance.bio && <p className="profile-bio">{appearance.bio}</p>}
         <section className="community-profile-info" aria-label="Información del perfil"><h4>Información del perfil</h4><dl><div><dt>Usuario</dt><dd>{profile.username}</dd></div>{date && <div><dt>Miembro desde</dt><dd>{date}</dd></div>}</dl></section>
         {profile.roles.length > 0 && <section className="community-profile-roles" aria-label="Roles de Zentux"><h4>Roles de Zentux</h4><div>{profile.roles.map((role, i) => <span key={`${role.name}-${i}`}><i style={{ backgroundColor: role.color }} />{role.name}</span>)}</div></section>}
+        {appearance.links.length > 0 && <nav className="profile-links" aria-label="Enlaces públicos">{appearance.links.map(link => <a key={link.platform} href={link.url} target="_blank" rel="noopener noreferrer nofollow" referrerPolicy="no-referrer">{platformLabels[link.platform]} ↗</a>)}</nav>}
       </div>}
   </div>, document.body);
 }

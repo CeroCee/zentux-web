@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
 import { FormEvent, useState } from "react";
 import { useAccount } from "./AccountContext";
 import { SubscriptionPanel } from "./SubscriptionPanel";
+import ProfileIdentity from './ProfileIdentity';
 
 export function ProfilePanel() {
   const { data: session, status } = useSession();
@@ -75,29 +75,7 @@ export function ProfilePanel() {
 
   return (
     <section className="overflow-hidden rounded-[32px] border border-[#7c3aed]/35 bg-[#07050d]/90 shadow-[0_0_100px_rgba(124,58,237,.15)]">
-      <div className="relative overflow-hidden border-b border-white/10 p-7 sm:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(126,34,206,.48),transparent_45%)]" />
-        <div className="relative flex flex-wrap items-center gap-6">
-          {session?.user?.image && (
-            <Image
-              src={session.user.image}
-              alt="Avatar"
-              width={150}
-              height={150}
-              className="rounded-full border-2 border-[#c084fc] shadow-[0_0_35px_rgba(192,132,252,.45)]"
-            />
-          )}
-          <div>
-            <h1 className="text-4xl font-black">{session.user.name}</h1>
-            <span className="mt-3 inline-flex rounded-full bg-[#4c1d95] px-4 py-2 text-sm font-black text-[#e9d5ff]">
-              {memberLabel}
-            </span>
-            <p className="mt-4 rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm">
-              ◉ Discord vinculado · {profile.account.discordUserId}
-            </p>
-          </div>
-        </div>
-      </div>
+      <ProfileIdentity key={profile.account.discordUserId} userId={profile.account.discordUserId} name={session.user.name || profile.account.discordUsername} avatar={session.user.image || null} memberLabel={memberLabel} />
 
       <div className="grid gap-5 p-5 sm:p-7 lg:grid-cols-2">
         <div className="rounded-[24px] border border-white/10 bg-white/[.025] p-6">

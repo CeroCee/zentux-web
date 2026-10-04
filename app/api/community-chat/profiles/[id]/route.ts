@@ -1,6 +1,8 @@
-type PublicProfile = { userId: string; name: string; username: string; avatar: string | null; banner: string | null; memberSince: string; staffRole: string | null; badge?: string | null; roles: { name: string; color: string }[] };
+import { publicAppearance, ProfileAppearance } from '@/lib/profile-appearance';
+type PublicProfile = { userId: string; name: string; username: string; avatar: string | null; banner: string | null; memberSince: string; staffRole: string | null; badge?: string | null; roles: { name: string; color: string }[]; appearance?: ProfileAppearance };
 function staticImage(value: string | null) {
   if (!value) return null;
+  if (/^\/api\/profile-images\/\d{16,22}\/(avatar|banner)\/[0-9a-f-]{36}$/i.test(value)) return value;
   // Static Discord image variants avoid autoplay, including for reduced-motion users.
   try { const url = new URL(value); return url.protocol === "https:" && url.hostname === "cdn.discordapp.com" ? url.href.replace(/\.gif(?=\?|$)/i, ".png") : null; } catch { return null; }
 }
@@ -17,6 +19,6 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     return Response.json({ userId: profile.userId, name: profile.name, username: profile.username, avatar: staticImage(profile.avatar),
       banner: staticImage(profile.banner), memberSince: profile.memberSince, staffRole: profile.staffRole,
       badge: ['owner', 'staff', 'buyer'].includes(profile.badge || '') ? profile.badge : null,
-      roles: profile.roles.map(role => ({ name: role.name, color: role.color })) }, { headers: { "Cache-Control": "no-store" } });
+      roles: profile.roles.map(role => ({ name: role.name, color: role.color })), appearance: publicAppearance(profile.appearance) }, { headers: { "Cache-Control": "no-store" } });
   } catch { return Response.json({ error: "No se pudo cargar el perfil. Inténtalo de nuevo." }, { status: 503 }); }
 }

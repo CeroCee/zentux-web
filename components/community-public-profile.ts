@@ -1,7 +1,9 @@
 export type CommunityBadge = 'owner' | 'staff' | 'buyer';
-export type PublicCommunityProfile = { userId: string; name: string; username: string; avatar: string | null; banner: string | null; memberSince: string; staffRole: 'admin' | 'moderator' | null; badge: CommunityBadge | null; roles: { name: string; color: string }[] };
+import type { ProfileAppearance } from '@/lib/profile-appearance';
+export type PublicCommunityProfile = { userId: string; name: string; username: string; avatar: string | null; banner: string | null; memberSince: string; staffRole: 'admin' | 'moderator' | null; badge: CommunityBadge | null; roles: { name: string; color: string }[]; appearance?: ProfileAppearance };
 const cache = new Map<string, { profile: PublicCommunityProfile; until: number }>();
 const pending = new Map<string, Promise<PublicCommunityProfile>>();
+export function invalidateCommunityProfile(id: string) { cache.delete(id); }
 const queue: (() => void)[] = [];
 let active = 0;
 
