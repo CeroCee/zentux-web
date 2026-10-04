@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import ProfileImage from './ProfileImage';
 import { createPortal } from "react-dom";
 import { CSSProperties, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./community-profile.css";
@@ -95,11 +95,11 @@ export default function CommunityProfile({ selection, onClose }: { selection: Pr
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus({ preventScroll: true }); }
   }}>
     <button ref={closeButton} className="community-profile-close" onClick={() => close()} aria-label="Cerrar perfil">×</button>
-    <div className="community-profile-banner">{profile?.banner && <Image src={profile.banner} alt="" fill unoptimized sizes="360px" onError={event => { event.currentTarget.style.visibility = "hidden"; }} />}</div>
+    <div className="community-profile-banner">{profile?.banner && <ProfileImage src={profile.banner} alt="" fill sizes="360px" onError={event => { event.currentTarget.style.visibility = "hidden"; }} />}</div>
     {!profile && !error ? <div className="community-profile-skeleton" role="status"><span className="community-profile-skeleton-avatar" /><h3 id="community-profile-title">Cargando perfil…</h3><span /><span /><div /><span /></div>
       : error ? <div className="community-profile-error"><h3 id="community-profile-title">Perfil no disponible</h3><p role="alert">{error}</p><button onClick={() => { closeButton.current?.focus({ preventScroll: true }); setProfile(null); setError(''); setAttempt(value => value + 1); }}>Reintentar</button></div>
       : profile && <div className="community-profile-content">
-        <Image className={`community-profile-avatar profile-decoration-${appearance.decoration}`} src={profile.avatar || "/icon-48.png"} alt="" width={80} height={80} unoptimized onError={event => { event.currentTarget.src = "/icon-48.png"; }} />
+        <ProfileImage className={`community-profile-avatar profile-decoration-${appearance.decoration}`} src={profile.avatar || "/icon-48.png"} alt="" width={80} height={80} onError={event => { event.currentTarget.src = "/icon-48.png"; }} />
         {appearance.status && <p className="profile-status">{appearance.status}</p>}
         <h3 id="community-profile-title" className={`profile-name-${appearance.nameStyle}`}>{profile.name}<RoleBadgeIcon badge={profile.badge} /></h3>
         <p className="community-profile-username">@{profile.username}</p>
