@@ -86,7 +86,7 @@ export default function CommunityProfile({ selection, onClose }: { selection: Pr
 
   const date = profile?.memberSince && !Number.isNaN(Date.parse(profile.memberSince)) ? new Date(profile.memberSince).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }) : null;
   const appearance = publicAppearance(profile?.appearance);
-  return createPortal(<div ref={dialog} className={`community-profile profile-frame-${appearance.frame}${closing ? " is-closing" : ""}`} style={{...position,'--profile-accent':appearance.accent} as CSSProperties} role="dialog" aria-labelledby="community-profile-title" aria-busy={!profile && !error} onKeyDown={event => {
+  return createPortal(<div ref={dialog} className={`community-profile profile-frame-${appearance.frame}${profile && !appearance.premiumMedia ? ' profile-no-premium-media' : ''}${closing ? " is-closing" : ""}`} style={{...position,'--profile-accent':appearance.accent} as CSSProperties} role="dialog" aria-labelledby="community-profile-title" aria-busy={!profile && !error} onKeyDown={event => {
     event.stopPropagation();
     if (event.key !== "Tab") return;
     const buttons = Array.from(dialog.current!.querySelectorAll<HTMLElement>("button:not([disabled]),a[href]"));
@@ -95,11 +95,11 @@ export default function CommunityProfile({ selection, onClose }: { selection: Pr
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus({ preventScroll: true }); }
   }}>
     <button ref={closeButton} className="community-profile-close" onClick={() => close()} aria-label="Cerrar perfil">×</button>
-    <div className="community-profile-banner">{profile?.banner && <ProfileImage src={profile.banner} alt="" fill sizes="360px" onError={event => { event.currentTarget.style.visibility = "hidden"; }} />}</div>
+    {(!profile || appearance.premiumMedia) && <div className="community-profile-banner">{profile?.banner && <ProfileImage src={profile.banner} alt="" fill sizes="360px" onError={event => { event.currentTarget.style.visibility = "hidden"; }} />}</div>}
     {!profile && !error ? <div className="community-profile-skeleton" role="status"><span className="community-profile-skeleton-avatar" /><h3 id="community-profile-title">Cargando perfil…</h3><span /><span /><div /><span /></div>
       : error ? <div className="community-profile-error"><h3 id="community-profile-title">Perfil no disponible</h3><p role="alert">{error}</p><button onClick={() => { closeButton.current?.focus({ preventScroll: true }); setProfile(null); setError(''); setAttempt(value => value + 1); }}>Reintentar</button></div>
       : profile && <div className="community-profile-content">
-        <ProfileImage className={`community-profile-avatar profile-decoration-${appearance.decoration}`} src={profile.avatar || "/icon-48.png"} alt="" width={80} height={80} onError={event => { event.currentTarget.src = "/icon-48.png"; }} />
+        <ProfileImage allowAnimation={appearance.premiumMedia === true} className={`community-profile-avatar profile-decoration-${appearance.decoration}`} src={profile.avatar || "/icon-48.png"} alt="" width={80} height={80} onError={event => { event.currentTarget.src = "/icon-48.png"; }} />
         {appearance.status && <p className="profile-status">{appearance.status}</p>}
         <h3 id="community-profile-title" className={`profile-name-${appearance.nameStyle}`}>{profile.name}<RoleBadgeIcon badge={profile.badge} /></h3>
         <p className="community-profile-username">@{profile.username}</p>

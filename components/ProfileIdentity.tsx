@@ -25,10 +25,10 @@ export default function ProfileIdentity({userId,name,avatar,memberLabel}:{userId
   },[userId,attempt]);
   const close = () => { setEditing(false); button.current?.focus({preventScroll:true}); };
   return <>
-    <header className={`profile-identity profile-frame-${appearance.frame}`} style={{'--profile-accent':appearance.accent} as CSSProperties}>
-      <div className="profile-identity-banner">{appearance.banner && <ProfileImage src={appearance.banner} alt="" fill sizes="100vw" />}</div>
+    <header className={`profile-identity profile-frame-${appearance.frame}${appearance.premiumMedia === true ? '' : ' profile-no-premium-media'}`} style={{'--profile-accent':appearance.accent} as CSSProperties}>
+      {appearance.premiumMedia === true && <div className="profile-identity-banner">{appearance.banner && <ProfileImage src={appearance.banner} alt="" fill sizes="100vw" />}</div>}
       <div className="profile-identity-main">
-        <ProfileImage src={appearance.avatar || avatar || '/icon-48.png'} alt="Tu avatar" width={132} height={132} className={`profile-identity-avatar profile-decoration-${appearance.decoration}`} />
+        <ProfileImage allowAnimation={appearance.premiumMedia === true} src={appearance.avatar || avatar || '/icon-48.png'} alt="Tu avatar" width={132} height={132} className={`profile-identity-avatar profile-decoration-${appearance.decoration}`} />
         <div className="profile-identity-details">
           {appearance.status && <p className="profile-status">{appearance.status}</p>}
           <h1 className={`profile-name-${appearance.nameStyle}`}>{appearance.displayName || name}</h1>

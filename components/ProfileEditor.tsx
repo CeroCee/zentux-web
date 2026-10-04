@@ -48,6 +48,7 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
   const closeButton = useRef<HTMLButtonElement>(null);
   const alive = useRef(true);
   const update = <K extends keyof ProfileAppearance>(key:K,value:ProfileAppearance[K]) => setDraft(current => ({...current,[key]:value}));
+  const premiumMedia=initial.premiumMedia === true;
   useEffect(() => {
     alive.current = true; closeButton.current?.focus({preventScroll:true});
     const root = document.documentElement,previous = root.style.overflow;
@@ -56,6 +57,7 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
   },[]);
   async function upload(file:File|undefined,kind:'avatar'|'banner') {
     if (!file) return;
+    if (!premiumMedia && (kind==='banner'||file.type==='image/gif')) {setError('Necesitas una licencia activa de Zentux para usar banners o avatares GIF.');return;}
     setError('');setProcessing(true);
     try { const {data,poster} = await prepareImage(file,kind); if (alive.current) {setImages(current => ({...current,[kind]:data}));setPosters(current => ({...current,[kind]:poster}));update(kind,data);} }
     catch (failure) {if (alive.current) setError(failure instanceof Error ? failure.message : 'No se pudo leer la imagen.');}
@@ -104,9 +106,9 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
       <aside className="profile-editor-preview"><p className="profile-editor-eyebrow">Así verán tu perfil en el chat</p>
         <button type="button" className="profile-preview-toggle" aria-expanded={previewExpanded} aria-controls="profile-editor-preview-body" onClick={() => setPreviewExpanded(value => !value)}>Vista previa de tu tarjeta {previewExpanded ? '▴' : '▾'}</button>
         <div id="profile-editor-preview-body" className={`profile-preview-body${previewExpanded ? ' is-open' : ''}`}>
-        <div className={`profile-preview-card profile-frame-${draft.frame}`}>
-          <div className="profile-preview-banner">{draft.banner && <ProfileImage src={draft.banner} stillPreview={posters.banner || undefined} alt="Vista previa del banner" fill sizes="380px" />}</div>
-          <div className="profile-preview-content"><ProfileImage src={previewAvatar} stillPreview={posters.avatar || undefined} alt="Vista previa del avatar" width={86} height={86} className={`profile-preview-avatar profile-decoration-${draft.decoration}`} />
+        <div className={`profile-preview-card profile-frame-${draft.frame}${premiumMedia ? '' : ' profile-no-premium-media'}`}>
+          {premiumMedia && <div className="profile-preview-banner">{draft.banner && <ProfileImage src={draft.banner} stillPreview={posters.banner || undefined} alt="Vista previa del banner" fill sizes="380px" />}</div>}
+          <div className="profile-preview-content"><ProfileImage allowAnimation={premiumMedia} src={previewAvatar} stillPreview={posters.avatar || undefined} alt="Vista previa del avatar" width={86} height={86} className={`profile-preview-avatar profile-decoration-${draft.decoration}`} />
             {draft.status && <p className="profile-status">{draft.status}</p>}
             <h2 className={`profile-name-${draft.nameStyle}`}>{draft.displayName || fallback.name}</h2>
             <p className="profile-preview-username">{fallback.name} · Zentux.gg</p>
@@ -122,10 +124,10 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
         <fieldset disabled={busy || processing}>
           <legend>Avatar y banner</legend>
           <div className="profile-image-options">{(['avatar','banner'] as const).map(kind => <div key={kind}>
-            <label className="profile-upload">{kind === 'avatar' ? 'Cambiar avatar' : 'Cambiar banner'}<input aria-label={kind === 'avatar' ? 'Subir avatar' : 'Subir banner'} type="file" accept="image/png,image/jpeg,image/gif" onChange={event => {void upload(event.target.files?.[0],kind);event.target.value='';}} /></label>
+            <label className="profile-upload">{kind === 'avatar' ? 'Cambiar avatar' : 'Cambiar banner'}<input aria-label={kind === 'avatar' ? 'Subir avatar' : 'Subir banner'} type="file" disabled={kind==='banner'&&!premiumMedia} accept={premiumMedia ? 'image/png,image/jpeg,image/gif' : 'image/png,image/jpeg'} onChange={event => {void upload(event.target.files?.[0],kind);event.target.value='';}} /></label>
             <button type="button" className="profile-reset-image" onClick={() => {setImages(current => ({...current,[kind]:null}));update(kind,null);}}>{kind === 'avatar' ? 'Usar avatar de Discord' : 'Quitar banner personalizado'}</button>
           </div>)}</div>
-          <p className="profile-editor-note">JPG y PNG: hasta 10 MB, con recorte y optimización. GIF animados: hasta 10 MB por avatar o banner; conservan su animación. Con movimiento reducido se muestra una imagen estática.</p>
+          <p className="profile-editor-note">{premiumMedia ? 'JPG y PNG: hasta 10 MB, con recorte y optimización. GIF animados: hasta 10 MB por avatar o banner; conservan su animación. Con movimiento reducido se muestra una imagen estática.' : 'Puedes usar un avatar JPG o PNG de hasta 10 MB. Los banners y los avatares GIF requieren una licencia activa de Zentux. Sin licencia activa no se muestra ningún banner, incluido el de Discord.'}</p>
           <label>Nombre para mostrar<input maxLength={32} value={draft.displayName} placeholder={fallback.name} onChange={event => update('displayName',event.target.value)} /><small>{draft.displayName.length}/32 · No cambia tu usuario de Discord.</small></label>
           <label>Estado personalizado<input maxLength={120} value={draft.status} placeholder="Tu frase, con emojis si quieres" onChange={event => update('status',event.target.value)} /><small>{draft.status.length}/120</small></label>
           <label>Acerca de mí<textarea rows={3} maxLength={300} value={draft.bio} placeholder="Cuéntale algo a la comunidad" onChange={event => update('bio',event.target.value)} /><small>{draft.bio.length}/300</small></label>
