@@ -43,7 +43,8 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
   async function save(event:FormEvent) {
     event.preventDefault();setBusy(true);setError('');
     try {
-      const response = await fetch('/api/account/appearance',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({appearance:draft,images}),signal:AbortSignal.timeout(20000)});
+      const appearance = {displayName:draft.displayName,status:draft.status,bio:draft.bio,accent:draft.accent,nameStyle:draft.nameStyle,decoration:draft.decoration,frame:draft.frame,links:draft.links};
+      const response = await fetch('/api/account/appearance',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({appearance,images}),signal:AbortSignal.timeout(20000)});
       const data = await response.json(); if (!response.ok) throw new Error(data.error || 'No se pudo guardar el perfil.');
       if (alive.current) onSaved(data.appearance);
     } catch (failure) {if (alive.current) setError(failure instanceof Error ? failure.message : 'No se pudo guardar el perfil.');}
