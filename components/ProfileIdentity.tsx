@@ -1,5 +1,5 @@
 "use client";
-import Image from 'next/image';
+import ProfileImage from './ProfileImage';
 import dynamic from 'next/dynamic';
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 import { defaultAppearance, platformLabels, ProfileAppearance } from '@/lib/profile-appearance';
@@ -26,9 +26,9 @@ export default function ProfileIdentity({userId,name,avatar,memberLabel}:{userId
   const close = () => { setEditing(false); button.current?.focus({preventScroll:true}); };
   return <>
     <header className={`profile-identity profile-frame-${appearance.frame}`} style={{'--profile-accent':appearance.accent} as CSSProperties}>
-      <div className="profile-identity-banner">{appearance.banner && <Image src={appearance.banner} alt="" fill unoptimized sizes="100vw" />}</div>
+      <div className="profile-identity-banner">{appearance.banner && <ProfileImage src={appearance.banner} alt="" fill sizes="100vw" />}</div>
       <div className="profile-identity-main">
-        <Image src={appearance.avatar || avatar || '/icon-48.png'} alt="Tu avatar" width={132} height={132} unoptimized className={`profile-identity-avatar profile-decoration-${appearance.decoration}`} />
+        <ProfileImage src={appearance.avatar || avatar || '/icon-48.png'} alt="Tu avatar" width={132} height={132} className={`profile-identity-avatar profile-decoration-${appearance.decoration}`} />
         <div className="profile-identity-details">
           {appearance.status && <p className="profile-status">{appearance.status}</p>}
           <h1 className={`profile-name-${appearance.nameStyle}`}>{appearance.displayName || name}</h1>

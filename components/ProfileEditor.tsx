@@ -1,14 +1,27 @@
 "use client";
-import Image from 'next/image';
+import ProfileImage from './ProfileImage';
 import { createPortal } from 'react-dom';
 import { CSSProperties, FormEvent, useEffect, useRef, useState } from 'react';
 import { platformLabels, ProfileAppearance } from '@/lib/profile-appearance';
 
 async function prepareImage(file: File,kind: 'avatar'|'banner') {
-  if (!['image/jpeg','image/png'].includes(file.type) || file.size > 10 * 1024 * 1024) throw new Error('Elige una imagen JPG o PNG de hasta 10 MB.');
+  const animated=file.type==='image/gif';
+  if (!['image/jpeg','image/png','image/gif'].includes(file.type) || file.size > (animated ? 1048576 : 10 * 1024 * 1024)) throw new Error('JPG o PNG: hasta 10 MB. GIF animado: hasta 1 MB.');
   const url = URL.createObjectURL(file);
   try {
     const image = new window.Image(); image.src = url; await image.decode();
+    if(animated){
+      if(image.naturalWidth>4096||image.naturalHeight>4096||image.naturalWidth*image.naturalHeight>4000000)throw new Error('Reduce la resolución del GIF antes de subirlo.');
+      const canvas=document.createElement('canvas'),scale=Math.min(1,640/image.naturalWidth,320/image.naturalHeight);
+      canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+      const context=canvas.getContext('2d');if(!context)throw new Error('No se pudo preparar el GIF.');
+      context.drawImage(image,0,0,canvas.width,canvas.height);
+      let poster=canvas.toDataURL('image/jpeg',.7);
+      if(poster.length>87500)poster=canvas.toDataURL('image/jpeg',.35);
+      if(poster.length>87500)throw new Error('Reduce la resolución del GIF antes de subirlo.');
+      const data=await new Promise<string>((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(new Error('No se pudo leer el GIF.'));reader.readAsDataURL(file);});
+      return {data,poster};
+    }
     if (image.naturalWidth * image.naturalHeight > 40000000) throw new Error('La imagen tiene demasiados píxeles. Usa una versión más pequeña.');
     const width = kind === 'avatar' ? 512 : 1600, height = kind === 'avatar' ? 512 : 560;
     const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
@@ -18,13 +31,14 @@ async function prepareImage(file: File,kind: 'avatar'|'banner') {
     ctx.drawImage(image,(width-image.naturalWidth*scale)/2,(height-image.naturalHeight*scale)/2,image.naturalWidth*scale,image.naturalHeight*scale);
     const data = canvas.toDataURL('image/jpeg',.84);
     if (data.length > 1400000) throw new Error('La imagen es demasiado grande. Usa una versión más pequeña.');
-    return data;
+    return {data,poster:null};
   } finally { URL.revokeObjectURL(url); }
 }
 
 export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initial:ProfileAppearance;fallback:{name:string;avatar:string|null};onClose:()=>void;onSaved:(value:ProfileAppearance)=>void}) {
   const [draft,setDraft] = useState(() => structuredClone(initial));
   const [images,setImages] = useState<Partial<Record<'avatar'|'banner',string|null>>>({});
+  const [posters,setPosters] = useState<Partial<Record<'avatar'|'banner',string|null>>>({});
   const [error,setError] = useState('');
   const [busy,setBusy] = useState(false);
   const [processing,setProcessing] = useState(false);
@@ -42,7 +56,7 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
   async function upload(file:File|undefined,kind:'avatar'|'banner') {
     if (!file) return;
     setError('');setProcessing(true);
-    try { const data = await prepareImage(file,kind); if (alive.current) {setImages(current => ({...current,[kind]:data}));update(kind,data);} }
+    try { const {data,poster} = await prepareImage(file,kind); if (alive.current) {setImages(current => ({...current,[kind]:data}));setPosters(current => ({...current,[kind]:poster}));update(kind,data);} }
     catch (failure) {if (alive.current) setError(failure instanceof Error ? failure.message : 'No se pudo leer la imagen.');}
     finally {if (alive.current) setProcessing(false);}
   }
@@ -50,7 +64,7 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
     event.preventDefault();setBusy(true);setError('');
     try {
       const appearance = {displayName:draft.displayName,status:draft.status,bio:draft.bio,accent:draft.accent,nameStyle:draft.nameStyle,decoration:draft.decoration,frame:draft.frame,links:draft.links};
-      const response = await fetch('/api/account/appearance',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({appearance,images}),signal:AbortSignal.timeout(20000)});
+      const response = await fetch('/api/account/appearance',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({appearance,images,posters}),signal:AbortSignal.timeout(20000)});
       const data = await response.json(); if (!response.ok) throw new Error(data.error || 'No se pudo guardar el perfil.');
       if (alive.current) onSaved(data.appearance);
     } catch (failure) {if (alive.current) setError(failure instanceof Error ? failure.message : 'No se pudo guardar el perfil.');}
@@ -71,8 +85,8 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
         <button type="button" className="profile-preview-toggle" aria-expanded={previewExpanded} aria-controls="profile-editor-preview-body" onClick={() => setPreviewExpanded(value => !value)}>Vista previa de tu tarjeta {previewExpanded ? '▴' : '▾'}</button>
         <div id="profile-editor-preview-body" className={`profile-preview-body${previewExpanded ? ' is-open' : ''}`}>
         <div className={`profile-preview-card profile-frame-${draft.frame}`}>
-          <div className="profile-preview-banner">{draft.banner && <Image src={draft.banner} alt="Vista previa del banner" fill unoptimized sizes="380px" />}</div>
-          <div className="profile-preview-content"><Image src={previewAvatar} alt="Vista previa del avatar" width={86} height={86} unoptimized className={`profile-preview-avatar profile-decoration-${draft.decoration}`} />
+          <div className="profile-preview-banner">{draft.banner && <ProfileImage src={draft.banner} stillPreview={posters.banner || undefined} alt="Vista previa del banner" fill sizes="380px" />}</div>
+          <div className="profile-preview-content"><ProfileImage src={previewAvatar} stillPreview={posters.avatar || undefined} alt="Vista previa del avatar" width={86} height={86} className={`profile-preview-avatar profile-decoration-${draft.decoration}`} />
             {draft.status && <p className="profile-status">{draft.status}</p>}
             <h2 className={`profile-name-${draft.nameStyle}`}>{draft.displayName || fallback.name}</h2>
             <p className="profile-preview-username">{fallback.name} · Zentux.gg</p>
@@ -88,10 +102,10 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
         <fieldset disabled={busy || processing}>
           <legend>Avatar y banner</legend>
           <div className="profile-image-options">{(['avatar','banner'] as const).map(kind => <div key={kind}>
-            <label className="profile-upload">{kind === 'avatar' ? 'Cambiar avatar' : 'Cambiar banner'}<input aria-label={kind === 'avatar' ? 'Subir avatar' : 'Subir banner'} type="file" accept="image/png,image/jpeg" onChange={event => {void upload(event.target.files?.[0],kind);event.target.value='';}} /></label>
+            <label className="profile-upload">{kind === 'avatar' ? 'Cambiar avatar' : 'Cambiar banner'}<input aria-label={kind === 'avatar' ? 'Subir avatar' : 'Subir banner'} type="file" accept="image/png,image/jpeg,image/gif" onChange={event => {void upload(event.target.files?.[0],kind);event.target.value='';}} /></label>
             <button type="button" className="profile-reset-image" onClick={() => {setImages(current => ({...current,[kind]:null}));update(kind,null);}}>{kind === 'avatar' ? 'Usar avatar de Discord' : 'Quitar banner personalizado'}</button>
           </div>)}</div>
-          <p className="profile-editor-note">JPG o PNG, hasta 10 MB. Recorte centrado y optimización automática.</p>
+          <p className="profile-editor-note">JPG y PNG: hasta 10 MB, con recorte y optimización. GIF animados: hasta 1 MB; conservan su animación. Con movimiento reducido se muestra una imagen estática.</p>
           <label>Nombre para mostrar<input maxLength={32} value={draft.displayName} placeholder={fallback.name} onChange={event => update('displayName',event.target.value)} /><small>{draft.displayName.length}/32 · No cambia tu usuario de Discord.</small></label>
           <label>Estado personalizado<input maxLength={120} value={draft.status} placeholder="Tu frase, con emojis si quieres" onChange={event => update('status',event.target.value)} /><small>{draft.status.length}/120</small></label>
           <label>Acerca de mí<textarea rows={3} maxLength={300} value={draft.bio} placeholder="Cuéntale algo a la comunidad" onChange={event => update('bio',event.target.value)} /><small>{draft.bio.length}/300</small></label>
