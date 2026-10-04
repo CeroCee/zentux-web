@@ -55,6 +55,18 @@ export default function CommunityChat() {
   useEffect(() => { void refreshAccess(); }, [refreshAccess]);
 
   useEffect(() => {
+    // A direct link can open the panel without moving the page's content.
+    const openFromLink = () => {
+      if (window.location.hash !== "#community-chat") return;
+      view.current = { open: true, bottom: true };
+      setOpen(true); setUnread([]);
+    };
+    openFromLink();
+    window.addEventListener("hashchange", openFromLink);
+    return () => window.removeEventListener("hashchange", openFromLink);
+  }, []);
+
+  useEffect(() => {
     let disposed = false;
     let source: EventSource | undefined;
     let retry: ReturnType<typeof setTimeout>;
@@ -135,7 +147,7 @@ export default function CommunityChat() {
     setOpen(next);
     setEmojiOpen(false); setTarget(null);
     if (next) { view.current.bottom = true; setUnread([]); void refreshAccess(); }
-    else launcher.current?.focus();
+    else launcher.current?.focus({ preventScroll: true });
   };
   const send = async () => {
     const content = draft.trim();
@@ -145,7 +157,7 @@ export default function CommunityChat() {
     try {
       await request("send", pending.current);
       setDraft(""); pending.current = null;
-      textarea.current?.focus();
+      textarea.current?.focus({ preventScroll: true });
     } catch (err) { setError(err instanceof Error ? err.message : "No se pudo enviar. Puedes reintentarlo."); void refreshAccess(); }
     finally { busy.current = false; setSending(false); }
   };
@@ -166,7 +178,7 @@ export default function CommunityChat() {
         <span className={`community-chat-connection ${connected ? "is-connected" : ""}`} title={connected ? "Chat conectado" : "Reconectando"} aria-label={connected ? "Chat conectado" : "Conexión interrumpida"} />
       </header>
       {!connected && !loading && <p className="community-chat-notice" role="status">Conexión interrumpida. Reconectando…</p>}
-      <div ref={list} className="community-chat-messages" role="log" aria-label="Mensajes de la comunidad" aria-live="off" onScroll={() => {
+      <div ref={list} className="community-chat-messages" role="log" tabIndex={0} aria-label="Mensajes de la comunidad" aria-live="off" onScroll={() => {
         const el = list.current;
         if (!el) return;
         view.current.bottom = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
@@ -196,7 +208,7 @@ export default function CommunityChat() {
           : access.muted ? <p className="community-chat-notice" role="status">Estás silenciado. Puedes seguir leyendo.</p>
           : <div className="community-chat-composer">
             <button className="community-chat-emoji-toggle" aria-label="Seleccionar emoji" aria-expanded={emojiOpen} onClick={() => setEmojiOpen(!emojiOpen)}>😊</button>
-            {emojiOpen && <div className="community-chat-emojis" role="group" aria-label="Emojis">{emojis.map(emoji => <button key={emoji} aria-label={`Añadir ${emoji}`} onClick={() => { setDraft(value => value + emoji); setEmojiOpen(false); textarea.current?.focus(); }}>{emoji}</button>)}</div>}
+            {emojiOpen && <div className="community-chat-emojis" role="group" aria-label="Emojis">{emojis.map(emoji => <button key={emoji} aria-label={`Añadir ${emoji}`} onClick={() => { setDraft(value => value + emoji); setEmojiOpen(false); textarea.current?.focus({ preventScroll: true }); }}>{emoji}</button>)}</div>}
             <textarea ref={textarea} value={draft} disabled={sending} rows={1} aria-label="Tu mensaje" placeholder="Escribe tu mensaje…" onChange={event => setDraft(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void send(); } }} />
             <button className="community-chat-send" aria-label={sending ? "Enviando mensaje" : error ? "Reintentar envío" : "Enviar mensaje"} disabled={sending || !chars || chars > 500} onClick={() => void send()}>{sending ? "…" : <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 19 9-19 9 4-9-4-9Zm4 9h15" /></svg>}</button>
           </div>}

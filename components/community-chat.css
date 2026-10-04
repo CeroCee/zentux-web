@@ -7,12 +7,12 @@
 .community-chat-launcher svg circle { fill: #49336b; }
 .community-chat-unread { position: absolute; right: -4px; top: -5px; border-radius: 12px; min-width: 21px; padding: 3px 5px; background: #e964a7; color: #fff; font-size: 11px; font-weight: 700; border: 2px solid #08080d; }
 .community-chat-panel { width: 410px; height: 630px; max-height: calc(var(--community-viewport,100dvh) - 112px); display: flex; flex-direction: column; margin-bottom: 14px; overflow: hidden; border: 1px solid #728ccc9c; border-radius: 22px; background: linear-gradient(145deg,#162135f5,#090f1dfc 55%,#101928fc); box-shadow: 0 12px 55px #0009, 0 0 24px #6e79dd19; }
-.community-chat-header { display: flex; align-items: center; gap: 12px; padding: 16px; border-bottom: 1px solid #b7c6ed20; }
+.community-chat-header { display: flex; flex-shrink: 0; align-items: center; gap: 12px; padding: 16px; border-bottom: 1px solid #b7c6ed20; }
 .community-chat-header h2 { margin: 0; font-size: 18px; font-weight: 700; }
 .community-chat-minimize { display: grid; place-items: center; flex: 0 0 34px; height: 34px; border: 0; border-radius: 50%; background: #c0c9ee16; color: #edf0ff; font-size: 25px; }
 .community-chat-connection { width: 7px; height: 7px; border-radius: 50%; background: #dca357; margin-left: auto; }
 .community-chat-connection.is-connected { background: #59d693; }
-.community-chat-messages { flex: 1; min-height: 90px; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #52607975 transparent; padding: 19px 15px; }
+.community-chat-messages { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #52607975 transparent; padding: 19px 15px; }
 .community-chat-message { display: flex; align-items: flex-start; gap: 11px; margin: 0 0 20px; }
 .community-chat-message:last-child { margin-bottom: 0; }
 .community-chat-avatar { border-radius: 50%; flex: 0 0 36px; width: 36px; height: 36px; object-fit: cover; background: #293448; border: 1px solid #b5c7f02b; }
@@ -25,7 +25,7 @@
 .community-chat-message-meta time { color: #8b99b2; font-size: 10px; white-space: nowrap; }
 .community-chat-message-body > p { margin: 5px 0 0; font-size: 14px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; color: #e4eaf5; }
 .community-chat-empty { text-align: center; font-size: 13px; line-height: 1.7; color: #a6b3ca; margin: 65px 15px; }
-.community-chat-footer { position: relative; border-top: 1px solid #b7c6ed20; padding: 12px 14px 9px; }
+.community-chat-footer { position: relative; flex-shrink: 0; border-top: 1px solid #b7c6ed20; padding: 12px 14px 9px; }
 .community-chat-retention { margin: 0 0 10px; font-size: 10px; color: #91a0b9; text-align: center; }
 .community-chat-composer { display: flex; align-items: center; gap: 8px; position: relative; }
 .community-chat textarea { flex: 1; min-width: 0; min-height: 40px; max-height: 82px; resize: vertical; color: #e6edf8; border: 1px solid #73809b70; border-radius: 21px; background: #111b2b; padding: 11px 13px; font-size: 13px; line-height: 17px; }
@@ -55,8 +55,8 @@
 .zentux-discord-bubble { right: auto !important; left: 20px; }
 body:has(.community-chat-panel) .zentux-discord-bubble { display: none; }
 @media (max-width: 600px) {
-  .community-chat { right: 12px; bottom: calc(12px + env(safe-area-inset-bottom) + var(--community-keyboard,0px)); }
-  .community-chat-panel { width: calc(100vw - 24px); height: min(600px,calc(var(--community-viewport,100dvh) - 94px - env(safe-area-inset-bottom))); max-height: calc(var(--community-viewport,100dvh) - 94px - env(safe-area-inset-bottom)); border-radius: 18px; margin-bottom: 10px; }
+  .community-chat { left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom) + var(--community-keyboard,0px)); }
+  .community-chat-panel { width: 100%; height: min(600px,calc(var(--community-viewport,100dvh) - 94px - env(safe-area-inset-bottom))); max-height: calc(var(--community-viewport,100dvh) - 94px - env(safe-area-inset-bottom)); border-radius: 18px; margin-bottom: 10px; }
   .community-chat-launcher { width: 50px; height: 50px; }
   .community-chat-header { padding: 11px 13px; }
   .community-chat textarea { font-size: 16px; }
