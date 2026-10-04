@@ -5,7 +5,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./community-chat.css";
 import CommunityProfile, { ProfileSelection } from "./CommunityProfile";
-import CommunityRoleBadge from "./CommunityRoleBadge";
+import CommunityRoleBadge, { CommunityChatAvatar } from "./CommunityRoleBadge";
 
 type Message = { id: string; userId: string; name: string; avatar: string | null; role: "admin" | "moderator" | null; content: string; createdAt: string };
 type Snapshot = { revision: string; messages: Message[]; eventsUrl?: string };
@@ -190,7 +190,7 @@ export default function CommunityChat() {
       }}>
         {loading ? <p className="community-chat-empty" role="status">Cargando conversación…</p> : messages.length === 0 && <p className="community-chat-empty">Todavía no hay mensajes.<br />Sé el primero en saludar a la comunidad.</p>}
         {messages.map(message => <article className={`community-chat-message role-${message.role || "member"}`} key={message.id} data-message-id={message.id}>
-          <button className="community-chat-avatar-button" data-profile-user={message.userId} aria-label={`Ver perfil de ${message.name}`} aria-haspopup="dialog" onPointerDown={event => { event.preventDefault(); event.currentTarget.focus({ preventScroll: true }); }} onClick={event => setSelectedProfile({ userId: message.userId, anchor: event.currentTarget, key: crypto.randomUUID() })}>{message.avatar ? <Image className="community-chat-avatar" src={message.avatar} alt="" width={36} height={36} unoptimized onError={event => { event.currentTarget.src = "/icon-48.png"; }} /> : <Image className="community-chat-avatar" src="/icon-48.png" alt="" width={36} height={36} />}</button>
+          <button className="community-chat-avatar-button" data-profile-user={message.userId} aria-label={`Ver perfil de ${message.name}`} aria-haspopup="dialog" onPointerDown={event => { event.preventDefault(); event.currentTarget.focus({ preventScroll: true }); }} onClick={event => setSelectedProfile({ userId: message.userId, anchor: event.currentTarget, key: crypto.randomUUID() })}><CommunityChatAvatar userId={message.userId} src={message.avatar} /></button>
           <div className="community-chat-message-body"><div className="community-chat-message-meta">
             <button className="community-chat-name" data-profile-user={message.userId} aria-label={`Ver perfil de ${message.name} por nombre`} aria-haspopup="dialog" onPointerDown={event => { event.preventDefault(); event.currentTarget.focus({ preventScroll: true }); }} onClick={event => setSelectedProfile({ userId: message.userId, anchor: event.currentTarget, key: crypto.randomUUID() })}>{message.name}</button>
             <CommunityRoleBadge userId={message.userId} />
