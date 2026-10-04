@@ -28,11 +28,17 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
   const [error,setError] = useState('');
   const [busy,setBusy] = useState(false);
   const [processing,setProcessing] = useState(false);
+  const [previewExpanded,setPreviewExpanded] = useState(false);
   const dialog = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
   const alive = useRef(true);
   const update = <K extends keyof ProfileAppearance>(key:K,value:ProfileAppearance[K]) => setDraft(current => ({...current,[key]:value}));
-  useEffect(() => { alive.current = true; closeButton.current?.focus({preventScroll:true}); return () => {alive.current = false;}; },[]);
+  useEffect(() => {
+    alive.current = true; closeButton.current?.focus({preventScroll:true});
+    const root = document.documentElement,previous = root.style.overflow;
+    root.style.overflow = 'hidden';
+    return () => {alive.current = false;root.style.overflow = previous;};
+  },[]);
   async function upload(file:File|undefined,kind:'avatar'|'banner') {
     if (!file) return;
     setError('');setProcessing(true);
@@ -56,12 +62,14 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
       event.stopPropagation();
       if (event.key === 'Escape' && !busy && !processing) {event.preventDefault();onClose();}
       if (event.key !== 'Tab') return;
-      const controls = Array.from(dialog.current!.querySelectorAll<HTMLElement>('button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),a[href]'));
+      const controls = Array.from(dialog.current!.querySelectorAll<HTMLElement>('button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),a[href]')).filter(element => element.getClientRects().length > 0);
       const first = controls[0],last = controls[controls.length-1];
       if (event.shiftKey && document.activeElement === first) {event.preventDefault();last?.focus();}
       else if (!event.shiftKey && document.activeElement === last) {event.preventDefault();first?.focus();}
     }}>
       <aside className="profile-editor-preview"><p className="profile-editor-eyebrow">Así verán tu perfil en el chat</p>
+        <button type="button" className="profile-preview-toggle" aria-expanded={previewExpanded} aria-controls="profile-editor-preview-body" onClick={() => setPreviewExpanded(value => !value)}>Vista previa de tu tarjeta {previewExpanded ? '▴' : '▾'}</button>
+        <div id="profile-editor-preview-body" className={`profile-preview-body${previewExpanded ? ' is-open' : ''}`}>
         <div className={`profile-preview-card profile-frame-${draft.frame}`}>
           <div className="profile-preview-banner">{draft.banner && <Image src={draft.banner} alt="Vista previa del banner" fill unoptimized sizes="380px" />}</div>
           <div className="profile-preview-content"><Image src={previewAvatar} alt="Vista previa del avatar" width={86} height={86} unoptimized className={`profile-preview-avatar profile-decoration-${draft.decoration}`} />
@@ -73,6 +81,7 @@ export default function ProfileEditor({initial,fallback,onClose,onSaved}:{initia
           </div>
         </div>
         <p className="profile-editor-note">Tu identidad de Discord y tus insignias oficiales se mantienen. Las licencias y los pagos nunca aparecen en esta tarjeta.</p>
+        </div>
       </aside>
       <form onSubmit={save} className="profile-editor-form">
         <div className="profile-editor-heading"><div><p className="profile-editor-eyebrow">TU IDENTIDAD EN ZENTUX</p><h2 id="profile-editor-title">Editar perfil</h2></div><button ref={closeButton} type="button" aria-label="Cerrar editor" disabled={busy || processing} onClick={onClose}>×</button></div>
